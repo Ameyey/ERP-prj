@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dynamic Form</title>
+  <style>
+      
+
+    h1 {
+        text-align: center;
+        color: #333;
+    }
+
+    form {
+        background: #fff; 
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        max-width: 600px;
+        margin: auto;
+    }
+
+    fieldset {
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        margin-bottom: 20px;
+        padding: 10px;
+    }
+
+    legend {
+        font-weight: bold;
+        padding: 0 10px;
+        color: #555;
+    }
+
+    label {
+        display: block;
+        margin: 10px 0 5px;
+        color: #555;
+    }
+
+    input[type="text"],
+    input[type="date"],
+    input[type="tel"],
+    input[type="email"],
+    input[type="file"],
+    select {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 15px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        box-sizing: border-box;
+    }
+
+    input[type="file"] {
+        padding: 3px;
+    }
+
+    button {
+        background-color: #5cb85c;
+        color: white;
+        padding: 10px 15px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 16px;
+        width: 100%;
+    }
+
+    button:hover {
+        background-color: #4cae4c;
+    }
+
+    @media (max-width: 600px) {
+        form {
+            padding: 15px;
+        }
+
+        button {
+            padding: 8px 12px;
+        }
+
+        .back-button {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background-color: rgb(192, 192, 192);
+            padding: 10px 15px;
+            border-radius: 4px;
+            font-size: 14px;
+            text-decoration: none;
+            color: #333;
+            border: 1px solid #ddd;
+        }
+        .back-button:hover {
+            background-color: #ddd;
+        }
+    }
+</style>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+      background-color: #f9f9f9;
+    }
+
+    form {
+      max-width: 400px;
+      margin: 50px auto;
+      padding: 20px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      background-color: #fff;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    form h1 {
+      font-size: 24px;
+      margin-bottom: 20px;
+    }
+
+    form label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: bold;
+    }
+
+    form input,
+    form textarea {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 15px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+
+    form button {
+      padding: 10px 20px;
+      font-size: 16px;
+      background-color: #007BFF;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    form button:hover {
+      background-color: #0056b3;
+    }
+  </style>
+</head>
+<body>
+  <a href="ad.html" class="back-button">Back</a>
+  <h1>Employee Registration Form</h1>
+  <form th:action="${employee.id != null ? '/update_employee' : '/employee_registration'}" method="post" enctype="/form-data"onsubmit="return validateForm();">
+  <input type="hidden" name="id" th:value="${employee.id}" />
+      <fieldset>
+          <legend>Personal Information</legend>
+          <label for="firstName">First Name:</label>
+          <input type="text" id="firstName" name="firstName" th:value="${employee.firstName}" required>
+
+          <label for="middleName">Middle Name:</label>
+          <input type="text" id="middleName" name="middleName" th:value="${employee.middleName}">
+
+          <label for="lastName">Last Name:</label>
+          <input type="text" id="lastName" name="lastName" th:value="${employee.lastName}" required>
+
+          <label for="dateOfBirth">Date of Birth:</label>
+          <input type="date" id="dateOfBirth" name="dateOfBirth" th:value="${employee.dateOfBirth}" required>
+
+          <label for ="gender">Gender:</label>
+          <select id="gender" name="gender" required>
+              <option value="Notselected" th:selected="${employee.gender == 'Notselected'}">Not selected</option>
+              <option value="Male" th:selected="${employee.gender == 'Male'}">Male</option>
+              <option value="Female" th:selected="${employee.gender == 'Female'}">Female</option>
+              <option value="Other" th:selected="${employee.gender == 'Other'}">Other</option>
+          </select>
+
+          <label for="maritalStatus">Marital Status:</label>
+          <select id="maritalStatus" name="maritalStatus" required>
+              <option value ="Notselected" th:selected="${employee.maritalStatus == 'Notselected'}">Not selected</option>
+              <option value="Single" th:selected="${employee.maritalStatus == 'Single'}">Single</option>
+              <option value="Married" th:selected="${employee.maritalStatus == 'Married'}">Married</option>
+              <option value="Divorced" th:selected="${employee.maritalStatus == 'Divorced'}">Divorced</option>
+              <option value="Widowed" th:selected="${employee.maritalStatus == 'Widowed'}">Widowed</option>
+          </select>
+
+          <label for="nationality">Nationality:</label>
+          <input type="text" id="nationality" name="nationality" th:value="${employee.nationality}" required>
+
+          <label for="permanentAddressLine1">Permanent Address Line 1:</label>
+          <input type="text" id="permanentAddressLine1" name="permanentAddressLine1" th:value="${employee.permanentAddressLine1}" required>
+
+          <label for="permanentAddressLine2">Permanent Address Line 2:</label>
+          <input type="text" id="permanentAddressLine2" name="permanentAddressLine2" th:value="${employee.permanentAddressLine2}">
+
+          <label for="permanentCity">Permanent City:</label>
+          <input type="text" id="permanentCity" name="permanentCity" th:value="${employee.permanentCity}" required>
+
+          <label for="permanentState">Permanent State:</label>
+          <input type="text" id="permanentState" name="permanentState" th:value="${employee.permanentState}" required>
+
+          <label for="permanentCountry">Permanent Country:</label>
+          <input type="text" id="permanentCountry" name="permanentCountry" th:value="${employee.permanentCountry}" required>
+
+          <label for="permanentZipCode">Permanent Zip Code:</label>
+          <input type="text" id="permanentZipCode" name="permanentZipCode" th:value="${employee.permanentZipCode}" pattern="^\d{6}$" 
+          title="Please enter a 6-digit number for the Permanent Zip Code"  required>
+
+          <label for="currentAddressLine1">Current Address Line 1:</label>
+          <input type="text" id="currentAddressLine1" name="currentAddressLine1" th:value="${employee.currentAddressLine1}" required>
+
+          <label for="currentAddressLine2">Current Address Line 2:</label>
+          <input type="text" id="currentAddressLine2" name="currentAddressLine2" th:value="${employee.currentAddressLine2}">
+
+          <label for="currentCity">Current City:</label>
+          <input type="text" id="currentCity" name="currentCity" th:value="${employee.currentCity}" required>
+
+          <label for="currentState">Current State:</label>
+          <input type="text" id="currentState" name="currentState" th:value="${employee.currentState}" required>
+
+          <label for="currentCountry">Current Country:</label>
+          <input type="text" id="currentCountry" name="currentCountry" th:value="${employee.currentCountry}" required>
+
+          <label for="currentZipCode">Current Zip Code:</label>
+          <input type="text" id="currentZipCode" name="currentZipCode" th:value="${employee.currentZipCode}" pattern="^\d{6}$" 
+          title="Please enter a 6-digit number for the Current Zip Code"  required>
+
+          <label for="primaryContactNumber">Primary Contact Number:</label>
+          <input type="tel" id="primaryContactNumber" name="primaryContactNumber" th:value="${employee.primaryContactNumber}" pattern="^\d{10}$" title="Please enter a valid 10-digit number for the Primary Contact Number" required>
+
+          <label for="alternateContactNumber">Alternate Contact Number:</label>
+          <input type="tel" id="alternateContactNumber" name="alternateContactNumber" th:value="${employee.alternateContactNumber}"  pattern="^\d{10}$" title="Please enter a valid 10-digit number for the Alternate Contact Number" >
+
+          <label for="personalEmail">Personal Email:</label>
+          <input type="email" id="personalEmail" name="personalEmail" th:value="${employee.personalEmail}" required>
+
+          <label for="bloodGroup">Blood Group:</label>
+          <input type="text" id="bloodGroup" name="bloodGroup" th:value="${employee.bloodGroup}" required>
+
+          <label for="emergencyContactName">Emergency Contact Name:</label>
+          <input type="text" id="emergencyContactName" name="emergencyContactName" th:value="${employee.emergencyContactName}" required>
+
+          <label for="emergencyRelationship">Emergency Relationship:</label>
+          <input type="text" id="emergencyRelationship" name="emergencyRelationship" th:value="${employee.emergencyRelationship}" required>
+
+          <label for="emergencyContactNumber">Emergency Contact Number:</label>
+          <input type="tel" id="emergencyContactNumber" name="emergencyContactNumber" th:value="${employee.emergencyContactNumber}" pattern="^\d{10}$" title="Please enter a valid 10-digit number for the Emergency Contact Number" required>
+
+          <label for="emergencyEmail">Emergency Email:</label>
+          <input type="email" id="emergencyEmail" name="emergencyEmail" th:value="${employee.emergencyEmail}" required>
+
+          <label for="passportNumber">Passport Number:</label>
+          <input type="text" id="passportNumber" name="passportNumber" th:value="${employee.passportNumber}">
+
+          <label for="visaNumber">Visa Number:</label>
+          <input type="text" id="visaNumber" name="visaNumber" th:value="${employee.visaNumber}">
+
+          <label for="visaExpiryDate">Visa Expiry Date:</label>
+          <input type="date" id="visaExpiryDate" name="visaExpiryDate" th:value="${employee.visaExpiryDate}">
+
+          <label for="aadharSsnFile">Aadhar/SSN File:</label>
+          <input type="file" id="aadharSsnFile" name="aadharSsnFile">
+
+          <label for="uploadProfilePhotoFile">Upload Profile Photo:</label>
+          <input type="file" id="uploadProfilePhotoFile" name="uploadProfilePhotoFile">
+
+          <label for="panTaxIdFile">PAN/TAX ID File:</label>
+          <input type="file" id="panTaxIdFile" name="panTaxIdFile">
+
+          <label for="educationCertificatesFile">Education Certificates File:</label>
+          <input type="file" id="educationCertificatesFile" name="educationCertificatesFile">
+
+          <label for="professionalCertificatesFile">Professional Certificates File:</label>
+          <input type="file" id="professionalCertificatesFile" name="professionalCertificatesFile">
+
+          <label for="resumeFile">Resume File:</label>
+          <input type="file" id="resumeFile" name="resumeFile">
+      </fieldset>
+     <!-- <button type="submit">Submit</button>-->
+  <button type="submit" th:text="${employee.id != null ? 'Update' : 'Submit'}"></button>
+
+  </form>
+
+  <script>
+    // Display the button number from the query parameter
+    const params = new URLSearchParams(window.location.search);
+    const buttonNumber = params.get('button');
+    if (buttonNumber){
+      document.getElementById('button-info').textContent = `You clicked Button ${1}`;
+    }
+    
+	    function validateForm() {
+	        // Validate string fields
+	        const stringFields = [
+	            "firstName",
+	            "middleName",
+	            "lastName",
+	            "nationality",
+	            "permanentCity",
+	            "permanentState",
+	            "permanentCountry",
+	            "currentCity",
+	            "currentState",
+	            "currentCountry",
+	            "emergencyContactName",
+	            "emergencyRelationship"
+	        ];
+
+	        const stringRegex = /^[a-zA-Z\s]*$/;
+
+	        for (const fieldId of stringFields) {
+	            const field = document.getElementById(fieldId);
+	            if (field && !stringRegex.test(field.value.trim())) {
+	                alert(`Invalid input in ${fieldId.replace(/([A-Z])/g, " $1")}. Please enter only letters and spaces.`);
+	                field.focus();
+	                return false;
+	            }
+	        }
+
+	        // Validate address fields
+	        const addressFields = [
+	            "permanentAddressLine1",
+	            "permanentAddressLine2",
+	            "currentAddressLine1",
+	            "currentAddressLine2"
+	        ];
+
+	        const addressRegex = /^[a-zA-Z0-9\s,.-]{1,100}$/;
+
+	        for (const fieldId of addressFields) {
+	            const field = document.getElementById(fieldId);
+	            if (field && field.value.trim() !== "" && !addressRegex.test(field.value.trim())) {
+	                alert(`Invalid input in ${fieldId.replace(/([A-Z])/g, " $1")}. Address can only include letters, numbers, spaces, commas, periods, and hyphens, and must be less than 100 characters.`);
+	                field.focus();
+	                return false;
+	            }
+	        }
+
+	        // Validate Zip Code fields
+	        const zipFields = [
+	            { id: "permanentZipCode", name: "Permanent Zip Code" },
+	            { id: "currentZipCode", name: "Current Zip Code" }
+	        ];
+
+	        for (const field of zipFields) {
+	            const input = document.getElementById(field.id);
+	            if (!/^\d{6}$/.test(input.value.trim())) {
+	                alert(`${field.name} must be exactly 6 digits.`);
+	                input.focus();
+	                return false;
+	            }
+	        }
+
+	        // Validate numeric fields (phone numbers)
+	        const numericFields = [
+	            { id: "primaryContactNumber", name: "Primary Contact Number" },
+	            { id: "alternateContactNumber", name: "Alternate Contact Number" },
+	            { id: "emergencyContactNumber", name: "Emergency Contact Number" }
+	        ];
+
+	        for (const field of numericFields) {
+	            const input = document.getElementById(field.id);
+	            if (input && !/^\d{10}$/.test(input.value.trim())) {
+	                alert(`${field.name} must be a valid 10-digit number.`);
+	                input.focus();
+	                return false;
+	            }
+	        }
+
+	        // Validate Passport Number
+	        const passportNumber = document.getElementById("passportNumber");
+	        const passportRegex = /^[A-Z0-9]{6,9}$/; // Example pattern: 6-9 characters, alphanumeric
+	        if (passportNumber && !passportRegex.test(passportNumber.value.trim())) {
+	            alert("Invalid Passport Number. It must be 6 to 9 alphanumeric characters.");
+	            passportNumber.focus();
+	            return false;
+	        }
+
+	        // Validate Visa Number
+	        const visaNumber = document.getElementById("visaNumber");
+	        const visaRegex = /^[A-Z0-9]{6,12}$/; // Example pattern: 6-12 alphanumeric characters
+	        if (visaNumber && !visaRegex.test(visaNumber.value.trim())) {
+	            alert("Invalid Visa Number. It must be 6 to 12 alphanumeric characters.");
+	            visaNumber.focus();
+	            return false;
+	        }
+
+	        return true; // All validations passed
+	    }
+  </script>
+</body>
+</html>
