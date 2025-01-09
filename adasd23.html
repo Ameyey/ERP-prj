@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+    </style>
+    <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.0/css/line.css">
+    <title>Responsive Registration Form</title>
+</head>
+<body>
+    <div class="container">
+        <header>Registration</header>
+        <form action="#">
+            <!-- First Form Section -->
+            <div class="form first">
+                <div class="details personal">
+                    <span class="title">Personal Information</span>
+                    <div class="fields">
+                        <!-- Include all personal information fields -->
+                    </div>
+                    <button type="button" class="nextBtn">
+                      <span class="btnText">Next</span>
+                      <i class="uil uil-navigator"></i>
+                  </button>
+                </div>                               
+            </div>
+
+            <!-- Second Form Section -->
+            <div class="form second">
+                <div class="details address">
+                    <span class="title">Address and Family Details</span>
+                    <div class="fields">
+                        <!-- Include all address and family details fields -->
+                    </div>
+                </div>
+                <div class="buttons">
+                    <div class="backBtn">
+                        <i class="uil uil-navigator"></i>
+                        <span class="btnText">Back</span>
+                    </div>
+                    <button type="button" class="nextBtn">
+                        <span class="btnText">Next</span>
+                        <i class="uil uil-navigator"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Third Form Section -->
+            <div class="form third">
+                <div class="details employment">
+                    <span class="title">Employment/Education Details</span>
+                    <div class="fields">
+                        <div class="input-field">
+                            <label for="companyName">Company Name:</label>
+                            <input type="text" id="companyName" name="companyName" required>
+                        </div>
+                        <div class="input-field">
+                            <label for="jobTitle">Job Title:</label>
+                            <input type="text" id="jobTitle" name="jobTitle" required>
+                        </div>
+                        <div class="input-field">
+                            <label for="experience">Years of Experience:</label>
+                            <input type="number" id="experience" name="experience" min="0" required>
+                        </div>
+                        <div class="input-field">
+                            <label for="highestQualification">Highest Qualification:</label>
+                            <input type="text" id="highestQualification" name="highestQualification" required>
+                        </div>
+                        <div class="input-field">
+                            <label for="university">University/Institute:</label>
+                            <input type="text" id="university" name="university" required>
+                        </div>
+                    </div>
+                </div>
+                <div class="buttons">
+                    <div class="backBtn">
+                        <i class="uil uil-navigator"></i>
+                        <span class="btnText">Back</span>
+                    </div>
+                    <button type="submit">
+                        <span class="btnText">Submit</span>
+                        <i class="uil uil-check-circle"></i>
+                    </button>
+                </div>
+            </div>
+        </form>        
+    </div>
+
+<script>
+  const form = document.querySelector("form"),
+        nextBtns = form.querySelectorAll(".nextBtn"),
+        backBtns = form.querySelectorAll(".backBtn"),
+        sections = form.querySelectorAll(".form");
+
+  let currentSection = 0;
+
+  nextBtns.forEach((btn, index) => {
+      btn.addEventListener("click", () => {
+          if (index < sections.length - 1) {
+              sections[currentSection].classList.remove("secActive");
+              currentSection++;
+              sections[currentSection].classList.add("secActive");
+          }
+      });
+  });
+
+  backBtns.forEach((btn) => {
+      btn.addEventListener("click", () => {
+          if (currentSection > 0) {
+              sections[currentSection].classList.remove("secActive");
+              currentSection--;
+              sections[currentSection].classList.add("secActive");
+          }
+      });
+  });
+</script>
+</body>
+</html>

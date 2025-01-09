@@ -1,0 +1,146 @@
+<div class="container">
+ <!DOCTYPE html>
+ <html lang="en">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+ </head>
+ <body>
+  <header>Registration</header>
+  <form action="#" method="POST">
+    <!-- Page 1: Personal Information -->
+    <div class="form first">
+      <div class="details personal">
+        <span class="title">Personal Information</span>
+        <div class="fields">
+          <div class="input-field">
+            <label for="firstName">First Name:</label>
+            <input type="text" id="firstName" name="firstName" th:value="${employee.firstName}" required>
+          </div>
+          <div class="input-field">
+            <label for="lastName">Last Name:</label>
+            <input type="text" id="lastName" name="lastName" th:value="${employee.lastName}" required>
+          </div>
+          <div class="input-field">
+            <label for="dateOfBirth">Date of Birth:</label>
+            <input type="date" id="dateOfBirth" name="dateOfBirth" th:value="${employee.dateOfBirth}" required>
+          </div>
+          <div class="input-field">
+            <label for="gender">Gender:</label>
+            <select id="gender" name="gender" required>
+              <option value="Notselected" th:selected="${employee.gender == 'Notselected'}">Not selected</option>
+              <option value="Male" th:selected="${employee.gender == 'Male'}">Male</option>
+              <option value="Female" th:selected="${employee.gender == 'Female'}">Female</option>
+              <option value="Other" th:selected="${employee.gender == 'Other'}">Other</option>
+            </select>
+          </div>
+        </div>
+        <button class="nextBtn">
+          <span class="btnText">Next</span>
+          <i class="uil uil-navigator"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Page 2: Address Information -->
+    <div class="form second">
+      <div class="details address">
+        <span class="title">Address Information</span>
+        <div class="fields">
+          <div class="input-field">
+            <label for="currentCity">Current City:</label>
+            <input type="text" id="currentCity" name="currentCity" th:value="${employee.currentCity}" required>
+          </div>
+          <div class="input-field">
+            <label for="permanentCountry">Permanent Country:</label>
+            <input type="text" id="permanentCountry" name="permanentCountry" th:value="${employee.permanentCountry}" required>
+          </div>
+        </div>
+        <div class="buttons">
+          <div class="backBtn">
+            <i class="uil uil-arrow-left"></i>
+            <span class="btnText">Back</span>
+          </div>
+          <button class="nextBtn">
+            <span class="btnText">Next</span>
+            <i class="uil uil-navigator"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Page 3: Family Details -->
+    <div class="form third">
+      <div class="details family">
+        <span class="title">Family Details</span>
+        <div class="fields">
+          <div class="input-field">
+            <label for="primaryContactNumber">Primary Contact Number:</label>
+            <input type="tel" id="primaryContactNumber" name="primaryContactNumber" pattern="^\d{10}$" title="Enter a valid 10-digit number" required>
+          </div>
+          <div class="input-field">
+            <label for="emergencyContactName">Emergency Contact Name:</label>
+            <input type="text" id="emergencyContactName" name="emergencyContactName" th:value="${employee.emergencyContactName}" required>
+          </div>
+        </div>
+        <div class="buttons">
+          <div class="backBtn">
+            <i class="uil uil-arrow-left"></i>
+            <span class="btnText">Back</span>
+          </div>
+          <button class="nextBtn">
+            <span class="btnText">Next</span>
+            <i class="uil uil-navigator"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Page 4: Educational and Work Details -->
+    <div class="form fourth">
+      <div class="details education">
+        <span class="title">Educational Qualifications</span>
+        <div class="fields">
+          <div class="input-field">
+            <label for="highestQualification">Highest Qualification:</label>
+            <input type="text" id="highestQualification" name="highestQualification" required>
+          </div>
+          <div class="input-field">
+            <label for="institutionName">Institution Name:</label>
+            <input type="text" id="institutionName" name="institutionName" required>
+          </div>
+        </div>
+      </div>
+
+      <div class="details work">
+        <span class="title">Work Experience</span>
+        <div class="fields">
+          <div class="input-field">
+            <label for="currentJobTitle">Current Job Title:</label>
+            <input type="text" id="currentJobTitle" name="currentJobTitle" required>
+          </div>
+          <div class="input-field">
+            <label for="totalExperience">Total Experience (Years):</label>
+            <input type="number" id="totalExperience" name="totalExperience" min="0" required>
+          </div>
+        </div>
+        <div class="buttons">
+          <div class="backBtn">
+            <i class="uil uil-arrow-left"></i>
+            <span class="btnText">Back</span>
+          </div>
+          <button type="submit" class="submitBtn">
+            <span class="btnText">Submit</span>
+            <i class="uil uil-check-circle"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>
+
+  
+ </body>
+ </html>
+  
