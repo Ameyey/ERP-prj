@@ -207,91 +207,68 @@ form .buttons button , .backBtn{
     <!----===== Iconscout CSS ===== -->
     <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.0/css/line.css">
 
-   <title>Employment Information Form</title>
+   <title>Payroll Details Form</title>
 </head>
 <body>
     <div class="container">
-        <span class="title">Employment Information Form</span>
+        <span class="title">Payroll Details Form</span>
         <hr>
         <form action="#">
             <div class="form first">
                 <div class="details personal">
-                  
-
-                    
                     <div class="fields">
                         <div class="input-field">
-                         <label>Employee ID:</label>
-                          <input type="text" name="employeeId" th:value="${employmentInfo.employeeId}" required>
+                          <label>Bank Name:</label>
+            <input type="text" th:field="*{bankName}" required>
                         </div>
 
                         <div class="input-field">
-                          <label>Department:</label>
-                            <input type="text" name="department" th:value="${employmentInfo .department}" required>
+                          <label>Branch Name:</label>
+                          <input type="text" th:field="*{branchName}" required>
                         </div>
 
                         <div class="input-field">
-                          <label>Designation/Job Title:</label>
-                          <input type="text" name="designation" th:value="${employmentInfo.designation}" required>
+                          <label>Account Holder Name:</label>
+                          <input type="text" th:field="*{accountHolderName}" required>
                         </div>
 
                         <div class="input-field">
-                          <label>Reporting Manager:</label>
-                           <input type="text" name="reportingManager" th:value="${employmentInfo.reportingManager}" required>
+                          <label>Bank Account Number:</label>
+                          <input type="text" th:field="*{bankAccountNumber}" required pattern="\d{10,18}">
                         </div>
 
                         <div class="input-field">
-                          <label>Employment Type:</label>
-                          <select name="employmentType" required>
-                              <option value="Not Selected" th:selected="${employmentInfo.employmentType == 'Not Selected'}">Not Selected</option>
-                              <option value="Permanent" th:selected="${employmentInfo.employmentType == 'Permanent'}">Permanent</option>
-                              <option value="Contract" th:selected="${employmentInfo.employmentType == 'Contract'}">Contract</option>
-                              <option value="Intern" th:selected="${employmentInfo.employmentType == 'Intern'}">Intern</option>
-                              <option value="Freelancer" th:selected="${employmentInfo.employmentType == 'Freelancer'}">Freelancer</option>
-                          </select>
+                          <label>IFSC Code:</label>
+            <input type="text" th:field="*{ifscCode}" required pattern="[A-Z]{4}0[A-Z0-9]{6}">
                         </div>
 
                         <div class="input-field">
-                          <label>Work Location:</label>
-                          <input type="text" name="workLocation" th:value="${employmentInfo.workLocation}" required>
+                          <label>Currency:</label>
+            <select th:field="*{currency}" required>
+                <option value="INR" th:selected="*{currency == 'INR'}">INR</option>
+                <option value="USD" th:selected="*{currency == 'USD'}">USD</option>
+                <option value="EUR" th:selected="*{currency == 'EUR'}">EUR</option>
+            </select>
                         </div>
                         <div class="input-field">
-                          <label>Office Address:</label>
-                          <input type="text" name="officeAddress" th:value="${employmentInfo.officeAddress}" required>
+                          <label>Tax Residency Status:</label>
+            <select th:field="*{taxResidencyStatus}" required>
+                <option value="Resident" th:selected="*{taxResidencyStatus == 'Resident'}">Resident</option>
+                <option value="Non-Resident" th:selected="*{taxResidencyStatus == 'Non-Resident'}">Non-Resident</option>
+            </select>
                         </div>   
                         <div class="input-field">                         
                           <label>Remote Location:</label>
-            <input type="text" name="remoteLocation" th:value="${employmentInfo.remoteLocation}">
+                     <input type="text" name="remoteLocation" th:value="${employmentInfo.remoteLocation}">
                         </div>
-                        <div class="input-field">
-                          <label>Date of Joining:</label>
-                          <input type="date" name="dateOfJoining" th:value="${employmentInfo.dateOfJoining}" required>
+                       <br>
+                        <div class="input-field">                        
+                          <label>Tax Identification Number (TIN):</label>
+                          <input type="text" th:field="*{taxIdentificationNumber}" required pattern="\d{11}">
                         </div>
-                        <div class="input-field">
-                          <label>Probation Period End Date:</label>
-                          <input type="date" name="probationEndDate" th:value="${employmentInfo.probationEndDate}">
-                        </div>
-                        <div class="input-field">
-                          <label>Status:</label>
-                         <select name="status" required>
-                         <option value="Not Selected" th:selected="${employmentInfo.status == 'Not Selected'}">Not Selected</option>
-                         <option value="Active" th:selected="${employmentInfo.status == 'Active'}">Active</option>
-                       <option value="Inactive" th:selected="${employmentInfo.status == 'Inactive'}">Inactive</option>
-                  </select>          
-                        </div>
-                        <div class="input-field">
-                          <label>Shift Details:</label>
-                     <select name="shiftDetails" required>
-                      <option value="Not Selected" th:selected="${employmentInfo.shiftDetails == 'Not Selected'}">Not Selected</option>
-                        <option value="General" th:selected="${employmentInfo.shiftDetails == 'General'}">General</option>
-                        <option value="US Shift" th:selected="${employmentInfo.shiftDetails == 'US Shift'}">US Shift</option>
-                        <option value="EMEA Shift" th:selected="${employmentInfo.shiftDetails == 'EMEA Shift'}">EMEA Shift</option>
-                     </select>
-                        </div>
-                        <div class="input-field">
-                          <label>Work Hours:</label>
-                          <input type="text" name="workHours" th:value="${employmentInfo.workHours}" required>
-                        </div>
+                        
+                      
+                       
                       </div> 
                   <button type="submit" th:text="${employmentInfo.employeeId != null} ? 'Update' : 'Submit'">Submit</button>
                 </div>                                              
