@@ -219,7 +219,7 @@ form .buttons button , .backBtn{
                     <div class="fields">
                         <div class="input-field">
                           <label>Bank Name:</label>
-            <input type="text" th:field="*{bankName}" required>
+                         <input type="text" th:field="*{bankName}" required>
                         </div>
 
                         <div class="input-field">
@@ -266,16 +266,10 @@ form .buttons button , .backBtn{
                           <label>Tax Identification Number (TIN):</label>
                           <input type="text" th:field="*{taxIdentificationNumber}" required pattern="\d{11}">
                         </div>
-                        
-                      
-                       
                       </div> 
                   <button type="submit" th:text="${employmentInfo.employeeId != null} ? 'Update' : 'Submit'">Submit</button>
                 </div>                                              
             </div>
-         
-           
-          
         </form>       
     </div>
   
