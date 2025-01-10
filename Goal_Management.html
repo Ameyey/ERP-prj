@@ -212,8 +212,7 @@ form .buttons button , .backBtn{
                 <div class="fields">
                     <div class="input-field">
                       <label for="title">Goal Title:</label>
-				<input type="text" id="title" name="title" th:value="${goal?.title}" required>
-          
+			              	<input type="text" id="title" name="title" th:value="${goal?.title}" required>          
                     </div>
 
                     <div class="input-field">
@@ -233,12 +232,12 @@ form .buttons button , .backBtn{
 
                     <div class="input-field">
                       <label for="status">Status</label>
-                <select id="status" name="status" required>
-                    <option value="">Select</option>
-                    <option value="not_started" selected="${goal?.status=='not_started'}">Not Started</option>
-                    <option value="in_progress" selected="${goal?.status=='in_progress'}">In Progress</option>
-                    <option value="completed" selected="${goal?.status=='completed'}">Completed</option>
-                </select>
+                      <select id="status" name="status" required>
+                          <option value="">Select</option>
+                          <option value="not_started" selected="${goal?.status=='not_started'}">Not Started</option>
+                          <option value="in_progress" selected="${goal?.status=='in_progress'}">In Progress</option>
+                          <option value="completed" selected="${goal?.status=='completed'}">Completed</option>
+                      </select>
                     </div>
 
                     <div class="input-field">
