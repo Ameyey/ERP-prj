@@ -204,40 +204,47 @@ form .buttons button , .backBtn{
 </head>
 <body>
     <div class="container">
-      <span class="title">Goal Management</span>
+      <span class="title">Feedback Collection Form</span>
       <hr>
-      <form action="#">
+      <form id="feedbackForm" enctype="multipart/form-data" onsubmit="validateForm(event)">
         <div class="form first">
             <div class="details personal">
                 <div class="fields">
                     <div class="input-field">
-                      <label for="title">Goal Title:</label>
-			              	<input type="text" id="title" name="title" th:value="${goal?.title}" required>          
+                      <input type="hidden" id="feedbackId" name="feedbackId" th:value="${feedback.feedbackId}">
+                      <div class="form-group">
+                        <label for="feedbackType">Feedback Type</label>
+                        <br>
+                        <select id="feedbackType" name="feedbackType"  th:value="${feedback?.feedbackType}" required>
+                            <option value="">Select</option>
+                            <option value="Complaint">Complaint</option>
+                            <option value="Suggestion">Suggestion</option>
+                            <option value="Praise">Praise</option>
+                            <option value="General Inquiry">General Inquiry</option>
+                        </select>
+                    </div>         
                     </div>
 
                     <div class="input-field">
-                      <label for="targetDate">Target Date:</label>
-                      <input type="date" id="targetDate" name="targetDate" th:value="${goal?.targetDate}" required>
+                      <label for="feedbackDescription">Feedback Description</label>
+                      <textarea id="feedbackDescription" name="feedbackDescription" required th:text="${feedback?.feedbackDescription}"></textarea>
                     </div>
 
                     <div class="input-field">
-                      <label for="priority">Priority</label>
-                      <select id="priority" name="priority">
-                          <option value="">Select</option>
-                          <option value="high" selected="${goal?.priority=='high'}">High</option>
-                          <option value="medium" selected="${goal?.priority=='medium'}">Medium</option>
-                          <option value="low"   selected="${goal?.priority=='low'}">Low</option>
-                      </select>
+                      <label for="feedbackDate">Feedback Date</label>
+                      <input type="date" id="feedbackDate" name="feedbackDate" required th:value="${feedback?.feedbackDate}">
                     </div>
 
                     <div class="input-field">
-                      <label for="status">Status</label>
-                      <select id="status" name="status" required>
-                          <option value="">Select</option>
-                          <option value="not_started" selected="${goal?.status=='not_started'}">Not Started</option>
-                          <option value="in_progress" selected="${goal?.status=='in_progress'}">In Progress</option>
-                          <option value="completed" selected="${goal?.status=='completed'}">Completed</option>
-                      </select>
+                      <label for="actionableSuggestion">Actionable Suggestion</label>
+                <textarea id="actionableSuggestion" name="actionableSuggestion" required th:value="${feedback?.actionableSuggestion}"></textarea>
+                    </div>
+
+                    <div class="input-fiel">
+                      <br>
+                      <label for="file">Attachment (optional)</label>
+                      <br>
+                      <input type="file" id="file" name="file" accept=".pdf,.doc,.docx">
                     </div>
 
                     <div class="input-field">
@@ -245,24 +252,20 @@ form .buttons button , .backBtn{
                     </div>
 
                     <div class="input-field">
-                      
-                    </div>
 
-                    <div class="input-field">
-                     <label for="description">Goal Description:</label>
-				<textarea id="description" name="description" rows="4" th:text="${goal?.description}" required></textarea>
             
                     </div>   
                     <div class="input-field">                         
-                      <label for="regularUpdate">Regular Update</label>
-                      <textarea id="regularUpdate" name="regularUpdate" rows="3" th:text="${goal?.regularUpdate}" required style="height: 78px;"></textarea> 
+
                     </div>
                    <br>
                     <div class="input-field">                        
                       
                     </div>
                   </div> 
-              <button type="submit" th:text="${employmentInfo.employeeId != null} ? 'Update' : 'Submit'">Submit</button>
+              <!-- <butto\n type="submit" th:text="${employmentInfo.employeeId != null} ? 'Update' : 'Submit'">Submit</butto> -->
+              <button type="button" onclick="submitfeedbackForm()">Submit Feedback</button>
+              <div th:if="${successMessage}" class="success-message" th:text="${successMessage}">
             </div>                                              
         </div>
     </form>  
