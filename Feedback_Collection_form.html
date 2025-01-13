@@ -215,7 +215,7 @@ form .buttons button , .backBtn{
                       <div class="form-group">
                         <label for="feedbackType">Feedback Type</label>
                         <br>
-                        <select id="feedbackType" name="feedbackType"  th:value="${feedback?.feedbackType}" required>
+                        <select style="width: 394px;" id="feedbackType" name="feedbackType"  th:value="${feedback?.feedbackType}"  required>
                             <option value="">Select</option>
                             <option value="Complaint">Complaint</option>
                             <option value="Suggestion">Suggestion</option>
@@ -226,18 +226,19 @@ form .buttons button , .backBtn{
                     </div>
 
                     <div class="input-field">
-                      <label for="feedbackDescription">Feedback Description</label>
-                      <textarea id="feedbackDescription" name="feedbackDescription" required th:text="${feedback?.feedbackDescription}"></textarea>
+                      <label for="feedbackDate">Feedback Date</label>
+                      <input type="date" id="feedbackDate" name="feedbackDate" required th:value="${feedback?.feedbackDate}">
+                      
                     </div>
 
                     <div class="input-field">
-                      <label for="feedbackDate">Feedback Date</label>
-                      <input type="date" id="feedbackDate" name="feedbackDate" required th:value="${feedback?.feedbackDate}">
+                      <label for="feedbackDescription">Feedback Description</label>
+                      <textarea id="feedbackDescription" style="height: 80px;" name="feedbackDescription" required th:text="${feedback?.feedbackDescription}"></textarea>
                     </div>
 
                     <div class="input-field">
                       <label for="actionableSuggestion">Actionable Suggestion</label>
-                <textarea id="actionableSuggestion" name="actionableSuggestion" required th:value="${feedback?.actionableSuggestion}"></textarea>
+                <textarea id="actionableSuggestion" style="height: 80px;" name="actionableSuggestion" required th:value="${feedback?.actionableSuggestion}"></textarea>
                     </div>
 
                     <div class="input-fiel">
