@@ -233,12 +233,12 @@ form .buttons button , .backBtn{
 
                     <div class="input-field">
                       <label for="feedbackDescription">Feedback Description</label>
-                      <textarea id="feedbackDescription" style="height: 80px;" name="feedbackDescription" required th:text="${feedback?.feedbackDescription}"></textarea>
+                      <textarea id="feedbackDescription" style="height: 122px;" name="feedbackDescription" required th:text="${feedback?.feedbackDescription}"></textarea>
                     </div>
 
                     <div class="input-field">
                       <label for="actionableSuggestion">Actionable Suggestion</label>
-                <textarea id="actionableSuggestion" style="height: 80px;" name="actionableSuggestion" required th:value="${feedback?.actionableSuggestion}"></textarea>
+                <textarea id="actionableSuggestion" style="height: 122px;" name="actionableSuggestion" required th:value="${feedback?.actionableSuggestion}"></textarea>
                     </div>
 
                     <div class="input-fiel">
@@ -272,5 +272,54 @@ form .buttons button , .backBtn{
     </form>  
     </div>
 	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+	       
+        function submitfeedbackForm() {
+            const formData = new FormData(document.getElementById('feedbackForm'));
+            const feedbackId = $('#feedbackId').val();
+           
+            let url, successMessage;
+
+                        if (!feedbackId) {
+                            url = '/submitFeedback';
+                            successMessage = 'Appraisal saved successfully!';
+                        } else {
+                            url = /feedback/update/${feedbackId};
+                                                successMessage = "Feedback updated successfully!";
+                                            }
+
+            $.ajax({
+                url: url,
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function(response) {
+                    $('#message').text(successMessage); // Corrected this line
+                    resetfeedbackForm();
+                    window.location.href = '/list';
+                },
+                error: function() {
+                    alert('Error saving enrollment. Please try again.');
+                }
+            });
+        }
+
+        function resetfeedbackForm() {
+            $('#feedbackForm')[0].reset();
+            $('#feedbackId').val('');
+            $('#feedbackMessage').text('').css('color', 'black'); // Clear feedback message
+        }
+
+        function prefillfeedbackForm(data) {
+            $('#feedbackId').val(data.feedbackId);
+            $('#feedbackType').val(data.feedbackType);
+            $('#feedbackDescription').val(data.feedbackDescription);
+            $('#feedbackDate').val(data.feedbackDate);
+            $('#actionableSuggestion').val(data.actionableSuggestion);
+            $('#form-title').text('Update Feedback');
+            $('#submitBtn').text('Update Feedback');
+        }
+    </script>
 </body>
 </html>
