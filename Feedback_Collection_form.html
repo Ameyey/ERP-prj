@@ -272,7 +272,6 @@ form .buttons button , .backBtn{
     </div>
 	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
-	       
         function submitfeedbackForm() {
             const formData = new FormData(document.getElementById('feedbackForm'));
             const feedbackId = $('#feedbackId').val();
@@ -309,7 +308,6 @@ form .buttons button , .backBtn{
             $('#feedbackId').val('');
             $('#feedbackMessage').text('').css('color', 'black'); // Clear feedback message
         }
-
         function prefillfeedbackForm(data) {
             $('#feedbackId').val(data.feedbackId);
             $('#feedbackType').val(data.feedbackType);
