@@ -158,6 +158,23 @@ form .fields .input-field2{
     color: #333;
 }
 
+@media (max-width: 750px) {
+    .container form{
+        overflow-y: scroll;
+    }
+    .container form::-webkit-scrollbar{
+       display: none;
+    }
+    form .fields .input-field2{
+        width: calc(100% / 2 - 15px);
+    }
+}
+
+@media (max-width: 550px) {
+    form .fields .input-field2{
+        width: 100%;
+    }
+}
 /* --------------------- */
 
 .input-field label{
@@ -252,32 +269,30 @@ form .buttons button , .backBtn{
 <body>
     <div class="container">
         <header>Appraisal Form</header>
-        <form id="appraisalForm" th:action="@{/submitAppraisal}" method="post" onsubmit="validateForm(event)">
+        <form id="appraisalForm" th:action="@{/submitAppraisal}" method="post" onsubmit="validateForm(event)" >
           <hr>
             <div class="form first">
                 <div class="details personal">
                     <span class="title"></span>
-
                     <div class="fields">
                         <div class="input-field">
                           <label for="appraisalId">Appraisal ID</label>
                           <input type="text" id="appraisalId" name="appraisalId" th:value="${appraisal?.appraisalId}" placeholder="Auto-filled" readonly>
                         </div>
 
-                        <div class="input-field">
-                         
+                        <div class="input-field">                         
                           <label for="startDate">Start Date</label>
-                          <input type="date" id="startDate" name="startDate" required th:value="${appraisal?.startDate}">
+                          <input type="date" id="startDate" name="startDate" required th:value="${appraisal?.startDate}" readonly>
                         </div>
 
                         <div class="input-field">
                           <label for="endDate">End Date</label>
-                          <input type="date" id="endDate" name="endDate" required th:value="${appraisal?.endDate}">
+                          <input type="date" id="endDate" name="endDate" required th:value="${appraisal?.endDate}" readonly>
                         </div>
 
                         <div class="input-field">
                            <label for="appraisalPeriod">Appraisal Period</label>
-                          <select id="appraisalPeriod" name="appraisalPeriod" required th:value="${appraisal?.appraisalPeriod}">
+                          <select id="appraisalPeriod" name="appraisalPeriod" required th:value="${appraisal?.appraisalPeriod}" readonly>
                               <option value="">Select</option>
                               <option value="H1">H1 (Jan-Jun)</option>
                               <option value="H2">H2 (Jul-Dec)</option>
@@ -287,7 +302,7 @@ form .buttons button , .backBtn{
 
                         <div class="input-field">
                           <label for="rating">Rating (Skill Assessment)</label>
-                            <select id="rating" name="rating" required th:value="${appraisal?.rating}">
+                            <select id="rating" name="rating" required th:value="${appraisal?.rating}" readonly>
                                 <option value="">Select Rating</option>
                                 <option value="1">1 - Poor</option>
                                 <option value="2">2 - Needs Improvement</option>
@@ -300,81 +315,99 @@ form .buttons button , .backBtn{
                         <div class="input-field">
                          
                         </div>
+
+                        <div class="input-field">
+                          <label for="keyAchievements">Key Achievements</label>
+                           <textarea id="keyAchievements" style="height: 100px;" name="keyAchievements" required th:text="${appraisal?.keyAchievements}"></textarea>
+                        </div>
+                        <div class="input-field">
+                          <label for="areasImprovement">Areas for Improvement</label>
+                          <textarea id="areasImprovement"  style="height: 100px;" name="areasImprovement" required th:text="${appraisal?.areasImprovement}"></textarea>
+                        </div>
+                        <div class="input-field">
+                         <label for="goalAchieved">Goals Achieved</label>
+                         <textarea id="goalAchieved" style="height: 100px;" name="goalAchieved" required th:text="${appraisal?.goalAchieved}"></textarea>
+                        </div>
+                        
+         <!--  they a textbox row 2 col 2  -->
                         <div class="details personal">
+                          
                           <div class="fields">
                               <div class="input-field2">
-                                <label for="appraisalId">Appraisal ID</label>
-                                <input type="text" id="appraisalId" name="appraisalId" th:value="${appraisal?.appraisalId}" placeholder="Auto-filled" readonly>
+                               <label for="reviewerComments">Reviewer Comments</label>
+                              <textarea id="reviewerComments" style="height: 100px; width: 250px;"  name="reviewerComments"  th:text="${Appraisal?.reviewerComments}"></textarea>                                 
                               </div>
       
-                              <div class="input-field2">                               
-                                <label for="startDate">Start Date</label>
-                                <input type="date" id="startDate" name="startDate" required th:value="${appraisal?.startDate}">
+                              <div class="input-field2" style="position: relative;left: 14px;">                               
+                                <label for="managerComments">Manager Comments</label>
+                                <textarea id="managerComments" style="height: 100px; width: 250px;" name="managerComments"  th:text="${Appraisal?.managerComments}"></textarea>
                               </div>
-      
-                              <div class="input-field2">
-                                <label for="endDate">End Date</label>
-                                <input type="date" id="endDate" name="endDate" required th:value="${appraisal?.endDate}">
-                              </div>
-      
-                              <div class="input-field2">
-                                 <label for="appraisalPeriod">Appraisal Period</label>
-                                <select id="appraisalPeriod" name="appraisalPeriod" required th:value="${appraisal?.appraisalPeriod}">
-                                    <option value="">Select</option>
-                                    <option value="H1">H1 (Jan-Jun)</option>
-                                    <option value="H2">H2 (Jul-Dec)</option>
-                                    <option value="Annual">Annual</option>
-                                </select> 
-                              </div>
-      
-                              <div class="input-field2">
-                                <label for="rating">Rating (Skill Assessment)</label>
-                                  <select id="rating" name="rating" required th:value="${appraisal?.rating}">
-                                      <option value="">Select Rating</option>
-                                      <option value="1">1 - Poor</option>
-                                      <option value="2">2 - Needs Improvement</option>
-                                      <option value="3">3 - Satisfactory</option>
-                                      <option value="4">4 - Good</option>
-                                      <option value="5">5 - Excellent</option>
-                                  </select>
-                              </div>
-      
-                              <div class="input-field">
-                               
-                              </div>
-                              
-                            </div> 
-                                          
+                            </div>                                           
                       </div>
                         
                       </div> 
-                    <button class="nextBtn">
-                      <span class="btnText">Next</span>
-                      <i class="uil uil-navigator"></i>
-                  </button>                 
+                    <button type="button" onclick="submitAppraisalForm()">Submit Appraisal</button>
+				           <div th:if="${successMessage}" class="success-message" th:text="${successMessage}"></div>                 
                 </div>
             </div>
         </form>       
     </div>
   
-<script>
-  const form = document.querySelector("form"),
-        nextBtn = form.querySelector(".nextBtn"),
-        backBtn = form.querySelector(".backBtn"),
-        allInput = form.querySelectorAll(".first input");
+    <script>
+	    function submitAppraisalForm() {
+	        const formData = new FormData(document.getElementById('appraisalForm'));
+	        const appraisalId = $('#appraisalId').val();
 
+	        let url, successMessage;
 
-nextBtn.addEventListener("click", ()=> {
-    allInput.forEach(input => {
-        if(input.value != ""){
-            form.classList.add('secActive');
-        }else{
-            form.classList.remove('secActive');
-        }
-    })
-})
+	        if (!appraisalId) {
+	            url = '/submitAppraisal';
+	            successMessage = 'Appraisal saved successfully!';
+	        } else {
+					url = /appraisal/update/${appraisalId};
+	            successMessage = 'Appraisal updated successfully!';
+	        }
 
-backBtn.addEventListener("click", () => form.classList.remove('secActive'));
-</script>
+	        $.ajax({
+	            url: url,
+	            type: 'POST',
+	            data: formData,
+	            processData: false,
+	            contentType: false,
+	            success: function(response) {
+	                $('#message').text(successMessage);
+	                // Optionally, reset the form
+	                resetAppraisalForm();
+	                // Optionally, redirect after successful form submission
+	                window.location.href = '/appraisal/list';
+	            },
+	            error: function() {
+	                alert('Error saving appraisal. Please try again.');
+	            }
+	        });
+	    }
+
+	    function resetAppraisalForm() {
+	        $('#appraisalForm')[0].reset();
+	        $('#appraisalId').val('');
+	        $('#message').text('');
+	        $('#form-title').text('Appraisal Management');
+	        $('#submitBtn').text('Submit');
+	    }
+
+	    function prefillAppraisalForm(data) {
+	        $('#appraisalId').val(data.appraisalId);
+			$('#appraisalPeriod').val(data.appraisalPeriod);
+			$('#keyAchievements').val(data.keyAchievements);
+	        $('#goalAchieved').val(data.goalAchieved);
+	        $('#rating').val(data.rating);
+			$('#reviewerComments').val(data.reviewerComments);
+			$('#managerComments').val(data.managerComments);
+
+	        $('#form-title').text('Update Appraisal');
+	        $('#submitBtn').text('Update');
+	    }
+	</script>
+
 </body>
 </html>
