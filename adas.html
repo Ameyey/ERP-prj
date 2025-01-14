@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> Appraisal Form</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        h2 {
+            text-align: center;
+            color: #333;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        input, textarea, select {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        textarea {
+            height: 100px;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>
+   <!-- <script>
+        function validateForm(event) {
+            event.preventDefault(); // Prevent form submission
+
+            let isValid = true;
+            let errorMessage = "";
+
+            // Validation regex to allow only letters, spaces, and punctuation
+            const textRegex = /^[A-Za-z\s.,!?'-]+$/;
+
+            // Fields to validate
+            const fieldsToValidate = [
+                { id: "keyAchievements", name: "Key Achievements" },
+                { id: "areasImprovement", name: "Areas for Improvement" },
+                { id: "goalAchieved", name: "Goals Achieved" },
+                { id: "reviewerComments", name: "Reviewer Comments" },
+                { id: "managerComments", name: "Manager Comments" }
+            ];
+
+            fieldsToValidate.forEach(field => {
+                const input = document.getElementById(field.id);
+                if (!textRegex.test(input.value.trim())) {
+                    errorMessage += ${field.name} should not contain numbers or invalid characters.\n;
+                    isValid = false;
+                }
+            });
+
+            if (!isValid) {
+                alert(errorMessage);
+            } else {
+                document.getElementById("appraisalForm").submit();
+            }
+        }
+    </script>-->
+</head>
+<body>
+    <div class="container">
+        <h2>Appraisal Form</h2>
+        <form id="appraisalForm" th:action="@{/submitAppraisal}" method="post" onsubmit="validateForm(event)">
+			
+            <div class="form-group">
+                <label for="appraisalId">Appraisal ID</label>
+                <input type="text" id="appraisalId" name="appraisalId" th:value="${appraisal?.appraisalId}" placeholder="Auto-filled" readonly>
+            </div>
+
+            <div class="form-group">
+                <label for="appraisalPeriod">Appraisal Period</label>
+                <select id="appraisalPeriod" name="appraisalPeriod" required th:value="${appraisal?.appraisalPeriod}">
+                    <option value="">Select</option>
+                    <option value="H1">H1 (Jan-Jun)</option>
+                    <option value="H2">H2 (Jul-Dec)</option>
+                    <option value="Annual">Annual</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="startDate">Start Date</label>
+                <input type="date" id="startDate" name="startDate" required th:value="${appraisal?.startDate}">
+            </div>
+
+            <div class="form-group">
+                <label for="endDate">End Date</label>
+                <input type="date" id="endDate" name="endDate" required th:value="${appraisal?.endDate}">
+            </div>
+
+            <div class="form-group">
+                <label for="keyAchievements">Key Achievements</label>
+                <textarea id="keyAchievements" name="keyAchievements" required th:text="${appraisal?.keyAchievements}"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="areasImprovement">Areas for Improvement</label>
+                <textarea id="areasImprovement" name="areasImprovement" required th:text="${appraisal?.areasImprovement}"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="goalAchieved">Goals Achieved</label>
+                <textarea id="goalAchieved" name="goalAchieved" required th:text="${appraisal?.goalAchieved}"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="rating">Rating (Skill Assessment)</label>
+                <select id="rating" name="rating" required th:value="${appraisal?.rating}">
+                    <option value="">Select Rating</option>
+                    <option value="1">1 - Poor</option>
+                    <option value="2">2 - Needs Improvement</option>
+                    <option value="3">3 - Satisfactory</option>
+                    <option value="4">4 - Good</option>
+                    <option value="5">5 - Excellent</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="reviewerComments">Reviewer Comments</label>
+                <textarea id="reviewerComments" name="reviewerComments"  th:text="${Appraisal?.reviewerComments}"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="managerComments">Manager Comments</label>
+                <textarea id="managerComments" name="managerComments"  th:text="${Appraisal?.managerComments}"></textarea>
+            </div>
+
+            <div class="form-group">
+                <button type="button" onclick="submitAppraisalForm()">Submit Appraisal</button>
+				<div th:if="${successMessage}" class="success-message" th:text="${successMessage}"></div>
+
+            </div>
+			</form>
+    </div>
+	
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+	<script>
+	    function submitAppraisalForm() {
+	        const formData = new FormData(document.getElementById('appraisalForm'));
+	        const appraisalId = $('#appraisalId').val();
+
+	        let url, successMessage;
+
+	        if (!appraisalId) {
+	            url = '/submitAppraisal';
+	            successMessage = 'Appraisal saved successfully!';
+	        } else {
+					url = /appraisal/update/${appraisalId};
+	            successMessage = 'Appraisal updated successfully!';
+	        }
+
+	        $.ajax({
+	            url: url,
+	            type: 'POST',
+	            data: formData,
+	            processData: false,
+	            contentType: false,
+	            success: function(response) {
+	                $('#message').text(successMessage);
+	                // Optionally, reset the form
+	                resetAppraisalForm();
+	                // Optionally, redirect after successful form submission
+	                window.location.href = '/appraisal/list';
+	            },
+	            error: function() {
+	                alert('Error saving appraisal. Please try again.');
+	            }
+	        });
+	    }
+
+	    function resetAppraisalForm() {
+	        $('#appraisalForm')[0].reset();
+	        $('#appraisalId').val('');
+	        $('#message').text('');
+	        $('#form-title').text('Appraisal Management');
+	        $('#submitBtn').text('Submit');
+	    }
+
+	    function prefillAppraisalForm(data) {
+	        $('#appraisalId').val(data.appraisalId);
+			$('#appraisalPeriod').val(data.appraisalPeriod);
+			$('#keyAchievements').val(data.keyAchievements);
+	        $('#goalAchieved').val(data.goalAchieved);
+	        $('#rating').val(data.rating);
+			$('#reviewerComments').val(data.reviewerComments);
+			$('#managerComments').val(data.managerComments);
+
+
+	        $('#form-title').text('Update Appraisal');
+	        $('#submitBtn').text('Update');
+	    }
+	</script>
+
+
+</body>
+</html>

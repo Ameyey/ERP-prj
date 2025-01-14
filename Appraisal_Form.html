@@ -215,7 +215,7 @@ form .fields .input-field2{
     outline: none;
     color: #fff;
     border-radius: 5px;
-    margin: 25px 0;
+    margin: 14px;
     background-color: #4070f4;
     transition: all 0.3s linear;
     cursor: pointer;
@@ -330,17 +330,16 @@ form .buttons button , .backBtn{
                         </div>
                         
          <!--  they a textbox row 2 col 2  -->
-                        <div class="details personal">
-                          
+                        <div class="details personal">                          
                           <div class="fields">
                               <div class="input-field2">
                                <label for="reviewerComments">Reviewer Comments</label>
-                              <textarea id="reviewerComments" style="height: 100px; width: 250px;"  name="reviewerComments"  th:text="${Appraisal?.reviewerComments}"></textarea>                                 
+                              <textarea id="reviewerComments" style="height: 100px; width: 270px;"  name="reviewerComments"  th:text="${Appraisal?.reviewerComments}"></textarea>                                 
                               </div>
       
-                              <div class="input-field2" style="position: relative;left: 14px;">                               
+                              <div class="input-field2" style="position: relative;left: 1px;">                               
                                 <label for="managerComments">Manager Comments</label>
-                                <textarea id="managerComments" style="height: 100px; width: 250px;" name="managerComments"  th:text="${Appraisal?.managerComments}"></textarea>
+                                <textarea id="managerComments" style="height: 100px; width: 270px;" name="managerComments"  th:text="${Appraisal?.managerComments}"></textarea>
                               </div>
                             </div>                                           
                       </div>
