@@ -123,10 +123,42 @@ form .fields .input-field{
 
 
 
+form .fields .input-field2{
+    display: flex;
+    width: calc(100% / 2 - 15px);
+    flex-direction: column;
+    margin: 4px 0;
+}
 
+.input-field2 label{
+    font-size: 12px;
+    font-weight: 500;
+    color: #2e2e2e;
+}
+.input-field2 input, select{
+    outline: none;
+    font-size: 14px;
+    font-weight: 400;
+    color: #333;
+    border-radius: 5px;
+    border: 1px solid #aaa;
+    padding: 0 15px;
+    height: 42px;
+    margin: 8px 0;
+}
+.input-field2 input :focus,
+.input-field2 select:focus{
+    box-shadow: 0 3px 6px rgba(0,0,0,0.13);
+}
+.input-field2 select,
+.input-field2 input[type="date"]{
+    color: #707070;
+}
+.input-field2 input[type="date"]:valid{
+    color: #333;
+}
 
-
-/* -------------------- */
+/* --------------------- */
 
 .input-field label{
     font-size: 12px;
@@ -270,23 +302,22 @@ form .buttons button , .backBtn{
                         </div>
                         <div class="details personal">
                           <div class="fields">
-                              <div class="input-field">
+                              <div class="input-field2">
                                 <label for="appraisalId">Appraisal ID</label>
                                 <input type="text" id="appraisalId" name="appraisalId" th:value="${appraisal?.appraisalId}" placeholder="Auto-filled" readonly>
                               </div>
       
-                              <div class="input-field">
-                               
+                              <div class="input-field2">                               
                                 <label for="startDate">Start Date</label>
                                 <input type="date" id="startDate" name="startDate" required th:value="${appraisal?.startDate}">
                               </div>
       
-                              <div class="input-field">
+                              <div class="input-field2">
                                 <label for="endDate">End Date</label>
                                 <input type="date" id="endDate" name="endDate" required th:value="${appraisal?.endDate}">
                               </div>
       
-                              <div class="input-field">
+                              <div class="input-field2">
                                  <label for="appraisalPeriod">Appraisal Period</label>
                                 <select id="appraisalPeriod" name="appraisalPeriod" required th:value="${appraisal?.appraisalPeriod}">
                                     <option value="">Select</option>
@@ -296,7 +327,7 @@ form .buttons button , .backBtn{
                                 </select> 
                               </div>
       
-                              <div class="input-field">
+                              <div class="input-field2">
                                 <label for="rating">Rating (Skill Assessment)</label>
                                   <select id="rating" name="rating" required th:value="${appraisal?.rating}">
                                       <option value="">Select Rating</option>
