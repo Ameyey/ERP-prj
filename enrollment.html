@@ -310,57 +310,29 @@ form .buttons button , .backBtn{
 
                         <div class="input-field">
                             <label for="qualityFeedback">Quality Feedback:</label>
-                            <textarea id="qualityFeedback" name="qualityFeedback" rows="4" cols="50" th:text="${enrollment?.qualityFeedback}" required></textarea>
-              
+                            <textarea id="qualityFeedback" name="qualityFeedback" rows="4" cols="50" th:text="${enrollment?.qualityFeedback}" required></textarea>              
                         </div>
 
                         <div class="input-field">
-                          <label for="currentState">Current State:</label>
-                          <input type="text" id="currentState" name="currentState" th:value="${employee.currentState}" required>
+                            <label for="overallRating">Overall Rating:</label>
+                            <input type="number" id="overallRating" name="overallRating" min="1" max="5" step="1" th:value="${enrollment?.overallRating}" title="Rating must be between 1 and 5" required>                            
                         </div>
 
                         <div class="input-field">
-                          <label for="currentCountry">Current Country:</label>
-                          <input type="text" id="currentCountry" name="currentCountry" th:value="${employee.currentCountry}" required>              
                         </div>                        
                     </div>
                 </div>
 
                 <div class="details family">
-                    <span class="title">Family Details</span>
+                    <!-- <span class="title">Family Details</span> -->
 
                     <div class="fields">
                       <div class="input-field">
-                        <label for="currentZipCode">Current Zip Code:</label>
-                        <input type="text" id="currentZipCode" name="currentZipCode" th:value="${employee.currentZipCode}" pattern="^\d{6}$" 
-                        title="Please enter a 6-digit number for the Current Zip Code"  required>
+                        <label for="additionalInfo">Additional Info:</label>
+					<textarea id="additionalInfo" name="additionalInfo" rows="4" cols="50" th:text="${enrollment?.additionalInfo}" maxlength="1000"></textarea>
                       </div>
 
-                        <div class="input-field">
-                          <label for="primaryContactNumber">Primary Contact Number:</label>
-                          <input type="tel" id="primaryContactNumber" name="primaryContactNumber" th:value="${employee.primaryContactNumber}" pattern="^\d{10}$" title="Please enter a valid 10-digit number for the Primary Contact Number" required>
-                        </div>
-
-                        <div class="input-field">
-                          <label for="alternateContactNumber">Alternate Contact Number:</label>
-                          <input type="tel" id="alternateContactNumber" name="alternateContactNumber" th:value="${employee.alternateContactNumber}"  pattern="^\d{10}$" title="Please enter a valid 10-digit number for the Alternate Contact Number" >
-              
-                        </div>
-
-                        <div class="input-field">
-                          <label for="personalEmail">Personal Email:</label>
-                          <input type="email" id="personalEmail" name="personalEmail" th:value="${employee.personalEmail}" required>              
-                        </div>
-
-                        <div class="input-field">
-                          <label for="bloodGroup">Blood Group:</label>
-                          <input type="text" id="bloodGroup" name="bloodGroup" th:value="${employee.bloodGroup}" required>
-                        </div>
-
-                        <div class="input-field">
-                          <label for="emergencyContactName">Emergency Contact Name:</label>
-                          <input type="text" id="emergencyContactName" name="emergencyContactName" th:value="${employee.emergencyContactName}" required>
-                        </div>
+                       
                     </div>
 
                     <div class="buttons">
@@ -369,112 +341,132 @@ form .buttons button , .backBtn{
                             <span class="btnText">Back</span>
                         </div>
                         
-                        <button class="nextBtn">
-                            <span class="nextBtn">next</span>
-                            <i class="uil uil-navigator"></i>
-                        </button>
+                        <button type="button" id="submitBtn" onclick="validateAndSubmitForm()">Submit</button>
+				        <div th:if="${successMessage}" class="success-message" th:text="${successMessage}"></div>
                     </div>                  
                 </div>             
             </div>
-            <div class="form three">            
-                <div class="details personal">
-                    <!-- <span class="title">Personal Information</span> -->
-                    <div class="fields">
-                        <div class="input-fields">
-                          <label for="firstName">First Name:</label>
-                          <!-- <input type="text" id="firstName" name="firstName" th:value="${employee.firstName}" required> -->
-                          <input type="text" name="" id="" required>
-                        </div>
-                        <div class="input-field">
-                          <label for="middleName">Middle Name:</label>
-                          <input type="text" name="" id="" required>                 
-                        </div>
-
-                        <div class="input-field">
-                          <label for="lastName">Last Name:</label>
-                          <input type="text" name="" id="" required>                    
-                        </div>
-
-                        <div class="input-field">
-                          <label for="dateOfBirth">Date of Birth:</label>
-                          <input type="text" name="" id="" required>                      
-                        </div>
-
-                        <div class="input-field">
-                          <label for ="gender">Gender:</label>
-                          <input type="text" name="" id="">
-                          <!-- <select id="gender" name="gender" required>
-                              <option value="Notselected" th:selected="${employee.gender == 'Notselected'}">Not selected</option>
-                              <option value="Male" th:selected="${employee.gender == 'Male'}">Male</option>
-                              <option value="Female" th:selected="${employee.gender == 'Female'}">Female</option>
-                              <option value="Other" th:selected="${employee.gender == 'Other'}">Other</option>
-                          </select> -->
-                        </div>
-
-                        <div class="input-field">
-                          <label for="maritalStatus">Marital Status:</label>
-                          <!-- <select id="maritalStatus" name="maritalStatus" required>
-                              <option value ="Notselected" th:selected="${employee.maritalStatus == 'Notselected'}">Not selected</option>
-                              <option value="Single" th:selected="${employee.maritalStatus == 'Single'}">Single</option>
-                              <option value="Married" th:selected="${employee.maritalStatus == 'Married'}">Married</option>
-                              <option value="Divorced" th:selected="${employee.maritalStatus == 'Divorced'}">Divorced</option>
-                              <option value="Widowed" th:selected="${employee.maritalStatus == 'Widowed'}">Widowed</option>
-                          </select> -->
-                          <input type="text" name="" id="" required>
-                        </div>
-                        <div class="input-field">
-                          <label for="nationality">Nationality:</label>
-                          <input type="text" name="" id=""required>
-                        </div>   
-                        <div class="input-field">
-                          <label for="permanentAddressLine1">Permanent Address Line 1:</label>
-                          <input type="text" name="" id="" required>
-                        </div>
-                        <div class="input-field">
-                          <label for="permanentAddressLine2">Permanent Address Line 2:</label>
-                          <input type="text" name="" id="" required>
-                        <div class="input-field">
-                          <label for="permanentCity">Permanent City:</label>
-                          <input type="text" name="" id="" required>
-                        </div>
-                        <div class="input-field">
-                          <label for="permanentState">Permanent State:</label>
-                          <input type="text" name="" id=" required">             
-                        </div>
-                        <div class="input-field">
-                          <label for="permanentCountry">Permanent Country:</label>
-                          <input type="text" name="" id="" required>
-                        </div>
-                      </div> 
-                    <button class="nextBtn">
-                      <span class="btnText">Next</span>
-                      <i class="uil uil-navigator"></i>
-                  </button>                 
-                </div>                              
-                
-            </div>
+          
           
         </form>       
     </div>
   
-<script>
-  const form = document.querySelector("form"),
-        nextBtn = form.querySelector(".nextBtn"),
-        backBtn = form.querySelector(".backBtn"),
-        allInput = form.querySelectorAll(".first input");
-
-
-nextBtn.addEventListener("click", ()=> {
-    allInput.forEach(input => {
-        if(input.value != ""){
-            form.classList.add('secActive');
-        }else{
-            form.classList.remove('secActive');
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+	
+	
+        function fetchTrainingDetails(trainingUid) {
+            if (!trainingUid) return;
+            
+            $.ajax({
+                url: '/enrollments/enrollment/getTrainingDetails',
+                method: 'GET',
+                data: { trainingUid: trainingUid },
+                success: function(response) {
+                    $('#trainingTitle').val(response.trainingTitle);
+                    $('#trainerName').val(response.trainerName);
+                    $('#duration').val(response.duration);
+                },
+                error: function() {
+                    alert('Error fetching training details. Please try again.');
+                }
+            });
         }
-    })
-})
-
-backBtn.addEventListener("click", () => form.classList.remove('secActive'));
-</script>
+        
+        
+        function fetchEmployeeDetails(employee_uid) {
+                if (!employee_uid) return;
+    
+                $.ajax({
+                    url: '/enrollments/enrollment/getEmployeeDetails',
+                    method: 'GET',
+                    data: { employee_uid: employee_uid },
+                    success: function(response) {
+                        if (response) {
+                            $('#employee_name').val(response.employee_name);
+                            $('#department').val(response.department);
+                            $('#designation').val(response.designation);
+                        }
+                    },
+                    error: function() {
+                        alert('Error fetching employee details. Please try again.');
+                    }
+                });
+            }
+    
+    
+    
+    
+    
+        function submitForm() {
+            const formData = new FormData(document.getElementById('enrollmentForm'));
+            const enrollmentId = $('#id').val();
+    
+            let url, successMessage;
+    
+            if (!enrollmentId) {
+                url = '/enrollments/enrollment/save';
+                successMessage = 'Enrollment saved successfully!';
+            } else {
+                url = '/enrollments/enrollment/update';
+                successMessage = 'Enrollment updated successfully!';
+            }
+    
+            $.ajax({
+                url: url,
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function(response) {
+                    $('#message').text(successMessage); // Corrected this line
+                    // Optionally, reset the form
+                    resetForm();
+                    // Optionally, redirect after successful form submission
+                    window.location.href = '/enrollments/list';
+                },
+                error: function() {
+                    alert('Error saving enrollment. Please try again.');
+                }
+            });
+        }
+    
+    
+        function resetForm() {
+            $('#enrollmentForm')[0].reset();
+            $('#id').val('');
+            $('#message').text('');
+            $('#form-title').text('New Enrollment');
+            $('#submitBtn').text('Submit');
+        }
+    
+        function prefillForm(data) {
+            $('#id').val(data.id);
+            //$('#employee_uid').val(data.employee_uid);
+            $('#employee_name').val(data.employee_name);
+            $('#department').val(data.department);
+            $('#designation').val(data.designation);
+            //$('#trainingUid').val(data.trainingUid);
+            $('#trainingTitle').val(data.trainingTitle);
+            $('#trainerName').val(data.trainerName);
+            $('#duration').val(data.duration);
+            $('#registrationDate').val(data.registrationDate);
+            $('#enrollmentStatus').val(data.enrollmentStatus);
+            $('#form-title').text('Update Enrollment');
+            $('#submitBtn').text('Update');
+        }
+    </script>
+    
+    <script>
+        function validateAndSubmitForm() {
+            const form = document.getElementById('enrollmentForm');
+            if (form.checkValidity()) {
+                submitForm();
+            } else {
+                alert('Please fill in all required fields with valid data.');
+                form.reportValidity();
+            }
+        }
+    </script>
 </body>
 </html>
