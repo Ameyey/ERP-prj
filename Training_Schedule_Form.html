@@ -217,7 +217,7 @@ form .buttons button , .backBtn{
         <form th:action="@{/save}" th:object="${training}" method="post" enctype="multipart/form-data" onsubmit="validateForm(event)">
           <input type="hidden" id="id" name="id" th:value="${stocklevel?.id}" >
             <div class="form first">
-                <div class="details personal">
+                <div class="details personal"> 
                     <div class="fields">
                         <div class="input-field">
                           <label for="description">Description:</label>
