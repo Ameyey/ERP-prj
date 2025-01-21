@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <!-- Coding By CodingNepal - codingnepalweb.com -->
 <html lang="en">
@@ -57,6 +58,17 @@ body{
     overflow: hidden;
 }
 
+form.secActive .form.three{
+    opacity: 2;
+    pointer-events: auto;
+    transform: translateX(0);
+}
+.container form .form.three{
+    opacity: 0;
+    pointer-events: none;
+    transform: translateX(200%);
+}
+
 .container form .form{
     position: absolute;
     background-color: #fff;
@@ -73,21 +85,22 @@ form.secActive .form.second{
     pointer-events: auto;
     transform: translateX(0);
 }
-
-form.secActive .form.first {
-    opacity: 0;
-    pointer-events: none;
-    transform: translateX(-100%);
+form.secActive .form.three{
+    opacity: 2;
+    pointer-events: auto;
+    transform: translateX(0);
 }
-
-
 
 form.secActive .form.first{
     opacity: 0;
     pointer-events: none;
     transform: translateX(-100%);
 }
-
+form.secActive .form.three{
+    opacity: 0;
+    pointer-events: none;
+    transform: translateX(-100%);
+}
 .container form .title{
     display: block;
     margin-bottom: 8px;
@@ -102,20 +115,17 @@ form.secActive .form.first{
     justify-content: space-between;
     flex-wrap: wrap;
 }
-
 form .fields .input-field{
     display: flex;
     width: calc(100% / 3 - 15px);
     flex-direction: column;
     margin: 4px 0;
 }
-
 .input-field label{
     font-size: 12px;
     font-weight: 500;
     color: #2e2e2e;
 }
-
 .input-field input, select{
     outline: none;
     font-size: 14px;
@@ -198,25 +208,27 @@ form .buttons button , .backBtn{
     <!----===== Iconscout CSS ===== -->
     <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.0/css/line.css">
 
-   <title>Responsive Regisration Form </title>
+   <title>Candidate Application Form</title>
 </head>
 <body>
     <div class="container">
-        <header>Registration</header>
-        <form action="#">
+      
+        <form action="#" id="candidateApplicationForm" enctype="multipart/form-data">
+          <input type="hidden" id="id" name="id" th:value="${candidate?.id}" >
+
             <div class="form first">
                 <div class="details personal">
-                    <span class="title">Personal Information</span>
-
+                    <span class="title">Candidate Application Form</span>
+                    <p>Candidate Details</p>
                     <div class="fields">
                         <div class="input-field">
                           <label for="name">Name:</label>
-                          <input type="text" id="name" name="name" th:value="${candidate?.name}" >     
+                          <input type="text" id="name" name="name" th:value="${candidate?.name}" >              
                         </div>
 
                         <div class="input-field">
                           <label for="contact">Contact Number:</label>
-                          <input type="tel" id="contact" name="contact" th:value="${candidate?.contact}" >
+                          <input type="tel" id="contact" name="contact" th:value="${candidate?.contact}"  >
                         </div>
 
                         <div class="input-field">
@@ -230,13 +242,12 @@ form .buttons button , .backBtn{
                         </div>
 
                         <div class="input-field">
-                          
+                           
                         </div>
 
                         <div class="input-field">
-                          
+                           
                         </div>
-
                         <div class="input-field">
                           <p>Education Details</p>
                           <label for="highestQualification">Highest Qualification:</label>
@@ -247,15 +258,17 @@ form .buttons button , .backBtn{
                               <option value="Ph.D.">Ph.D.</option>
                           </select>
                         </div>   
-                        <div class="input-field">
+
+                        <div class="input-field">   
                           <label for="institution">Institution/University:</label>
                           <input type="text" id="institution" name="institution" th:value="${candidate?.institution}" >
-                          </div>
+                        </div>
 
                         <div class="input-field">
                           <label for="yearOfGraduation">Year of Graduation:</label>
                           <input type="number" id="yearOfGraduation" name="yearOfGraduation" th:value="${candidate?.yearOfGraduation}"  >
                         </div>
+
                         <div class="input-field">
                           <p>Work Experience</p>
                           <label for="totalExperience">Total Work Experience:</label>
@@ -267,14 +280,12 @@ form .buttons button , .backBtn{
                               <option value="5+ years">5+ years</option>
                           </select>
                         </div>
-
                         <div class="input-field">
-                          <label for="previousEmployer">Previous Employer:</label>
-                          <input type="text" id="previousEmployer" name="previousEmployer" th:value="${candidate?.previousEmployer}">
+                               <label for="previousEmployer">Previous Employer:</label>
+                              <input type="text" id="previousEmployer" name="previousEmployer" th:value="${candidate?.previousEmployer}">
                         </div>
-
                         <div class="input-field">
-                            <label for="role">Role/Designation:</label>
+                          <label for="role">Role/Designation:</label>
                           <input type="text" id="role" name="role" th:value="${candidate?.role}">
                         </div>
                       </div> 
@@ -289,72 +300,68 @@ form .buttons button , .backBtn{
                 <div class="details address">
                     <div class="fields">
                       <div class="input-field">
-                        <label for="durationOfEmployment">Duration of Employment:</label>
-                        <input type="text" id="durationOfEmployment" name="durationOfEmployment" th:value="${candidate?.durationOfEmployment}"><br>
+                        <label for="progressDescription">ProgressDescription :</label>
+			            <textarea id="progressDescription" name="progressDescription" rows="4" cols="50"  th:text="${enrollment?.progressDescription}" required></textarea>
                       </div>                      
 
                         <div class="input-field">
-                          <label for="currentAddressLine1">Current Address Line 1:</label>
-                           <input type="text" id="currentAddressLine1" name="currentAddressLine1" th:value="${employee.currentAddressLine1}" required>
+                            <label for="trainerFeedback">Trainer Feedback:</label>
+                            <textarea id="trainerFeedback" name="trainerFeedback" rows="4" cols="50" th:text="${enrollment?.trainerFeedback}" required></textarea>
                         </div>
 
                         <div class="input-field">
-                            <label for="currentAddressLine2">Current Address Line 2:</label>
-                            <input type="text" id="currentAddressLine2" name="currentAddressLine2" th:value="${employee.currentAddressLine2}" required>
+				      <label for="employeeFeedback">Employee Feedback:</label>
+				    <textarea id="employeeFeedback" name="employeeFeedback" rows="4" cols="50" th:text="${enrollment?.employeeFeedback}" minlength="10" maxlength="500" required></textarea>
                         </div>
 
                         <div class="input-field">
-                          <label for="currentCity">Current City:</label>
-                          <input type="text" id="currentCity" name="currentCity" th:value="${employee.currentCity}" required>
-              
+                            <label for="trainingContentFeedback">Training Content Feedback:</label>
+                            <textarea id="trainingContentFeedback" name="trainingContentFeedback" rows="4" cols="50" th:text="${enrollment?.trainingContentFeedback}" required></textarea>
                         </div>
 
                         <div class="input-field">
-                          <label for="currentState">Current State:</label>
-                          <input type="text" id="currentState" name="currentState" th:value="${employee.currentState}" required>
+                            <label for="qualityFeedback">Quality Feedback:</label>
+                            <textarea id="qualityFeedback" name="qualityFeedback" rows="4" cols="50" 
+                                      th:text="${enrollment?.qualityFeedback}" required></textarea>
                         </div>
 
                         <div class="input-field">
-                          <label for="currentCountry">Current Country:</label>
-                          <input type="text" id="currentCountry" name="currentCountry" th:value="${employee.currentCountry}" required>              
+                            <label for="overallRating">Overall Rating:</label>
+                            <input type="number" id="overallRating" name="overallRating" min="1" max="5" step="1" th:value="${enrollment?.overallRating}" 
+                                title="Rating must be between 1 and 5" required>            
                         </div>                        
+                        <div class="input-field">
+                            <label for="additionalInfo">Additional Info:</label>
+                            <textarea id="additionalInfo" name="additionalInfo" rows="4" cols="50"  th:text="${enrollment?.additionalInfo}" maxlength="1000"></textarea>                                              
                     </div>
                 </div>
 
                 <div class="details family">
-                    <span class="title">Family Details</span>
 
                     <div class="fields">
                       <div class="input-field">
-                        <label for="currentZipCode">Current Zip Code:</label>
-                        <input type="text" id="currentZipCode" name="currentZipCode" th:value="${employee.currentZipCode}" pattern="^\d{6}$" 
-                        title="Please enter a 6-digit number for the Current Zip Code"  required>
+                       
                       </div>
 
                         <div class="input-field">
-                          <label for="primaryContactNumber">Primary Contact Number:</label>
-                          <input type="tel" id="primaryContactNumber" name="primaryContactNumber" th:value="${employee.primaryContactNumber}" pattern="^\d{10}$" title="Please enter a valid 10-digit number for the Primary Contact Number" required>
+                         
                         </div>
 
                         <div class="input-field">
-                          <label for="alternateContactNumber">Alternate Contact Number:</label>
-                          <input type="tel" id="alternateContactNumber" name="alternateContactNumber" th:value="${employee.alternateContactNumber}"  pattern="^\d{10}$" title="Please enter a valid 10-digit number for the Alternate Contact Number" >
+                        
               
                         </div>
 
                         <div class="input-field">
-                          <label for="personalEmail">Personal Email:</label>
-                          <input type="email" id="personalEmail" name="personalEmail" th:value="${employee.personalEmail}" required>              
+                                 
                         </div>
 
                         <div class="input-field">
-                          <label for="bloodGroup">Blood Group:</label>
-                          <input type="text" id="bloodGroup" name="bloodGroup" th:value="${employee.bloodGroup}" required>
+                      
                         </div>
 
                         <div class="input-field">
-                          <label for="emergencyContactName">Emergency Contact Name:</label>
-                          <input type="text" id="emergencyContactName" name="emergencyContactName" th:value="${employee.emergencyContactName}" required>
+                       
                         </div>
                     </div>
 
@@ -364,18 +371,18 @@ form .buttons button , .backBtn{
                             <span class="btnText">Back</span>
                         </div>
                         
-                        <button class="nextBtn">
-                            <span class="nextBtn">next</span>
-                            <i class="uil uil-navigator"></i>
-                        </button>
+                        <div class="nextBtn">
+                            <button type="button" id="submitBtn" onclick="validateAndSubmitForm()">Submit</button>
+                            <div th:if="${successMessage}" class="success-message" th:text="${successMessage}"></div>
+                        </div>
                     </div>                  
                 </div>             
             </div>
-            
+          
           
         </form>       
     </div>
-  
+  </body>
 <script>
   const form = document.querySelector("form"),
         nextBtn = form.querySelector(".nextBtn"),
@@ -391,8 +398,11 @@ nextBtn.addEventListener("click", ()=> {
             form.classList.remove('secActive');
         }
     })
-});
-backBtn.addEventListener("click",() => form.classList.remove('secActive'));
+})
+
+backBtn.addEventListener("click", () => form.classList.remove('secActive'));
 </script>
-</body>
+
+
+
 </html>
