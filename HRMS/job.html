@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Job Posting Form</title>
+  <link rel="stylesheet" href="hrms.css">
+  <link rel="stylesheet" href="sty.css">
+  <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <input type="hidden" id="id" name="id" th:value="${employee?.id}" >
+  <div class="form-container">
+
+
+    <!-- Personal Information Section -->
+    <div class="form-section active" id="section1">
+      <h2>Job Posting Form</h2>
+      <!-- First Row -->
+      <div class="form-row"  id="jobForm"  enctype="multipart/form-data" >
+        <div class="form-group">
+          <legend>General Information</legend>
+          <input type="text" id="id"name="id"th:value="${job?.id}">
+          </div>
+        <div class="form-group">
+          <label for="jobId">Job ID:</label>
+          <input type="text" id="jobId" name="jobId" th:value="${job?.jobId}" >
+        </div>
+       
+        <div class="form-group">
+          <label for="title">Job Title:</label>
+          <input type="text" id="title" name="title" th:value="${job?.title}" required>
+        </div>
+      </div>
+
+      <!-- Second Row -->
+      <div class="form-row">
+        <div class="form-group">
+          <label for="description">Job Description:</label>
+            <textarea id="description" name="description" th:text="${job?.description}" required></textarea> 
+        </div>
+        <div class="form-group">
+          <label for="requirement">Required Skills:</label>
+          <textarea id="requirement" name="requirement" th:text="${job?.requirement}"></textarea>
+        </div>
+        <div class="form-group">
+          <label for="postedBy">Gender</label>
+          <select id="postedBy" name="Gender" th:value="${job?.postedBy}" required>
+              <option value="John Doe" th:selected="${job?.postedBy == 'John Doe'}">Male</option>
+              <option value="Jane Smith" th:selected="${job?.postedBy == 'Jane Smith'}">Female</option>
+          </select>  
+        </div>
+        <div class="form-group">
+          <p>Posting Details</p>
+          <input type="text" id="department" name="department" th:value="${job?.department}" required>
+        </div>
+      </div>
+
+      <!-- Third Row -->
+      <div class="form-row">
+        <div class="form-group">
+          <p>Posting Details</p>
+          <input type="text" id="department" name="department" th:value="${job?.department}" required>
+        </div>
+        <div class="form-group">
+          <label for="postedBy">Posted By:</label>
+          <select id="postedBy" name="postedBy" th:value="${job?.postedBy}" required>
+              <option th:value="${job?.postedBy}">Select HR/Admin</option>
+              <option value="John Doe" th:selected="${job?.postedBy == 'John Doe'}">John Doe</option>
+              <option value="Jane Smith" th:selected="${job?.postedBy == 'Jane Smith'}">Jane Smith</option>
+          </select> 
+        </div>
+        <div class="form-group">
+          <label for="postedDate">Posting Date:</label>
+          <input type="date" id="postedDate" name="postedDate" th:value="${job?.postedDate}" value="${java.time.LocalDate.now()}" required>
+        </div>
+        <div class="form-group">
+          <label for="applicationDeadline">Application Deadline:</label>
+          <input type="date" id="applicationDeadline" name="applicationDeadline" th:value="${job?.applicationDeadline}" required>
+        </div>
+      </div>
+      <!--- four Row-->
+      <div class="form-row">
+        <div class="form-group">
+          <!-- <p>Job Type</p> -->
+         
+            <label for="employmentType">Employment Type:</label>
+            <select id="employmentType" name="employmentType" th:value="${job?.employmentType}" required>
+                <option value="Full-Time" th:selected="${job?.employmentType == 'Full-Time'}">Full-Time</option>
+                <option value="Part-Time" th:selected="${job?.employmentType == 'Part-Time'}">Part-Time</option>
+                <option value="Contract" th:selected="${job?.employmentType == 'Contract'}">Contract</option>
+                <option value="Internship" th:selected="${job?.employmentType == 'Internship'}">Internship</option>
+            </select> 
+        </div>
+        <div class="form-group">
+        
+          <label for="workLocation">Work Location:</label>
+          <select id="workLocation" name="workLocation" th:value="${job?.workLocation}" required>
+              <option value="On-Site" th:selected="${job?.workLocation == 'On-Site'}">On-Site</option>
+              <option value="Remote" th:selected="${job?.workLocation == 'Remote'}">Remote</option>
+              <option value="Hybrid" th:selected="${job?.workLocation == 'Hybrid'}">Hybrid</option>
+          </select>
+        </div>
+        <div class="form-group">
+        
+          <label for="currentCity">Current City:</label>
+          <input type="text" id="currentCity" name="currentCity" th:value="${employee?.currentCity}" required>
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <!-- <button type="button" id="submitBtn" onclick="submitForm()">Post Job</button>
+        <div th:if="${successMessage}" class="success-message" th:text="${successMessage}"></div>
+        <button type="button" onclick="window.location.href='/home'">Back to Dashboard</button> -->
+        <div class="button-row">
+          <button type="button" id="submitBtn" onclick="submitForm()">Post Job</button>
+          <button  type="button" onclick="window.location.href='/home'">Back to Dashboard</button>
+          <div th:if="${successMessage}" class="success-message" th:text="${successMessage}"></div>
+      </div>
+  
+      </div>
+    </div>
+
+<!-- ---------------------------------------------------------------------------------------------------------------- -->
+
+    
+
+<!-- ------------------------------------------------------------------------------------------------------------------------------------------- -->
+</div>
+<script>
+      
+
+  function submitForm() {
+      const formData = new FormData(document.getElementById('jobForm'));
+      const Id = $('#id').val();
+
+      let url, successMessage;
+
+      if (!Id) {
+          url = '/jobpost';
+          successMessage = 'Enrollment saved successfully!';
+      } else {
+          url = '/update';
+          successMessage = 'Enrollment updated successfully!';
+      }
+
+      $.ajax({
+          url: url,
+          type: 'POST',
+          data: formData,
+          processData: false,
+          contentType: false,
+          success: function(response) {
+              $('#message').text(successMessage);
+              resetForm();
+              window.location.href = '/openlist';
+          },
+          error: function() {
+              alert('Error saving shift. Please fill data');
+          }
+      });
+  }
+
+  function resetForm() {
+      $('#jobForm')[0].reset();
+      $('#jobId').val('');
+      $('#message').text('');
+      $('#form-title').text('Job Posting Form');
+      $('#submitBtn').text('Post Job');
+  }
+
+  function prefillForm(data) {
+$('#id').val(data.id);
+
+      $('#jobId').val(data.jobId);
+      $('#title').val(data.title);
+      $('#description').val(data.description);
+      $('#requirement').val(data.requirement);
+      $('#department').val(data.department);
+      $('#postedBy').val(data.postedBy);
+      $('#postedDate').val(data.postedDate);
+      $('#applicationDeadline').val(data.applicationDeadline);
+      $('#employmentType').val(data.employmentType);
+      $('#workLocation').val(data.workLocation);
+      $('#address').val(data.address);
+      $('#form-title').text('Update Job Posting Form');
+      $('#submitBtn').text('Update');
+  }
+</script>
+
+<script>
+
+function nextSection(current) {
+    if (validateSection(current)) {
+        document.getElementById(section${current}).classList.remove('active');
+        document.getElementById(section${current + 1}).classList.add('active');
+    }
+}
+
+function prevSection(current) {
+    // Navigate to the previous section
+    document.getElementById(section${current}).classList.remove('active');
+    document.getElementById(section${current - 1}).classList.add('active');
+}
+
+function validateSection(current) {
+    // Example validation for required fields in the current section
+    const inputs = document.querySelectorAll(#section${current}input[required], #section${current} select[required]);
+    for (let input of inputs) {
+        if (!input.value.trim()) {
+            alert(${input.name} is required.);
+            input.focus();
+            return false;
+        }
+    }
+    return true;
+}
+
+</script>
+  <script>
+    function nextSection(current) {
+      document.getElementById(`section${current}`).classList.remove('active');
+      document.getElementById(`section${current + 1}`).classList.add('active');
+    }
+
+    function prevSection(current) {
+      document.getElementById(`section${current}`).classList.remove('active');
+      document.getElementById(`section${current - 1}`).classList.add('active');
+    }
+  </script>
+</body>
+</html>

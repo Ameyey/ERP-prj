@@ -1,0 +1,155 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title> Appraisal Form</title>
+  <link rel="stylesheet" href="./hrms.css">
+    <link rel="stylesheet" href="sty.css"> <!-- // for side bar code  -->
+    <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+<div th:replace="~{HRMS.html :: sidebarFragment}"></div> <!-- // for side bar code  -->
+
+
+  <div class="form-container">
+    <form id="appraisalForm" enctype="multipart/form-data" >
+    
+            <input type="hidden" id="id" name="id" th:value="${appraisal?.id}" >
+    
+
+    <!-- Personal Information Section -->
+  
+      <h2>Appraisal Form</h2>
+      <!-- First Row -->
+      <div class="form-row">
+        <div class="form-group">
+          <label for="appraisalId">Appraisal ID</label>
+          <input type="text" id="appraisalId" name="appraisalId" th:value="${appraisal?.appraisalId}" placeholder="Auto-filled" readonly>
+        </div>
+        <div class="form-group">
+          <label for="appraisalPeriod">Appraisal Period</label>
+                <select id="appraisalPeriod" name="appraisalPeriod" required th:value="${appraisal?.appraisalPeriod}">
+                    <option value="">Select</option>
+                    <option value="H1" th:selected="${appraisal?.appraisalPeriod == 'H1'}">H1 (Jan-Jun)</option>
+                    <option value="H2" th:selected="${appraisal?.appraisalPeriod == 'H2'}">H2 (Jul-Dec)</option>
+                    <option value="Annual" th:selected="${appraisal?.appraisalPeriod == 'Annual'}">Annual</option>
+                </select>
+        </div>
+        <div class="form-group">
+          <label for="startDate">Start Date</label>
+          <input type="date" id="startDate" name="startDate" required th:value="${appraisal?.startDate}">
+        </div>
+        <div class="form-group">
+          <label for="endDate">End Date</label>
+          <input type="date" id="endDate" name="endDate" required th:value="${appraisal?.endDate}">
+        </div>
+      </div>
+      <br>
+
+      <!-- Second Row -->
+      <div class="form-row">
+        <div class="form-group">
+          <label for="keyAchievements">Key Achievements</label>
+          <input type="text" id="keyAchievements" rows="4" name="keyAchievements" required th:text="${appraisal?.keyAchievements}">
+        </div>
+        <div class="form-group">
+          <label for="areasImprovement">Areas for Improvement</label>
+          <input type="text" id="areasImprovement"  rows="4" name="areasImprovement" required th:text="${appraisal?.areasImprovement}">
+        </div>
+        <div class="form-group">
+          <label for="goalAchieved">Goals Achieved</label>
+          <input type="text" id="goalAchieved"  rows="4" name="goalAchieved" required th:text="${appraisal?.goalAchieved}">
+        </div>
+      
+      </div>
+<br>
+     
+    <div class="form-row">
+      <div class="form-group">
+        <label for="rating">Rating (Skill Assessment)</label>
+        <select id="rating" name="rating" required th:value="${appraisal?.rating}">
+            <option value="">Select Rating</option>
+            <option value="1" th:selected="${appraisal?.rating == '1'}">1 - Poor</option>
+            <option value="2" th:selected="${appraisal?.rating == '2'}">2 - Needs Improvement</option>
+            <option value="3" th:selected="${appraisal?.rating == '3'}">3 - Satisfactory</option>
+            <option value="4" th:selected="${appraisal?.rating == '4'}">4 - Good</option>
+            <option value="5" th:selected="${appraisal?.rating == '5'}">5 - Excellent</option>
+        </select>
+      </div>
+      <div class="form-group" >
+        <label for="reviewerComments">Reviewer Comments</label>
+        <input type="text" id="reviewerComments" name="reviewerComments" rows="6" cols="40" th:text="${Appraisal?.reviewerComments}">
+      </div>
+      <div class="form-group">
+        <label for="managerComments">Manager Comments</label>
+        <input type="text" id="managerComments" name="managerComments" rows="6" cols="40"  th:text="${Appraisal?.managerComments}">
+      </div>
+    </div>
+      <div class="form-actions">
+        <button type="button" onclick="submitAppraisalForm()">Submit Appraisal</button>
+				<div th:if="${successMessage}" class="success-message" th:text="${successMessage}"></div>
+      </div>
+  </form>
+</div>
+                <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+  <script>
+    function submitAppraisalForm() {
+        const formData = new FormData(document.getElementById('appraisalForm'));
+        const id = $('#id').val();
+
+        let url, successMessage;
+
+        if (!id) {
+            url = '/submitAppraisal';
+            successMessage = 'Appraisal saved successfully!';
+        } else {
+        url = `/appraisal/update`;
+            successMessage = 'Appraisal updated successfully!';
+        }
+
+        $.ajax({
+            url: url,
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function(response) {
+                $('#message').text(successMessage);
+                // Optionally, reset the form
+                resetAppraisalForm();
+                // Optionally, redirect after successful form submission
+                window.location.href = '/hrms/GoalGrid';
+            },
+            error: function() {
+                alert('Error saving appraisal. Please try again.');
+            }
+        });
+    }
+
+    function resetAppraisalForm() {
+        $('#appraisalForm')[0].reset();
+        $('#id').val('');
+        $('#message').text('');
+        $('#form-title').text('Appraisal Management');
+        $('#submitBtn').text('Submit');
+    }
+
+    function prefillAppraisalForm(data) {
+        $('#id').val(data.id);
+        $('#appraisalPeriod').val(data.appraisalPeriod);
+        $('#keyAchievements').val(data.keyAchievements);
+        $('#goalAchieved').val(data.goalAchieved);
+        $('#rating').val(data.rating);
+        $('#reviewerComments').val(data.reviewerComments);
+        $('#managerComments').val(data.managerComments);
+
+
+        $('#form-title').text('Update Appraisal');
+        $('#submitBtn').text('Update');
+    }
+</script>
+</body>
+</html>

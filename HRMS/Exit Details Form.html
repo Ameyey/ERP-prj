@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Exit Details Form</title>
+  <link rel="stylesheet" href="hrms.css">
+  <link rel="stylesheet" href="sty.css">
+  <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <div class="form-container" style="padding: 41px;">
+    <form  id="offboarding"  th:action="@{/submitAppraisal}" method="post" onsubmit="validateForm(event)">
+      <input type="hidden" id="id" name="id" th:value="${offboarding?.id}">
+    <!-- Personal Information Section -->
+    <div class="form-section active" id="section1">
+      <h2>Exit Details Form</h2>     <!-- First Row -->
+      <div class="form-row">
+        <div class="form-group">
+          <label for="lastWorkingDay">Last Working Day:</label>
+        <input type="date" id="lastWorkingDay" name="lastWorkingDay" th:value="${offboarding?.lastWorkingDay}" required>
+
+        </div>
+        <div class="form-group">
+          <label for="reasonForExit">Reason for Exit:</label>
+        <input type='text' id="reasonForExit" name="reasonForExit" maxlength="500" th:value="${offboarding?.reasonForExit}" required></input type='text'>
+        </div>
+        <div class="form-group">
+          <label for="noticePeriodDetails">Notice Period Details:</label>
+          <input type="text" id="noticePeriodDetails" name="noticePeriodDetails" th:value="${offboarding?.noticePeriodDetails}" required>
+        </div>
+              
+      </div>
+
+      <!-- Second Row -->    
+      <div class="form-row">
+        <div class="form-group">
+          <label for="startDate">Start Date:</label>
+        <input type="date" id="startDate" name="startDate" th:value="${offboarding?.startDate}" required>
+        </div>  
+        <div class="form-group">
+          <label for="endDate">End Date:</label>
+        <input type="date" id="endDate" name="endDate" th:value="${offboarding?.endDate}" required>
+        </div>
+        <div class="form-group">
+          <label for="servedNoticePeriod">Served Notice Period:</label>
+          <input type="text" id="servedNoticePeriod" name="servedNoticePeriod" th:value="${offboarding?.servedNoticePeriod}" required>
+        </div> 
+           
+                   
+      </div>
+     
+    <div class="form-row"> 
+      <div class="form-group" >      
+        <label for="feedbackOnExit">Feedback on Exit:</label>
+      <input type='text' id="feedbackOnExit" name="feedbackOnExit" maxlength="1000" th:value="${offboarding?.feedbackOnExit}" required></input type='text'>
+      </div>  
+      <div class="form-group">        
+        <label for="clearanceDetails">Clearance Details:</label>
+        <input type="text" id="clearanceDetails" name="clearanceDetails" th:value="${offboarding?.clearanceDetails}" required>
+      </div> 
+      <div class="form-group">
+        <label for="companyAssetReturned" style="font-size: 13px;">Company Asset Returned:</label>
+        <input type="text" id="companyAssetReturned" name="companyAssetReturned" th:value="${offboarding?.companyAssetReturned}" required>
+      </div>     
+    </div>
+
+    <!-- fuor row -->
+ <div class="form-row">
+  <div class="form-group">        
+    <label for="nocIssued">NOC Issued:</label>
+    <input type="text" id="nocIssued" name="nocIssued" th:value="${offboarding?.nocIssued}" required>
+
+  </div>
+ <div class="form-group">
+  <label for="experienceLetterIssued" style="font-size: 13px;">Experience Letter Issued:</label>
+  <input type="text" id="experienceLetterIssued" name="experienceLetterIssued" th:value="${offboarding?.experienceLetterIssued}" required>
+  </div>
+  <div class="form-group">
+    <label for="finalSettlementStatus">Final Settlement Status:</label>
+    <input type="text" id="finalSettlementStatus" name="finalSettlementStatus" th:value="${offboarding?.finalSettlementStatus}" required>
+  </div>      
+ </div>
+   
+  
+   
+
+    
+  
+      <div class="form-actions">
+        <button type="button" id="submitBtn" onclick="submitForm()">Submit</button>
+        <div th:if="${successMessage}" class="success-message" th:value="${successMessage}"></div>
+      </div>
+  
+
+
+<!-- ---------------------------------------------------------------------------------------------------------------- -->
+
+    <!-- Address Details Section -->
+    
+
+<!-- ------------------------------------------------------------------------------------------------------------------------------------------- -->
+
+
+
+
+</div>
+
+
+
+
+
+  
+
+
+
+</body>
+</html>

@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Physical Count Form</title>
+  <link rel="stylesheet" href="hrms.css">
+  <link rel="stylesheet" href="sty.css">
+  <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+
+   <form id="physicalCountForm" enctype="multipart/form-data"  class="form-container"  >
+    <!-- Personal Information Section -->
+    <input type="hidden" id="id" name="id" th:value="${physicalCount?.id}">
+    <div class="form-section active" id="section1">
+      <h2>Backorder Management</h2>
+
+      <!-- First Row -->
+    
+      <div class="form-row">
+        
+        <div class="form-group">        
+          <label for="physicalcountuid">  Physical Count UID *</label>
+        <input type="text" id="physicalcountuid" name="physicalcountuid" th:value="${physicalCount?.physicalcountuid}" required />
+        <span id="physicalcountuid-error" class="error-message"></span>
+        </div>
+
+        <div class="form-group">
+          <label for="productuid">Product UID *</label>
+        <select id="productuid" name="productuid" onchange="fetchProductDetails()" required>
+            <option value="">Select Product UID</option>
+            <option th:each="uid : ${productuids}" th:value="${uid}" th:text="${uid}"></option>
+        </select>
+        <span id="productuid-error" class="error-message"></span>
+        </div>
+
+        <div class="form-group">
+          <label>Product Name *</label>
+        <input type="text" id="productname" name="productname" readonly />
+        <span id="productname-error" class="error-message"></span>
+        </div>
+
+        <div class="form-group">
+          <label for="stockmanagementuid">Stock Management UID *</label>
+          <select id="stockmanageruid" name="stockmanageruid" onchange="fetchStockDetails()" required>
+              <option value="">Select Stock Management UID</option>
+              <option th:each="uid : ${stockmanageruids}" th:value="${uid}" th:text="${uid}"></option>
+          </select>
+          <span id="stockmanageruid-error" class="error-message"></span>
+            </div>
+        </div>
+
+      <!-- Second Row -->
+      <div class="form-row">
+        <div class="form-group">
+          <label for="currentsystemstock">Current System Stock *</label>
+        <input type="text" id="currentsystemstock" name="currentsystemstock" readonly />
+        <span id="currentsystemstock-error" class="error-message"></span>
+	      </div>
+   
+        <div class="form-group">
+          <label for="physicalcount">Physical Count *</label>
+          <input type="text" id="physicalcount" name="physicalcount" th:value="${physicalCount?.physicalcount}" required />
+          <span id="physicalcount-error" class="error-message"></span>
+        </div>
+
+        <div class="form-group">
+          <label for="difference">Difference *</label>
+          <input type="text" id="difference" name="difference" th:value="${physicalCount?.difference}" required />
+          <span id="difference-error" class="error-message"></span>
+        </div>
+
+        <div class="form-group" >         
+          <label for="adjustmentreason">Adjustment Reason *</label>
+          <input type="text" id="adjustmentreason" name="adjustmentreason" th:text="${physicalCount?.adjustmentreason}" required></input>
+          <span id="adjustmentreason-error" class="error-message"></span>
+        </div>
+      </div>
+      <!-- Third Row -->
+      <div class="form-row">
+      
+          <div class="form-group">            
+            <label for="file">Supporting Document *</label>
+            <input type="file" id="file" name="file" accept=".pdf, .doc, .docx" required />
+            <span id="file-error" class="error-message"></span>
+    
+          </div>
+
+          <div class="form-group">
+            <label for="countedby">Counted By *</label>
+            <input type="text" id="countedby" name="countedby" th:value="${physicalCount?.countedby}" required />
+            <span id="countedby-error" class="error-message"></span>    
+        </div>
+        <div class="form-group">
+          <label for="countdate">Count Date *</label>
+          <input type="date" id="countdate" name="countdate" th:value="${physicalCount?.countdate}" required />
+          <span id="countdate-error" class="error-message"></span>
+        </div>
+        <div class="form-group">
+          <label for="approvalstatus">Approval Status *</label>
+          <input type="text" id="approvalstatus" name="approvalstatus" th:value="${physicalCount?.approvalstatus}" required />
+          <span id="approvalstatus-error" class="error-message"></span>           
+        </div>
+        
+      </div>
+
+      <!-- four Row -->
+
+      <div class="form-row">
+       
+
+        <div class="form-group">         	
+          <label for="processedby">Processed By</label>
+          <input type="text" id="processedby" name="processedby" th:value="${physicalCount?.processedby}" />
+          </div>
+        </div> 
+        
+      
+        
+    </div>
+
+   <!-- Five Row  -->
+
+ 
+
+
+    <div class="form-actions">
+      <button type="button" id="submitBtn" onclick="submitForm()">Submit</button>
+      <div id="message" th:if="${successMessage}" class="success-message" th:text="${successMessage}"></div>              
+    </div>
+  
+
+
+
+
+
+
+
+   </form>
+
+
+
+   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+   <script>
+    function validateForm() {
+        let isValid = true;
+
+        // Validate Physical Count UID
+        const physicalCountUID = $('#physicalcountuid').val();
+        if (!physicalCountUID) {
+            $('#physicalcountuid-error').text('Physical Count UID is required.').show();
+            isValid = false;
+        } else {
+            $('#physicalcountuid-error').hide();
+        }
+
+        // Validate Product UID
+        const productUID = $('#productuid').val();
+        if (!productUID) {
+            $('#productuid-error').text('Product UID is required.').show();
+            isValid = false;
+        } else {
+            $('#productuid-error').hide();
+        }
+
+        // Validate Stock Management UID
+        const stockManagerUID = $('#stockmanageruid').val();
+        if (!stockManagerUID) {
+            $('#stockmanageruid-error').text('Stock Management UID is required.').show();
+            isValid = false;
+        } else {
+            $('#stockmanageruid-error').hide();
+        }
+
+        // Validate Physical Count
+        const physicalCount = $('#physicalcount').val();
+        if (!physicalCount) {
+            $('#physicalcount-error').text('Physical Count is required.').show();
+            isValid = false;
+        } else if (isNaN(physicalCount)) {
+            $('#physicalcount-error').text('Physical Count must be a number.').show();
+            isValid = false;
+        } else {
+            $('#physicalcount-error').hide();
+        }
+
+        // Validate Difference
+        const difference = $('#difference').val();
+        if (!difference) {
+            $('#difference-error').text('Difference is required.').show();
+            isValid = false;
+        } else if (isNaN(difference)) {
+            $('#difference-error').text('Difference must be a number.').show();
+            isValid = false;
+        } else {
+            $('#difference-error').hide();
+        }
+
+        // Validate Adjustment Reason
+        const adjustmentReason = $('#adjustmentreason').val();
+        if (!adjustmentReason) {
+            $('#adjustmentreason-error').text('Adjustment Reason is required.').show();
+            isValid = false;
+        } else {
+            $('#adjustmentreason-error').hide();
+        }
+
+        // Validate Supporting Document
+        const file = $('#file').val();
+        if (!file) {
+            $('#file-error').text('Supporting Document is required.').show();
+            isValid = false;
+        } else {
+            $('#file-error').hide();
+        }
+
+        // Validate Counted By
+        const countedBy = $('#countedby').val();
+        if (!countedBy) {
+            $('#countedby-error').text('Counted By is required.').show();
+            isValid = false;
+        } else {
+            $('#countedby-error').hide();
+        }
+
+        // Validate Count Date
+        const countDate = $('#countdate').val();
+        if (!countDate) {
+            $('#countdate-error').text('Count Date is required.').show();
+            isValid = false;
+        } else {
+            $('#countdate-error').hide();
+        }
+
+        // Validate Approval Status
+        const approvalStatus = $('#approvalstatus').val();
+        if (!approvalStatus) {
+            $('#approvalstatus-error').text('Approval Status is required.').show();
+            isValid = false;
+        } else {
+            $('#approvalstatus-error').hide();
+        }
+
+        return isValid;
+    }
+
+    function submitForm() {
+        if (!validateForm()) {
+            return;
+        }
+
+        const formData = new FormData(document.getElementById('physicalCountForm'));
+        const id = $('#id').val();
+
+        let url, successMessage;
+
+        if (!id) {
+            url = '/physicalcount-form';
+            successMessage = 'Physical Count saved successfully!';
+        } else {
+            url = '/physicalcount/update';
+            successMessage = 'Physical Count updated successfully!';
+        }
+
+        $.ajax({
+            url: url,
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function(response) {
+                $('#message').text(successMessage);
+                resetForm();
+                window.location.href = '/physicalcount/List';
+            },
+            error: function() {
+                alert('Error saving Physical Count. Please fill out all required fields.');
+            }
+        });
+    }
+
+    function resetForm() {
+        $('#physicalCountForm')[0].reset();
+        $('#id').val('');
+        $('#message').text('');
+        $('#form-title').text('Add New Physical Count');
+        $('#submitBtn').text('Submit');
+    }
+
+    function fetchProductDetails() {
+        const productuid = $('#productuid').val();
+
+        if (!productuid) {
+            alert("Please select a Product ID.");
+            return;
+        }
+
+        $.ajax({
+            url: '/getphysicalproductdetails',
+            method: 'GET',
+            data: { productuid: productuid },
+            success: function(response) {
+                console.log("Response from server:", response);
+                if (response && response.length > 0) {
+                    const ProductDetail = response[0];
+                    $('#productname').val(ProductDetail.productname || '');
+                } else {
+                    alert("No details found for the selected Product ID.");
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error("Error fetching Product details:", error);
+                alert("An error occurred while fetching the Product details.");
+            }
+        });
+    }
+
+    function fetchStockDetails() {
+        const stockmanageruid = $('#stockmanageruid').val();
+
+        if (!stockmanageruid) {
+            alert("Please select a stock ID.");
+            return;
+        }
+
+        $.ajax({
+            url: '/getstockmanagerdetails',
+            method: 'GET',
+            data: { stockmanageruid: stockmanageruid },
+            success: function(response) {
+                console.log("Response from server:", response);
+                if (response && response.length > 0) {
+                    const StockDetail = response[0];
+                    $('#currentsystemstock').val(StockDetail.currentsystemstock || '');
+                } else {
+                    alert("No details found for the selected stock ID.");
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error("Error fetching stock details:", error);
+                alert("An error occurred while fetching the stock details.");
+            }
+        });
+    }
+</script>
+  
+
+
+
+
+
+  
+
+
+</body>
+</html>

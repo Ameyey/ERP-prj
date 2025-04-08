@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Enrollment Form</title>
+  <link rel="stylesheet" href="hrms.css">
+  <link rel="stylesheet" href="sty.css">
+  <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+   <div class="form-container">
+    <!-- Personal Information Section -->
+    <div class="form-section active" id="section1">
+      <input type="hidden" id="id" name="id" th:value="${enrollment?.id}">
+      <h2>New Enrollment</h2>
+
+      <!-- First Row -->
+      <div class="form-row">
+        <div class="form-group">
+          <label for="employee_uid">Employee UID:</label>
+          <select id="employee_uid" name="employee_uid" onchange="fetchEmployeeDetails(this.value)" >
+              <option value="">Select Employee UID</option>
+              <option th:each="uid : ${employee_uid}" th:value="${uid}" th:text="${uid}"></option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="employee_name">Employee Name:</label>
+          <input type="text" id="employee_name" name="employee_name" th:value="${enrollment?.employee_name}" readonly required>
+        </div>
+        <div class="form-group">
+          <label for="department">Department:</label>
+          <input type="text" id="department" name="department" th:value="${enrollment?.department}" readonly required>
+        </div>
+        <div class="form-group">
+          <label for="designation">Designation:</label>
+		   <input type="text" id="designation" name="designation" th:value="${enrollment?.designation}" readonly required>
+        </div>
+      </div>
+
+      <!-- Second Row -->
+      <div class="form-row">
+        <div class="form-group">
+          <label for="trainingUid">Training UID:</label>
+          <select id="trainingUid" name="trainingUid" onchange="fetchTrainingDetails(this.value)" >
+              <option value="">Select Training UID</option>
+              <option th:each="uid : ${trainingUids}" th:value="${uid}" th:text="${uid}"></option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="trainerName">Trainer Name:</label>
+          <input type="text" id="trainerName" name="trainerName" th:value="${enrollment?.trainerName}" readonly required>
+        </div>
+
+        <div class="form-group">
+          <label for="duration">Duration :</label>
+          <input type="text" id="duration" name="duration" th:value="${enrollment?.duration}">
+        </div>
+        <div class="form-group" >
+          <label for="registrationDate">Registration Date:</label>
+          <input type="date" id="registrationDate" name="registrationDate" th:value="${enrollment?.registrationDate}" required>
+        </div>
+      </div>
+      <!-- Third Row -->
+      <div class="form-row">
+        <div class="form-group">
+          <div class="form-group">
+            <label for="enrollmentStatus">Enrollment Status:</label>
+          <select id="enrollmentStatus" name="enrollmentStatus" required>
+              <option value="">Select Status</option>
+              <option value="Pending" th:selected="${enrollment?.enrollmentStatus == 'Pending'}">Pending</option>
+              <option value="Completed" th:selected="${enrollment?.enrollmentStatus == 'Completed'}">Completed</option>
+              <option value="In Progress" th:selected="${enrollment?.enrollmentStatus == 'In Progress'}">In Progress</option>
+          </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- four Row -->
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="completionDate">Completion Date :</label>
+			    <input type="date" id="completionDate" name="completionDate" th:value="${enrollment?.completionDate}"required>
+        </div> 
+        <div class="form-group">
+          <label for="progressDescription">ProgressDescription :</label>
+			    <input type ='text' id="progressDescription" name="progressDescription" th:text="${enrollment?.progressDescription}" required></input type ='text'>
+        </div>
+        <div class="form-group">
+          <label for="trainerFeedback">Trainer Feedback:</label>
+				<input type ='text' id="trainerFeedback" name="trainerFeedback" rows="" cols="" 
+				          th:text="${enrollment?.trainerFeedback}" required></input type ='text'>
+        </div>     
+        <div class="form-group">
+          <label for="employeeFeedback">Employee Feedback:</label>
+				<input type ='text' id="employeeFeedback" name="employeeFeedback" rows="" th:text="${enrollment?.employeeFeedback}" 
+				    minlength="10" maxlength="500" required></input type ='text'>
+        </div>
+      </div>
+
+   <!-- Five Row  -->
+
+      <div class="form-row">     
+        <div class="form-group">
+          <label for="trainingContentFeedback">Training Content Feedback:</label>
+					<input type ='text' id="trainingContentFeedback" name="trainingContentFeedback" th:text="${enrollment?.trainingContentFeedback}" required></input type ='text'>
+        </div>        
+        <div class="form-group">
+          <label for="qualityFeedback">Quality Feedback:</label>
+          <br>
+          <input type ='text' id="qualityFeedback" name="qualityFeedback" rows="" cols="" th:text="${enrollment?.qualityFeedback}" required></input type ='text'>
+        </div>
+        <div class="form-group">
+          <label for="overallRating">Overall Rating:</label>
+          <br>
+          <input type="number" id="overallRating" name="overallRating" min="1" max="5" step="1" th:value="${enrollment?.overallRating}" title="Rating must be between 1 and 5" required>
+        </div>
+        <div class="form-group">
+          <label for="additionalInfo">Additional Info:</label>
+          <br>
+					<input type ='text' id="additionalInfo" name="additionalInfo" rows="" th:text="${enrollment?.additionalInfo}" maxlength="1000"></input type ='text'>
+				
+
+         </div>
+      </div>
+      <div class="form-actions">
+        <!-- <button class="next-btn" onclick="nextSection(1)">Next</button> -->
+        <button type="button" id="submitBtn" onclick="validateAndSubmitForm()">Submit</button>
+				<div th:if="${successMessage}" class="success-message" th:text="${successMessage}"></div>
+
+
+                <p id="message" style="color: green;"></p>
+      </div>
+    </div>
+
+<!-- ---------------------------------------------------------------------------------------------------------------- -->
+
+    <!-- Address Details Section -->
+  
+
+<!-- ------------------------------------------------------------------------------------------------------------------------------------------- -->
+
+
+
+
+
+   </div>
+
+
+
+
+
+
+  
+
+  <script>
+    function nextSection(current) {
+      document.getElementById(`section${current}`).classList.remove('active');
+      document.getElementById(`section${current + 1}`).classList.add('active');
+    }
+
+    function prevSection(current) {
+      document.getElementById(`section${current}`).classList.remove('active');
+      document.getElementById(`section${current - 1}`).classList.add('active');
+    }
+  </script>
+  <script>
+	
+	
+  function fetchTrainingDetails(trainingUid) {
+      if (!trainingUid) return;
+      
+      $.ajax({
+          url: '/enrollments/enrollment/getTrainingDetails',
+          method: 'GET',
+          data: { trainingUid: trainingUid },
+          success: function(response) {
+              $('#trainingTitle').val(response.trainingTitle);
+              $('#trainerName').val(response.trainerName);
+              $('#duration').val(response.duration);
+          },
+          error: function() {
+              alert('Error fetching training details. Please try again.');
+          }
+      });
+  }
+
+
+function fetchEmployeeDetails(employee_uid) {
+      if (!employee_uid) return;
+
+      $.ajax({
+      url: '/enrollments/enrollment/getEmployeeDetails',
+          method: 'GET',
+          data: { employee_uid: employee_uid },
+          success: function(response) {
+              if (response) {
+                  $('#employee_name').val(response.employee_name);
+                  $('#department').val(response.department);
+                  $('#designation').val(response.designation);
+              }
+          },
+          error: function() {
+              alert('Error fetching employee details. Please try again.');
+          }
+      });
+  }
+
+
+
+
+
+function submitForm() {
+    const formData = new FormData(document.getElementById('enrollmentForm'));
+    const enrollmentId = $('#id').val();
+
+    let url, successMessage;
+
+    if (!enrollmentId) {
+        url = '/enrollments/enrollment/save';
+        successMessage = 'Enrollment saved successfully!';
+    } else {
+        url = '/enrollments/enrollment/update';
+        successMessage = 'Enrollment updated successfully!';
+    }
+
+    $.ajax({
+        url: url,
+        type: 'POST',
+        data: formData,
+        processData: false,
+        contentType: false,
+        success: function(response) {
+            $('#message').text(successMessage); // Corrected this line
+            // Optionally, reset the form
+            resetForm();
+            // Optionally, redirect after successful form submission
+            window.location.href = '/enrollments/list';
+        },
+        error: function() {
+            alert('Error saving enrollment. Please try again.');
+        }
+    });
+}
+
+
+  function resetForm() {
+      $('#enrollmentForm')[0].reset();
+      $('#id').val('');
+      $('#message').text('');
+      $('#form-title').text('New Enrollment');
+      $('#submitBtn').text('Submit');
+  }
+
+  function prefillForm(data) {
+      $('#id').val(data.id);
+      //$('#employee_uid').val(data.employee_uid);
+      $('#employee_name').val(data.employee_name);
+      $('#department').val(data.department);
+      $('#designation').val(data.designation);
+      //$('#trainingUid').val(data.trainingUid);
+      $('#trainingTitle').val(data.trainingTitle);
+      $('#trainerName').val(data.trainerName);
+      $('#duration').val(data.duration);
+      $('#registrationDate').val(data.registrationDate);
+      $('#enrollmentStatus').val(data.enrollmentStatus);
+      $('#form-title').text('Update Enrollment');
+      $('#submitBtn').text('Update');
+  }
+</script>
+
+<script>
+  function validateAndSubmitForm() {
+      const form = document.getElementById('enrollmentForm');
+      if (form.checkValidity()) {
+          submitForm();
+      } else {
+          alert('Please fill in all required fields with valid data.');
+          form.reportValidity();
+      }
+  }
+</script>
+</body>
+</html>

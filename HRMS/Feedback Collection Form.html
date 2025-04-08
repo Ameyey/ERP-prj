@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Feedback Collection Form</title>
+  <link rel="stylesheet" href="hrms.css">
+  <link rel="stylesheet" href="sty.css">
+  <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<style>
+  label{
+    font-size: 13px;
+  }
+</style>
+<body>
+  <div class="form-container" style="min-height: 397px;padding: 57px;">
+    <!-- Personal Information Section -->
+    <div class="form-section active" id="section1">
+      <h2>1 /h2>
+      <!-- First Row -->
+      <div class="form-row">
+        <div class="form-group">
+          <label for="feedbackType">Feedback Type</label>
+          <select id="feedbackType" name="feedbackType"  th:value="${feedback?.feedbackType}" required>
+              <option value="">Select</option>
+              <option value="Complaint">Complaint</option>
+              <option value="Suggestion">Suggestion</option>
+              <option value="Praise">Praise</option>
+              <option value="General Inquiry">General Inquiry</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="feedbackDescription">Feedback Description</label>
+          <input id="feedbackDescription" name="feedbackDescription" required th:text="${feedback?.feedbackDescription}"></input>
+        </div>
+        <div class="form-group">
+          <label for="feedbackDate">Feedback Date</label>
+          <input type="date" id="feedbackDate" name="feedbackDate" required th:value="${feedback?.feedbackDate}">
+        </div>
+      </div>
+
+      <!-- Second Row -->
+      <div class="form-row">
+        <div class="form-group">
+          <label for="actionableSuggestion">Actionable Suggestion</label>
+          <input id="actionableSuggestion" name="actionableSuggestion" required th:value="${feedback?.actionableSuggestion}"></input>
+        </div>
+        <div class="form-group">
+          <label for="file">Attachment (optional)</label>
+          <input type="file" id="file" name="file" accept=".pdf,.doc,.docx">
+        </div>
+      </div>
+
+      <!-- Third Row -->
+     
+      <div class="form-actions">
+        <!-- <button class="next-btn" onclick="nextSection(1)">Next</button> -->
+        <button type="button" onclick="submitfeedbackForm()">Submit Feedback</button>
+				<div th:if="${successMessage}" class="success-message" th:text="${successMessage}"></div>
+      </div>
+    </div>
+</div>
+</body>
+
+<script>
+         function submitfeedbackForm() {
+             const formData = new FormData(document.getElementById('feedbackForm'));
+             const feedbackId = $('#feedbackId').val();
+            
+       let url, successMessage;
+
+                 if (!feedbackId) {
+                     url = '/submitFeedback';
+                     successMessage = 'Appraisal saved successfully!';
+                 } else {
+               url = `/feedback/update/${feedbackId}`;
+                                 successMessage = "Feedback updated successfully!";
+                             }
+
+             $.ajax({
+                 url: url,
+                 type: 'POST',
+                 data: formData,
+                 processData: false,
+                 contentType: false,
+                 success: function(response) {
+           $('#message').text(successMessage); // Corrected this line
+                     resetfeedbackForm();
+                     window.location.href = '/list';
+                 },
+                 error: function() {
+           alert('Error saving enrollment. Please try again.');
+                 }
+             });
+         }
+
+         function resetfeedbackForm() {
+             $('#feedbackForm')[0].reset();
+             $('#feedbackId').val('');
+             $('#feedbackMessage').text('').css('color', 'black'); // Clear feedback message
+         }
+
+         function prefillfeedbackForm(data) {
+             $('#feedbackId').val(data.feedbackId);
+             $('#feedbackType').val(data.feedbackType);
+             $('#feedbackDescription').val(data.feedbackDescription);
+             $('#feedbackDate').val(data.feedbackDate);
+             $('#actionableSuggestion').val(data.actionableSuggestion);
+             $('#form-title').text('Update Feedback');
+             $('#submitBtn').text('Update Feedback');
+         }
+</script>
+</html>

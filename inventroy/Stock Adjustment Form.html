@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Stock Adjustment Form</title>
+  <link rel="stylesheet" href="hrms.css">
+  <link rel="stylesheet" href="sty.css">
+  <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<style>
+h5{
+  margin: 10px;
+}
+
+</style>
+<body >
+
+   <div class="form-container" style="max-width: 877px;" id="stockadjustmentform" enctype="/form-data" >
+    <!-- Personal Information Section -->
+    <input type="hidden" id="id" name="id" th:value="${stocktransfer?.id}">
+    <div class="form-section active" id="section1">
+      <input type="hidden" id="id" name="id" th:value="${sa?.id}">
+      <h2>Stock Adjustment Form</h2>
+
+      <!-- First Row -->
+      <h5>Product Information</h5>
+        <div class="form-row">        
+        <div class="form-group">  
+          <label for="productuid">Product ID:</label>
+          <select id="productuid" name="productuid"  onchange="fetchProductDetails(this.value)" required th:if="${sa == null or sa.id == null}">
+        <option value=""> Select Product Id:</option>
+        <option th:each="uid :${productuid}" th:value="${uid}" th:text="${uid}" ></option>					
+    </select>
+        </div>      
+
+        <div class="form-group">
+          <br>
+          <input type="text" id="productuid" name="productuid" th:value="${sa?.productuid}" onchange="fetchProductDetails(this.value)" readonly th:if="${sa?.id != null}"> 
+        </div>
+
+        <div class="form-group" >
+          <label for="productname">Product Name:</label>
+          <input type="text" id="productname" name="productname" readonly>
+        </div>
+        <div class="form-group">
+          <label for="productdescription">Product Description:</label>
+          <input type="text" id="productdescription" name="productdescription" readonly>
+        </div>
+      </div>
+
+      <!-- Second Row -->
+      <h5>Stock Details</h5>
+          
+      <div class="form-row">
+        <div class="form-group">
+          <label for="stockuid">Stock ID:</label>
+				<select id="stockuid" name="stockuid"  onchange="fetchStockDetails(this.value)" required th:if="${sa == null or sa.id == null}" > 
+					<option value=""> Select Stock Id:</option>
+					<option th:each="uid : ${stockuid}" th:value="${uid}" th:text="${uid}" ></option>					
+				</select>
+	      </div>
+
+       
+        <div class="form-group">
+          <br>
+          <input type="text" id="stockuid" name="stockuid" th:value="${sa?.stockuid}" onchange="fetchStockDetails(this.value)" readonly th:if="${sa?.id != null}">
+        </div> 
+        <div class="form-group" >
+          <label for="currentstock">Current Stock:</label>
+            <input type="number" id="currentstock" name="currentstock" readonly>
+        </div>     
+        
+        <div class="form-group">
+          <label for="adjustmentquantity">Adjustment Quantity:</label>
+            <input type="number" id="adjustmentquantity" name="adjustmentquantity" oninput="calculateNewStock()" readonly>
+        </div>
+        
+        
+      </div>
+      <!-- Third Row -->
+      
+      <div class="form-row">
+      
+          <div class="form-group">            
+            <div class="form-group">
+              <label for="newstocklevel">New Stock Level:</label>
+              <input type="number" id="newstocklevel" name="newstocklevel" readonly>
+            </div>
+          </div>          
+       </div>
+
+        
+
+      <!-- four Row -->
+
+      <h5>Requestor Details</h5>
+      <div class="form-row">
+        <div class="form-group">
+          <label for="adjustedby">Adjusted By:</label>
+            <input type="text" id="adjustedby" name="adjustedby" th:value="${sa?.adjustedby}" required>
+        </div> 
+        <div class="form-group">
+          <label for="adjustmentdate">Adjustment Date:</label>
+          <input type="date" id="adjustmentdate" name="adjustmentdate" th:value="${sa?.adjustmentdate}" required>
+        </div>     
+        <div class="form-group">
+          <label for="adjustmentreason">Adjustment Reason:</label>
+            <select id="adjustmentreason" name="adjustmentreason" th:value="${sa?.adjustmentreason}" required>
+                <option value="">Select a reason</option>
+                <option value="Stock Reconciliation" th:selected="${sa?.adjustmentreason == 'Stock Reconciliation'}">Stock Reconciliation</option>
+                <option value="Damaged Goods" th:selected="${sa?.adjustmentreason == 'Damaged Goods'}">Damaged Goods</option>
+                <option value="Inventory Shrinkage" th:selected="${sa?.adjustmentreason == 'Inventory Shrinkage'}">Inventory Shrinkage</option>
+                <option value="System Error Correction" th:selected="${sa?.adjustmentreason == 'System Error Correction'}">System Error Correction</option>
+            </select>
+        </div>   
+        <div class="form-group">
+          <label for="approvalstatus">Approval Status:</label>
+          <select id="approvalstatus" name="approvalstatus" th:value="${sa?.approvalstatus}" required>
+              <option value="">Select status</option>
+              <option value="Accepted" th:selected="${sa?.approvalstatus == 'Accepted'}">Accepted</option>
+              <option value="Pending" th:selected="${sa?.approvalstatus == 'Pending'}">Pending</option>
+              <option value="Rejected" th:selected="${sa?.approvalstatus == 'Rejected'}">Rejected</option>
+              <option value="Delivered" th:selected="${sa?.approvalstatus == 'Delivered'}">Delivered</option>
+          </select>  
+        </div>
+      </div> 
+   </div>  
+  
+   <h5>Location</h5>
+   <div class="form-row">
+    <div class="form-group">
+      <label for="locationuid">Location ID:</label>
+      <select id="locationuid" name="locationuid"  onchange="fetchLocationDetails(this.value)" required th:if="${sa == null or sa.id == null}"  >
+    <option value=""> Select Location Id:</option>
+    <option th:each="uid :${locationuid} " th:value="${uid}" th:text="${uid}" ></option>					
+</select>
+    </div>
+    <div class="form-group">
+      <br>
+      <input type="text" id="locationuid" name="locationuid" th:value="${sa?.locationuid}" onchange="fetchLocationDetails(this.value)" readonly th:if="${sa?.id != null}">
+    </div>
+    <div class="form-group">
+      <label for="locationname">Location/Warehouse:</label>
+      <input type="text" id="locationname" name="locationname" readonly>
+    </div>
+    <div class="form-group">
+      <label for="referencedocumentnumber" style="font-size: 13px;">Reference Document ID:</label>
+            <input type="text" id="referencedocumentnumber" name="referencedocumentnumber" readonly>
+    </div>
+    </div>
+  
+
+
+      <div class="form-actions">
+        <button type="button" id="submitBtn" onclick="submitForm()">Submit</button>		
+		    <div th:if="${successMessage}" class="success-message" th:text="${successMessage}"></div>                    
+      </div>
+    </div>
+
+<!-- ---------------------------------------------------------------------------------------------------------------- -->
+
+    <!-- Address Details Section -->
+  
+
+<!-- ------------------------------------------------------------------------------------------------------------------------------------------- -->
+
+
+
+
+
+   </div>
+
+
+
+
+
+
+  
+
+  <script>
+    function nextSection(current) {
+      document.getElementById(`section${current}`).classList.remove('active');
+      document.getElementById(`section${current + 1}`).classList.add('active');
+    }
+
+    function prevSection(current) {
+      document.getElementById(`section${current}`).classList.remove('active');
+      document.getElementById(`section${current - 1}`).classList.add('active');
+    }
+  </script>
+ <script>
+	$(document).ready(function() {
+	    // Auto-fill Return details when updating
+	    var existingStockUid = $('#stockuid').val();
+	    if (existingStockUid) {
+	    	fetchStockDetails(existingStockUid);
+	    }
+	});
+  //Data fetch from Stock Details Table to Stock Adjustment Form
+	function fetchStockDetails(stockuid) {
+	    if (!stockuid) return;
+
+	    $.ajax({
+	        url: '/stockdetails', // Endpoint to fetch data
+	        method: 'GET', // HTTP method
+	        data: { stockuid: stockuid }, // Query parameter to be sent to the server
+	        success: function(response) {
+	            // Populate response data into form fields
+	            $('#currentstock').val(response.currentstock);
+	            $('#adjustmentquantity').val(response.adjustmentquantity);
+	            $('#newstocklevel').val(response.newstocklevel);
+	        },
+			error:function(){
+				alert('Error occur');
+			}
+	    });
+	}
+	</script>
+	<script>
+	$(document).ready(function() {
+	    // Auto-fill Return details when updating
+	    var existingProductUid = $('#productuid').val();
+	    if (existingProductUid) {
+	    	fetchProductDetails(existingProductUid);
+	    }
+	});
+	//Data fetch from Product Details Table to Stock Adjustment Form
+	function fetchProductDetails(productuid) {
+	    if (!productuid) return;
+
+	    $.ajax({
+	        url: '/productdetails', // Endpoint to fetch data
+	        method: 'GET', // HTTP method
+	        data: { productuid: productuid }, // Query parameter to be sent to the server
+	        success: function(response) {
+	            // Populate response data into form fields
+	            $('#productname').val(response.productname);
+	            $('#productdescription').val(response.productdescription);
+	            },
+			error:function(){
+				alert('Error occur');
+			}
+	    });
+	}
+	</script>
+	<script>
+	$(document).ready(function() {
+	    // Auto-fill Return details when updating
+	    var existingLocationUid = $('#locationuid').val();
+	    if (existingLocationUid) {
+	    	fetchLocationDetails(existingLocationUid);
+	    }
+	});
+	//Data fetch from Location Details Table to Stock Adjustment Form
+	function fetchLocationDetails(locationuid) {
+	    if (!locationuid) return;
+
+	    $.ajax({
+	        url: '/locationdetails', // Endpoint to fetch data
+	        method: 'GET', // HTTP method
+	        data: { locationuid: locationuid }, // Query parameter to be sent to the server
+	        success: function(response) {
+	            // Populate response data into form fields
+	            $('#locationname').val(response.locationname);
+	            $('#referencedocumentnumber').val(response.referencedocumentnumber);
+	            },
+			error:function(){
+				alert('Error occur');
+			}
+	    });
+	}
+	</script>
+	<script>
+	function submitForm() {
+
+	    let form = document.getElementById('stockadjustmentform');
+	    
+	    if (!form.checkValidity()) {
+	        alert('Please fill in all required fields.');
+	        return;
+	    }
+	    // Serialize form data
+	    var formData = $("#stockadjustmentform").serialize();
+
+	    // Perform AJAX request
+	    $.ajax({
+	        url: "/submitStockAdjustment", // Replace with your actual backend endpoint
+	        type: "POST",
+	        data: formData,
+	        success: function(response) {
+	            alert("Stock adjustment submitted successfully!");
+	            $("#stockadjustmentform")[0].reset(); // Reset form after submission
+	        },
+	        error: function() {
+	            alert("Error submitting the form. Please try again.");
+	        }
+	    });
+	}
+
+	</script>
+	<script>
+
+	function submitForm() {
+		let form = document.getElementById('stockadjustmentform');
+	    
+	    if (!form.checkValidity()) {
+	        alert('Please fill in all required fields.');
+	        return;
+	    }
+	    const formData = new FormData(document.getElementById('stockadjustmentform'));
+	    const id = $('#id').val();
+
+	    let url, successMessage;
+
+	    if (!id) {
+	        url = '/addstockadjustment';
+	        successMessage = 'Stock Dispatch Details saved successfully!';
+	    } else {
+	        url = '/updateexistingform';
+	        successMessage = 'Stock Dispatch Details updated successfully!';
+	    }
+
+	    $.ajax({
+	        url: url,
+	        type: 'POST',
+	        data: formData,
+	        processData: false,
+	        contentType: false,
+	        success: function(response) {
+	            $('#message').text(successMessage); // Display success message
+	            resetForm();
+	            window.location.href = '/viewstockadjustmentlist';
+	        },
+	        error: function() {
+	            alert('Error saving Stock Dispatch. Please fill out the data.');
+	        }
+	    });
+	}
+	// Reset the form
+	function resetForm() {
+			    $('#stockadjustmentform')[0].reset();
+				$('#id').val('');
+			    $('#message').text(''); // Clear the message
+			    $('#submitBtn').text('Submit');
+	}
+			
+	function prefillForm(data) {
+			        $('#id').val(data.id);
+			        $('#productuid').val(data.productuid);
+			        $('#stockuid').val(data.stockuid);
+			        $('#adjustedby').val(data.adjustedby);
+			        $('#adjustmentdate').val(data.adjustmentdate);
+			        $('#adjustmentreason').val(data.adjustmentreason);
+			        $('#approvalstatus').val(data.approvalstatus);
+			        $('#locationuid').val(data.locationuid);
+					$('#form-title').text('Updated Stock Adjustment Form');
+					$('#submitBtn').text('Update');
+					
+	}
+	
+	document.getElementById('submitBtn').addEventListener('click', function () {
+	    let requiredFields = document.querySelectorAll('#stockadjustmentform [required]');
+	    let isValid = true;
+
+	    requiredFields.forEach(field => {
+	        if (!field.value.trim()) {
+	            field.style.border = '2px solid red';
+	            isValid = false;
+	        } else {
+	            field.style.border = '1px solid #ccc';
+	        }
+	    });
+
+	    if (isValid) {
+	        submitForm();
+	    } else {
+	        alert('Please fill in all required fields.');
+	    }
+	});
+</script>
+
+
+</body>
+</html>

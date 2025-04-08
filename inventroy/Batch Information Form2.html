@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Batch Information Form</title>
+  <link rel="stylesheet" href="hrms.css">
+  <link rel="stylesheet" href="sty.css">
+  <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<style>
+h2{
+  margin-top: -25px;
+}
+</style>
+<body>
+                                                                        
+    
+   <form id="batchForm" class="form-container" style="padding: 86px;"  >
+    <!-- Personal Information Section -->
+    <input type="hidden" id="id" name="id" th:value="${batchinfo?.id}">
+    <h2>Batch Information Form</h2>
+   
+   <br><br>
+    <div class="form-section active" id="section1"  >
+     
+
+      <!-- First Row -->
+    
+      <div class="form-row" >
+        <div class="form-group">
+          <label for="batchuid">Select Batch ID:</label>
+          <select id="batchuid" name="batchuid" onchange="fetchBatchDetails()" required>
+              <option value="">--Select Batch ID--</option>
+              <option th:each="batchId : ${batchUIds}"
+                      th:value="${batchId}"
+                      th:text="${batchId}"></option>
+          </select>
+      </div>
+      
+      <div class="form-group">
+        <label for="productuid">Product ID:</label>
+        <input type="text" id="productuid" name="productuid" readonly>
+    </div>
+
+    <div class="form-group">
+      <label for="productname">Product Name:</label>
+      <input type="text" id="productname" name="productname" >
+  </div>
+  
+      </div>
+
+      <!-- Second Row -->
+      <div class="form-row">
+        <div class="form-group">
+          <label for="mfgdate">Manufacturing Date:</label>
+          <input type="date" id="mfgdate" name="mfgdate" >
+      </div>
+    
+        
+    <div class="form-group">
+      <label for="expirydate">Expiry Date:</label>
+      <input type="date" id="expirydate" name="expirydate" >
+  </div>
+
+  <div class="form-group">
+    <label for="warrantyperiod">Warranty Period:</label>
+    <input type="text" id="warrantyperiod" name="warrantyperiod" >
+</div>
+
+    
+    
+       
+    
+      </div>
+      <!-- Third Row -->
+      <div class="form-row">
+
+        <div class="form-group">
+          <label for="warehouseid">Warehouse ID :</label>
+          <input type="text" id="warehouseid" name="warehouseid" readonly>
+      </div>
+    
+
+      <div class="form-group">
+        <label for="warehouselocation">Warehouse Location:</label>
+        <input type="text" id="warehouselocation" name="warehouselocation" >
+    </div>
+      
+    <div class="form-group">
+      <label for="numberofshelf">Shelf Number:</label>
+      <input type="text" id="numberofshelf" name="numberofshelf" >
+  </div>
+
+          
+      </div>
+
+      <!-- four Row -->
+
+   
+    </div>
+
+   <!-- Five Row  -->
+   
+
+ 
+
+
+    <div class="form-actions">
+      <button type="submit" onchange="updatebatchtrackdetails()">Submit</button>                 
+    </div>
+  
+
+
+
+
+
+
+
+   </form>
+
+
+
+   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+   <script>
+    function fetchBatchDetails() {
+        const batchuid = $('#batchuid').val();
+    
+        if (!batchuid) {
+            alert("Please select a Batch ID.");
+            return;
+        }
+    
+            $.ajax({
+                url: '/getbatchtrackingdetails',
+                method: 'GET',
+                data: { batchuid: batchuid },
+                success: function (response) {
+                    console.log("Response from server:", response);  // Log the response
+                    if (response && response.length > 0) {
+                        const batchDetail = response[0];
+                        $('#productuid').val(batchDetail.productid || '');
+                        $('#productname').val(batchDetail.productname || '');
+                        $('#mfgdate').val(batchDetail.manufacturingdate || '');
+                        $('#expirydate').val(batchDetail.expirydate || '');
+                        $('#warrantyperiod').val(batchDetail.warrantyperiod || '');
+                        $('#warehouseuid').val(batchDetail.warehouseid || '');
+                        $('#warehouselocation').val(batchDetail.warehouselocation || '');
+                        $('#numberofshelf').val(batchDetail.numberofshelf || '');
+                    } else {
+                        alert("No details found for the selected Batch ID.");
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error("Error fetching batch details:", error);
+                    alert("An error occurred while fetching the batch details.");
+                }
+            });
+        }
+        
+        
+    function updatebatchtrackdetails()
+    {
+      $.ajax({
+          url: '/',
+          method: 'POST',
+          data: $('#batchForm').serialize(),
+          success: function (response) {
+              alert(response.message || `Updated ${response.rowsUpdated} records successfully.`);
+              window.location.href = '/';
+          },
+          error: function (xhr, status, error) {
+              console.error("Error:", error);
+              alert("Failed to update batch details.");
+          }
+      });
+      
+    }  
+    
+    
+    </script>
+
+
+
+
+
+  
+
+
+</body>
+</html>

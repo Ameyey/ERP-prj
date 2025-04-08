@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Backorder Management</title>
+  <link rel="stylesheet" href="hrms.css">
+  <link rel="stylesheet" href="sty.css">
+  <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<style>
+h5{
+  margin: 10px;
+}
+label{
+  font-size: 12px;
+}
+</style>
+<body onload="fetchBatchDetails()">
+
+   <form id="faiForm"  class="form-container"  >
+    <!-- Personal Information Section -->
+    <input type="hidden" id="id" name="id" required th:value="${backorder?.id}">
+    <div class="form-section active" id="section1">
+      <h2>Backorder Management</h2>
+
+      <!-- First Row -->
+    
+      <div class="form-row">
+        
+        <div class="form-group">        
+          <label for="salesorderuid">Sales Order UID:</label>
+		       <select id="salesorderuid" name="salesorderuid" onchange="fetchSalesOrderDetails(this.value)">
+		           <option value="">Select Sales Order UID</option>
+		           <option th:each="uid : ${salesorderuid}" th:value="${uid}" th:text="${uid}"></option>
+		       </select>
+        </div>
+
+        <div class="form-group">
+          <label for="orderdate">Order Date:</label>
+          <input type="text" id="orderdate" name="orderdate" readonly>
+        </div>
+
+        <div class="form-group">
+          <label for="customername">Customer Name:</label>
+          <input type="text" id="customername" name="customername" readonly >   
+        </div>
+
+        <div class="form-group">
+         <label for="lotuid">Lot UID:</label>
+            <select id="lotuid" name="lotuid" onchange="fetchLotDetails(this.value)">
+                <option value="">Select Lot UID</option>
+                <option th:each="uid : ${lotuid}" th:value="${uid}" th:text="${uid}"></option>
+            </select>
+            </div>
+        </div>
+
+      <!-- Second Row -->
+      <div class="form-row">
+        <div class="form-group">
+          <label for="itemname">Item Name:</label>
+		        <input type="text" id="itemname" name="itemname" readonly>
+	      </div>
+   
+        <div class="form-group">
+          <label for="originalorderedquantity" >Original Ordered Quantity:</label>
+          <input type="text" id="originalorderedquantity" name="originalorderedquantity" readonly>
+        </div>
+
+        <div class="form-group">
+          <label for="pendingquantity">Pending Quantity:</label>
+		        <input type="text" id="pendingquantity" name="pendingquantity" readonly>
+        </div>
+
+        <div class="form-group" >         
+          <label for="unitprice">Unit Price:</label>
+          <input type="text" id="unitprice" name="unitprice" readonly>
+
+        </div>
+      </div>
+      <!-- Third Row -->
+      <div class="form-row">
+      
+          <div class="form-group">            
+            <label for="totalpendingvalue">Total Pending Value:</label>
+		        <input type="text" id="totalpendingvalue" name="totalpendingvalue" readonly>
+          </div>
+
+          <div class="form-group">
+            <label for="warehouseuid">Warehouse UID:</label>
+            <select id="warehouseuid" name="warehouseuid" onchange="fetchWarehouseDetails(this.value)">
+                <option value="">Select Warehouse UID</option>
+                <option th:each="uid : ${warehouseuid}" th:value="${uid}" th:text="${uid}"></option>
+            </select>
+        </div>
+        <div class="form-group">
+          <label for="currentstock">Current Stock:</label>
+          <input type="text" id="currentstock" name="currentstock" readonly>
+        </div>
+        <div class="form-group">
+         
+          <label for="warehouselocation">Warehouse Location:</label>
+          <input type="text" id="warehouselocation" name="warehouselocation" readonly>     
+        </div>
+        
+      </div>
+
+      <!-- four Row -->
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="accepteddeliverydate">Accepted Delivery Date:</label>
+				<input type="date" id="accepteddeliverydate" name="accepteddeliverydate"th:value="${backorder?.accepteddeliverydate}" >
+
+        </div>
+        <div class="form-group">
+         	
+				<label for="fulfillmentstatus">Fulfillment Status:</label>
+				<select id="fulfillmentstatus" name="fulfillmentstatus" required th:value="${backorder?.fulfillmentstatus}">
+				            <option >Progress</option>
+				            <option >In Progress</option>
+				        </select>
+        </div> 
+        <div class="form-group">
+          <label for="stockavailability">Stock Availability:</label>
+          <input type="text" id="stockavailability" name="stockavailability"th:value="${backorder?.stockavailability}" >
+        </div>     
+        <div class="form-group">          
+          <label for="expectedfulfillmentdate">Expected Fulfillment Date</label>
+        <input type="date" id="expectedfulfillmentdate" name="expectedfulfillmentdate" required th:value="${backorder?.expectedfulfillmentdate}">
+
+        </div>
+      
+        
+    </div>
+
+   <!-- Five Row  -->
+   <div class="form-row">
+
+    <div class="form-group">
+      <label for="trackbackorder">Track Backorder</label>
+      <select id="trackbackorder" name="trackbackorder" required th:value="${backorder?.trackbackorder}">
+          <option >Yes</option>
+          <option >No</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label for="customerdate">Customer Date</label>
+      <input type="date" id="customerdate" name="customerdate" required th:value="${backorder?.customerdate}">
+      </div>
+
+      <div class="form-group">
+        <label for="createddate">Created Date</label>
+        <input type="date" id="createddate" name="createddate" required th:value="${backorder?.createddate}">
+      </div>
+
+      <div class="form-group">
+        <label for="lastmodifiedby">Last Modified By</label>
+        <input type="text" id="lastmodifiedby" name="lastmodifiedby" placeholder="Enter Last Modifier's Name" required th:value="${backorder?.lastmodifiedby}">
+      </div>
+
+   </div>  
+
+ 
+
+
+    <div class="form-actions">
+      <button type="button" onclick="submitBackorderForm()">Save Backorder</button>
+      <div th:if="${successMessage}" class="success-message" th:text="${successMessage}"></div>                   
+    </div>
+  
+
+
+
+
+
+
+
+   </form>
+
+   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</body>
+</html>

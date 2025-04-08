@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en"  xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Attendance Form</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="sty.css">
+    <link rel="stylesheet" href="hrms.css"> <!-- // for side bar code  -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+<div th:replace="~{HRMS.html :: sidebarFragment}"></div> <!-- // for side bar code  -->
+
+
+		<form id="attendanceForm"  enctype="multipart/form-data" >
+	<div class="form-container">
+
+ <!-- Hidden ID Field -->
+        <input type="hidden" id="id" name="id" th:value="${employmentInfo?.id}" >
+  
+
+    <!-- Personal Information Section -->
+    <div class="form-section active" id="section1" >
+
+
+      <h2>Attendance Information </h2>
+      
+              
+         
+      <!-- First Row -->
+      <div class="form-row">
+        
+            
+            
+            
+            
+            
+          
+             
+                     
+        
+      </div>
+
+    
+     
+
+      
+            <div class="form-actions">
+              <button type="button" id="submitBtn" onclick="validateAndSubmitForm()">Submit</button>
+            </div>
+            
+    
+            <div th:if="${successMessage}" class="success-message" th:text="${successMessage}"></div>
+        </form>
+                <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        
+        <script>
+            // Form submission
+            function submitForm() {
+    
+                const formData = new FormData(document.getElementById('attendanceForm'));
+                const Id = $('#id').val();
+    
+                let url, successMessage;
+    
+                if (!Id) {
+                    url = '/saveattendance';
+                    successMessage = 'Attendance Details saved successfully!';
+                } else {
+                    url = '/updateExistingAttendance';
+                    successMessage = 'Attendance Details updated successfully!';
+                }
+    
+                $.ajax({
+                    url: url,
+                    type: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function(response) {
+                        $('#message').text(successMessage); // Display success message
+                        resetForm();
+                        window.location.href = '/viewattendance';
+                    },
+                    error: function() {
+                        alert('Error saving attendance. Please fill out the data.');
+                    }
+                });
+            }
+    
+           
+            function resetForm() {
+                $('#attendanceForm')[0].reset();
+                $('#message').text(''); // Clear the message
+                $('#submitBtn').text('Submit');
+            }
+    
+      </script> 
+<!-- //                 // Validate Attendance Date -->
+<!-- //                 if (!attendanceDate) { -->
+<!-- //                     showError('attendanceDate', 'Date is mandatory.'); -->
+<!-- //                     isValid = false; -->
+<!-- //                 } -->
+    
+<!-- //                 // Validate Attendance Status -->
+<!-- //                 if (!attendanceStatus) { -->
+<!-- //                     showError('attendanceStatus', 'Attendance Status is mandatory.'); -->
+<!-- //                     isValid = false; -->
+<!-- //                 } -->
+    
+<!-- //                 // If status is Present, validate Check-in and Check-out times -->
+<!-- //                 if (attendanceStatus === 'Present') { -->
+<!-- //                     if (!checkInTime) { -->
+<!-- //                         showError('checkInTime', 'Check-in Time is mandatory for Present status.'); -->
+<!-- //                         isValid = false; -->
+<!-- //                     } -->
+<!-- //                     if (!checkOutTime) { -->
+<!-- //                         showError('checkOutTime', 'Check-out Time is mandatory for Present status.'); -->
+<!-- //                         isValid = false; -->
+<!-- //                     } -->
+<!-- //                 } -->
+    
+<!-- //                 // If breaks are Yes, validate break times -->
+<!-- //                 if (breaks === 'Yes') { -->
+<!-- //                     if (!breakStartTime) { -->
+<!-- //                         showError('breakStartTime', 'Break Start Time is mandatory.'); -->
+<!-- //                         isValid = false; -->
+<!-- //                     } -->
+<!-- //                     if (!breakEndTime) { -->
+<!-- //                         showError('breakEndTime', 'Break End Time is mandatory.'); -->
+<!-- //                         isValid = false; -->
+<!-- //                     } -->
+<!-- //                 } -->
+    
+<!-- //                 return isValid; -->
+<!-- //             } -->
+    
+<!-- //             function showError(fieldId, message) { -->
+<!-- //                 const errorElement = document.getElementById(${fieldId}Error); -->
+<!-- //                 if (errorElement) { -->
+<!-- //                     errorElement.textContent = message; -->
+<!-- //                 } -->
+<!-- //             } -->
+    
+<!-- //             document.getElementById('submitBtn').addEventListener('click', function () { -->
+<!-- //                 const formIsValid = validateForm(); -->
+    
+<!-- //                 if (!formIsValid) { -->
+<!-- //                     // Prevent form submission if validation fails -->
+<!-- //                     alert('Please fill the data and try again.'); -->
+<!-- //                     return; -->
+<!-- //                 } -->
+    
+<!-- //                 // If the form is valid, proceed with the existing submit logic -->
+<!-- //                 submitForm(); -->
+<!-- //             }); -->
+<!-- //             function validateAndSubmitForm() { -->
+<!-- //                     if (validateForm()) { -->
+<!-- //                         submitForm(); -->
+<!-- //                     } else { -->
+<!-- //                         alert('Please fix the errors before submitting.'); -->
+<!-- //                     } -->
+<!-- //                 } -->
+<!-- <!--         </script> -->
+    
+    
+<!-- <!--         <script> -->
+            
+<!-- //             function toggleAttendanceFields() { -->
+<!-- //                 const attendanceStatus = document.getElementById("attendanceStatus").value; -->
+<!-- //                 const attendanceFields = document.getElementById("attendanceFields"); -->
+    
+<!-- //                 if (attendanceStatus === "Present") { -->
+<!-- //                     attendanceFields.classList.remove("hidden"); -->
+<!-- //                 } else { -->
+<!-- //                     attendanceFields.classList.add("hidden"); -->
+<!-- //                 } -->
+<!-- //             } -->
+    
+<!-- //             function toggleBreakFields() { -->
+<!-- //                 const breaks = document.getElementById("breaks").value; -->
+<!-- //                 const breakFields = document.getElementById("breakFields"); -->
+    
+<!-- //                 if (breaks === "Yes") { -->
+<!-- //                     breakFields.classList.remove("hidden"); -->
+<!-- //                 } else { -->
+<!-- //                     breakFields.classList.add("hidden"); -->
+<!-- //                 } -->
+<!-- //             } -->
+    
+<!-- //             function calculateTimeDifference(startTime, endTime) { -->
+<!-- //                 const start = new Date(1970-01-01T${startTime}); -->
+<!-- //                 const end = new Date(1970-01-01T${endTime}); -->
+<!-- //                 if (start >= end) return null; // Invalid time sequence -->
+<!-- //                 const diff = (end - start) / 60000; // Difference in minutes -->
+<!-- //                 const hours = Math.floor(diff / 60); -->
+<!-- //                 const minutes = diff % 60; -->
+<!-- //                 return { hours, minutes }; -->
+<!-- //             } -->
+    
+<!-- //             function calculateTimes() { -->
+<!-- //                 const checkInTime = document.getElementById("checkInTime").value; -->
+<!-- //                 const checkOutTime = document.getElementById("checkOutTime").value; -->
+<!-- //                 const breakStartTime = document.getElementById("breakStartTime").value; -->
+<!-- //                 const breakEndTime = document.getElementById("breakEndTime").value; -->
+    
+<!-- //                 // Calculate total working time -->
+<!-- //                 if (checkInTime && checkOutTime) { -->
+<!-- //                     const workingTime = calculateTimeDifference(checkInTime, checkOutTime); -->
+<!-- //                     if (workingTime) { -->
+<!-- //                         document.getElementById("totalWorkingTime").value = ${workingTime.hours}h ${workingTime.minutes}m; -->
+<!-- //                     } else { -->
+<!-- //                         document.getElementById("totalWorkingTime").value = "Invalid Time"; -->
+<!-- //                     } -->
+<!-- //                 } -->
+    
+<!-- //                 // Calculate total break time -->
+<!-- //                 if (breakStartTime && breakEndTime) { -->
+<!-- //                     const breakTime = calculateTimeDifference(breakStartTime, breakEndTime); -->
+<!-- //                     if (breakTime) { -->
+<!-- //                         const isValidBreak = validateBreakTimes(checkInTime, checkOutTime, breakStartTime, breakEndTime); -->
+<!-- //                         if (isValidBreak) { -->
+<!-- //                             document.getElementById("totalBreakTime").value = ${breakTime.hours}h ${breakTime.minutes}m; -->
+<!-- //                         } else { -->
+<!-- //                             document.getElementById("totalBreakTime").value = "Invalid Break Time"; -->
+<!-- //                         } -->
+<!-- //                     } -->
+<!-- //                 } -->
+<!-- //             } -->
+    
+<!-- //             document.addEventListener("DOMContentLoaded", function () { -->
+<!-- //                 // Time fields event listener -->
+<!-- //                 const timeFields = ["checkInTime", "checkOutTime", "breakStartTime", "breakEndTime"]; -->
+<!-- //                 timeFields.forEach(field => { -->
+<!-- //                     const element = document.getElementById(field); -->
+<!-- //                     if (element) { -->
+<!-- //                         element.addEventListener("change", calculateTimes); -->
+<!-- //                     } -->
+<!-- //                 }); -->
+    
+<!-- //                 // Employee details fetching -->
+                
+<!-- //                 document.getElementById('employeeId').addEventListener("blur", fetchEmployeeDetails); -->
+<!-- //             }); -->
+    
+<!-- //             // Fetch employee details based on ID -->
+<!-- //             function fetchEmployeeDetails() { -->
+<!-- //                 const employeeId = document.getElementById('employeeId').value; -->
+                
+<!-- //                 // Validate if employeeId is provided -->
+<!-- //                 if (!employeeId) { -->
+<!-- //                     alert("Please enter a valid Employee ID."); -->
+<!-- //                     return; -->
+<!-- //                 } -->
+                
+<!-- //                 fetch(/employee/${employeeId}) -->
+<!-- //                     .then(response => { -->
+<!-- //                         // If response is not okay (status code not in the 200 range), throw an error -->
+<!-- //                         if (!response.ok) { -->
+<!-- //                             //throw new Error(Employee with ID ${employeeId} not found.); -->
+<!-- //                         } -->
+<!-- //                         return response.json(); -->
+<!-- //                     }) -->
+<!-- //                     .then(data => { -->
+<!-- //                         // Populate the employee name field -->
+<!-- //                         document.getElementById('employeeName').value = data.employeeName || ''; -->
+<!-- //                     }) -->
+<!-- //                     .catch(error => { -->
+<!-- //                         // Show the error to the user and log it in the console -->
+<!-- //                         alert(error.message);  -->
+<!-- //                         console.error('Fetch error:', error); -->
+<!-- //                     }); -->
+<!-- //             } -->
+    
+            
+    
+<!-- //             function validateBreakTimes(checkInTime, checkOutTime, breakStartTime, breakEndTime) { -->
+<!-- //                 const checkIn = new Date(1970-01-01T${checkInTime}); -->
+<!-- //                 const checkOut = new Date(1970-01-01T${checkOutTime}); -->
+<!-- //                 const breakStart = new Date(1970-01-01T${breakStartTime}); -->
+<!-- //                 const breakEnd = new Date(1970-01-01T${breakEndTime}); -->
+    
+<!-- //                 let isValid = true; -->
+    
+<!-- //                 if (breakStart < checkIn || breakEnd > checkOut) { -->
+<!-- //                     showError('breakStartTime', "Break Start and End times must be within Check-in and Check-out times."); -->
+<!-- //                     showError('breakEndTime', "Break Start and End times must be within Check-in and Check-out times."); -->
+<!-- //                     isValid = false; -->
+<!-- //                 } -->
+    
+<!-- //                 if (breakStart >= breakEnd) { -->
+<!-- //                     showError('breakStartTime', "Break Start Time must be before Break End Time."); -->
+<!-- //                     showError('breakEndTime', "Break End Time must be after Break Start Time."); -->
+<!-- //                     isValid = false; -->
+<!-- //                 } -->
+    
+<!-- //                 return isValid; -->
+<!-- //             } -->
+    
+<!-- //             function showError(fieldId, message) { -->
+<!-- //                 const errorElement = document.getElementById(${fieldId}Error); -->
+<!-- //                 if (errorElement) { -->
+<!-- //                     errorElement.textContent = message; -->
+<!-- //                 } -->
+<!-- //             } -->
+    
+    
+<!-- <!--         </script> --> 
+</body>
+</html>

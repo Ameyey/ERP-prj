@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cost Adjustment Form</title>
+  <link rel="stylesheet" href="hrms.css">
+  <link rel="stylesheet" href="sty.css">
+  <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <div class="form-container">
+
+
+    <!-- Personal Information Section -->
+    <div class="form-section active" id="section1">
+    <input type="hidden" id="id" name="id">
+      <h2>Cost Adjustment Form</h2>
+      <!-- First Row -->  
+      <div class="form-row">
+        <div class="form-group">
+          <label for="stockuid" class="block text-gray-700 font-medium">Stock UID **</label>
+          <select id="stockuid" name="stockuid" class="w-full border rounded px-3 py-2 mt-1" 
+            onchange="fetchStockDetails(this.value)" 
+            th:if="${costadjustment == null or costadjustment.id == null}">				
+            <option value="">Select Stock UID</option>
+            <option th:each="uid : ${Stockuid}" th:value="${uid}" th:text="${uid}"></option>	
+          </select>
+        </div>
+        
+        <div class="form-group">
+          <br>
+          <input type="text" id="stockuid" name="stockuid" th:value="${costadjustment?.stockuid}" readonly th:if="${costadjustment?.id != null}">
+        </div>
+        <div class="form-group">
+          <label for="stockname" class="block text-gray-700 font-medium">Stock or Lots Name**</label>
+          <input type="text" id="stockname" name="stockname" class="w-full border rounded px-3 py-2 mt-1"  readonly>              
+        </div>
+        <div class="form-group"> 
+          <label for="unitcost" class="block text-gray-700 font-medium">Unit Cost**</label>
+          <input type="text" step="0.01" id="unitcost" name="unitcost" class="w-full border rounded px-3 py-2 mt-1"th:value="${costadjustment?.unitcost}" required>
+        </div>
+      </div>
+
+      <!-- Second Row -->
+      <div class="form-row">
+        <div class="form-group">
+          <label for="stockquantity" class="block text-gray-700 font-medium">Stock Quantity</label>
+          <input type="number" id="stockquantity" name="stockquantity" class="w-full border rounded px-3 py-2 mt-1" th:value="${costadjustment?.stockquantity}">
+        </div>
+        <div class="form-group">
+          <label for="adjustmentvalue" class="block text-gray-700 font-medium">Adjustment Value**</label>
+          <input type="text" step="0.01" id="adjustmentvalue" name="adjustmentvalue" class="w-full border rounded px-3 py-2 mt-1" th:value="${costadjustment?.adjustmentvalue}" required>
+        </div>
+        <div class="form-group">
+          <label for="newcost" class="block text-gray-700 font-medium">New Cost/Valuation**</label>
+          <input type="number" step="0.01" id="newcost" name="newcost" class="w-full border rounded px-3 py-2 mt-1" th:value="${costadjustment?.newcost}" >
+        </div>
+        <div class="form-group">
+          <label for="reason" class="block text-gray-700 font-medium" style="font-size: 13px;">Reason for Adjustment**</label>
+          <input type='text' id="reason" name="reason" class="w-full border rounded px-3 py-2 mt-1" rows="3"  th:value="${costadjustment?.reason}"required></input type='text'>
+        </div>
+      </div>
+
+      <!-- Third Row -->
+<br>
+      <div class="form-row">
+        <div class="form-group">
+          <label for="adjustmentdate" class="block text-gray-700 font-medium">Adjustment Date**</label>
+          <input type="date" id="adjustmentdate" name="adjustmentdate" class="w-full border rounded px-3 py-2 mt-1" th:value="${costadjustment?.adjustmentdate}" required>
+        </div>
+        <div class="form-group">
+          <label for="adjustedby" class="block text-gray-700 font-medium">Adjusted By**</label>
+          <input type="text" id="adjustedby" name="adjustedby" class="w-full border rounded px-3 py-2 mt-1" th:value="${costadjustment?.adjustedby}"required>
+        </div>
+        <div class="form-group">
+          <label for="approvalstatus" class="block text-gray-700 font-medium">Approval Status**</label>
+          <select id="approvalstatus" name="approvalstatus" class="w-full border rounded px-3 py-2 mt-1" th:value="${costadjustment?.approvalstatus}" required>
+            <option value="">Select Status</option>
+            <option value="Pending">Pending</option>
+            <option value="Approved">Approved</option>
+            <option value="Rejected">Rejected</option>
+        </select>            
+        </div>
+      </div>
+
+      <!-- four row -->
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="approvedby" class="block text-gray-700 font-medium">Approved By</label>
+          <input type="text" id="approvedby" name="approvedby" class="w-full border rounded px-3 py-2 mt-1" th:value="${costadjustment?.approvedby}">
+      </div>
+      <div class="form-group">
+          <label for="approvaldate" class="block text-gray-700 font-medium">Approval Date</label>
+          <input type="date" id="approvaldate" name="approvaldate" class="w-full border rounded px-3 py-2 mt-1" th:value="${costadjustment?.approvaldate}">
+       </div>
+      <div class="form-group">
+          <label for="comments" class="block text-gray-700 font-medium">Adjustment Comments</label>
+          <input type='text' id="comments" name="comments" class="w-full border rounded px-3 py-2 mt-1" rows="3" th:value="${costadjustment?.comments}"></input type='text'>
+        </div>
+      </div>
+   
+      <div class="form-actions">
+        <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded shadow hover:bg-blue-600" onclick="submitForm()">Updated Stock Valuation</button>
+				<div th:if="${successMessage}" class="success-message" th:value="${successMessage}"></div>
+      </div>
+    </div>
+ 
+
+</body>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+		<script>		
+			
+			
+			function submitForm() {
+		    const formData = new FormData(document.getElementById('costAdjustmentForm'));
+		    const id = $('#id').val();
+		    let url, successMessage;
+
+		    if (!id) {
+		        url = '/savecost';
+		        successMessage = 'Cost adjustment saved successfully!';
+		    } else {
+		        url = '/updateCost';
+		        successMessage = 'Cost adjustment updated successfully!';
+		    }
+
+		    $.ajax({
+		        url: url,
+		        type: 'POST',
+		        data: formData,
+		        processData: false,
+		        contentType: false,
+		        success: function(response) {
+		            alert(successMessage);
+		            resetForm();
+		            window.location.href = '/costadjustmentlist';
+		        },
+		        error: function() {
+		            alert('Error saving cost adjustment. Please try again.');
+		        }
+		    });
+		}
+
+		function resetForm() {
+		    $('#costAdjustmentForm')[0].reset();
+		    $('#id').val('');
+		    $('#form-title').text('Cost Adjustment Form');
+			$('#submitBtn').text('Updated Stock Valuation');
+
+		}
+
+		function prefillForm(data) {
+		    $('#id').val(data.id);
+		    $('#stockname').val(data.stockname);
+		    $('#stockuid').val(data.stockuid);
+		    $('#unitcost').val(data.unitcost);
+		    $('#stockquantity').val(data.stockquantity);
+		    $('#adjustmentvalue').val(data.adjustmentvalue);
+		    $('#newcost').val(data.newcost);
+		    $('#reason').val(data.reason);
+		    $('#adjustmentdate').val(data.adjustmentdate);
+		    $('#adjustedby').val(data.adjustedby);
+		    $('#approvalstatus').val(data.approvalstatus);
+		    $('#approvedby').val(data.approvedby);
+		    $('#approvaldate').val(data.approvaldate);
+		    $('#comments').val(data.comments);
+
+			if (data.id) {
+					                // If updating, replace dropdown with readonly input
+					                $('#stockuid').replaceWith('<input type="text" id="stockuid" name="stockuid" value="' + data.stockuid + '" readonly>');
+
+					            }
+			
+		    $('#form-title').text('Update Cost Adjustment');
+			$('#submitBtn').text('Updated Stock Valuation');
+
+		}
+		
+		function fetchStockDetails(stockuid) {
+			    if (!stockuid) return;
+
+			    $.ajax({
+			        url: '/getStockDetails',
+			        method: 'GET',
+			        data: { stockuid: stockuid },
+			        success: function(response) {
+			            if (response && response.length > 0) { // Ensure response is not empty
+			                let stockData = response[0]; // Get first object from the list
+			                $('#stockname').val(stockData.stockname || '');
+			                
+			            } else {
+			                alert('No data found for the selected product.');
+			            }
+			        },
+			        error: function(xhr, status, error) {
+			            console.error('Error fetching product details:', error);
+			            alert('Error fetching product details. Please try again.');
+			        }
+			    });
+			}
+			
+			
+			function fetchStockDetails(stockuid) {
+						    if (!stockuid) return;
+
+						    $.ajax({
+						        url: '/getStockDetails',
+						        method: 'GET',
+						        data: { stockuid: stockuid },
+						        success: function(response) {
+						            if (response && response.length > 0) { // Ensure response is not empty
+						                let stockData = response[0]; // Get first object from the list
+						                $('#stockname').val(stockData.stockname || '');
+										$('#unitcost').val(stockData.unitcost || '');
+						                
+						            } else {
+						                alert('No data found for the selected product.');
+						            }
+						        },
+						        error: function(xhr, status, error) {
+						            console.error('Error fetching product details:', error);
+						            alert('Error fetching product details. Please try again.');
+						        }
+						    });
+						}
+						
+						$(document).ready(function () {
+						    // Set today's date for Adjustment Date and Approval Date
+						    const today = new Date().toISOString().split('T')[0];
+						    $('#adjustmentdate, #approvaldate').val(today).attr('max', today);
+
+						    // Prevent users from selecting other dates
+						    $('#adjustmentdate, #approvaldate').on('change', function () {
+						        if ($(this).val() !== today) {
+						            alert('You can only select today’s date.');
+						            $(this).val(today);
+						        }
+						    });
+
+						    // Validation for Adjustment Value (Only digits allowed)
+						    $('#adjustmentvalue').on('input', function () {
+						        let value = $(this).val();
+						        if (!/^\d*$/.test(value)) {
+						            alert('Only digits are allowed for Adjustment Value.');
+						            $(this).val(value.replace(/\D/g, '')); // Remove non-digit characters
+						        }
+								$('#newcost').val(value); // Automatically set New Cost to same value
+
+						    });
+
+						    // Validation for text fields (No special characters or numbers allowed)
+						    function validateTextField(selector) {
+						        $(selector).on('input', function () {
+						            let value = $(this).val();
+						            if (!/^[a-zA-Z\s]*$/.test(value)) {
+						                alert('Only alphabets and spaces are allowed.');
+						                $(this).val(value.replace(/[^a-zA-Z\s]/g, '')); // Remove special characters and numbers
+						            }
+						        });
+						    }
+
+						    validateTextField('#reason');
+						    validateTextField('#adjustedby');
+						    validateTextField('#approvedby');
+						    validateTextField('#comments');
+						});
+
+	
+											
+						
+</script>
+</html>

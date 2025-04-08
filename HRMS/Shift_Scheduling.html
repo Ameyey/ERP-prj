@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shift Scheduling Form</title>
+  <link rel="stylesheet" href="hrms.css">
+  <link rel="stylesheet" href="sty.css">
+  <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <div class="form-container">
+
+
+    <!-- Personal Information Section -->
+    <div class="form-section active" id="section1">
+      <h2>Shift Scheduling Form</h2>
+      <!-- First Row -->
+      <input type="hidden" id="shiftId" name="shiftId" th:value="${shift?.shiftId}">
+       <p>General Information</p>
+      <div class="form-row">
+        <div class="form-group">
+          
+          <label for="employeeId">Employee ID :</label>
+							 <input type="text" id="employeeId" name="employeeId" th:value="${shift?.employeeId}" onblur="fetchEmployeeDetails()" required>
+        </div>
+        <div class="form-group">
+          
+					<label for="employeeName">First Name:</label>
+					<input type="text" id="employeeName" name="employeeName"  th:value="${shift?.employeeName}" required readonly>
+        </div>
+        <div class="form-group">
+          
+					<label for="employeeName">last Name:</label>
+					<input type="text" id="employeeName" name="employeeName"  th:value="${shift?.employeeName}" required readonly>
+        </div>
+       
+       
+      </div>
+
+      <!-- Second Row -->
+      <div class="form-row">
+        <div class="form-group">
+          <label for="department">Department:</label>
+          <input type="text" id="department" name="department" th:value="${shift?.department}" required readonly>
+        </div>
+        <div class="form-group">
+          <label for="shiftName">Shift Name :</label>
+				        <select id="shiftName" name="shiftName" th:value="${shift?.shiftName}" required>
+						<option value="" >Select Shift Name</option>
+			            <option value="Standard Day Shift" th:selected="${shift?.shiftName == 'Standard Day Shift'}">Standard Day Shift</option>
+			            <option value="Morning Shift" th:selected="${shift?.shiftName == 'Morning Shift'}">Morning Shift</option>
+			            <option value="Afternoon or Mid-Shift" th:selected="${shift?.shiftName == 'Afternoon or Mid-Shift'}">Afternoon or Mid-Shift</option>
+			            <option value="Evening Shift" th:selected="${shift?.shiftName == 'Evening Shift'}">Evening Shift</option>
+			            <option value="Night Shift" th:selected="${shift?.shiftName == 'Night Shift'}">Night Shift</option>
+			            <option value="Rotational Shift" th:selected="${shift?.shiftName == 'Rotational Shift'}">Rotational Shift</option>
+			            <option value="Flexible Shift" th:selected="${shift?.shiftName == 'Flexible Shift'}">Flexible Shift</option>
+			        </select>
+        </div> 
+        <div class="form-group">
+          <label for="shiftDate">Shift Date :</label>
+				  <input type="date" id="shiftDate" name="shiftDate" th:value="${shift?.shiftDate}" required>
+        </div>  
+      </div>
+
+      <!-- Third Row -->
+      <div class="form-row">
+        <div class="form-group">
+          <label for="startTime">Shift Start Time : </label>
+          <input type="time" id="startTime" name="startTime" th:value="${shift?.startTime}" required>
+        </div>
+        <div class="form-group">
+          <label for="endTime">Shift End Time :</label>
+          <input type="time" id="endTime" name="endTime" th:value="${shift?.endTime}" required>
+        </div>
+        
+        <div class="form-group">
+          <label for="shiftDuration">Shift Duration </label>
+          <input type="text" id="shiftDuration"  name="shiftDuration"  th:value="${shift?.shiftDuration}" readonly>
+        </div>
+       
+            
+      </div>
+      <!-- Four Row -->
+      <div class="form-row">
+        <div class="form-group">
+          <label for="shiftStatus">Shift Status :</label>
+          <select id="shiftStatus" name="shiftStatus" style="width: 205px;" th:value="${shift?.shiftStatus}" required>
+        <option th:value="${shift?.shiftStatus}">Select Shift Status</option>
+          <option value="Active" th:selected="${shift?.shiftStatus == 'Active'}">Active</option>
+          <option value="Inactive" th:selected="${shift?.shiftStatus == 'Inactive'}">Inactive</option>
+        </select>
+        </div>
+         <div class="form-group">
+          <label for="shiftType">Shift Type :</label>
+          <select id="shiftType" name="shiftType" style="width: 250px;" th:value="${shift?.shiftType}" required>
+          <option th:value="${shift?.shiftType}">Select Shift Type</option>
+          <option value="Regular" th:selected="${shift?.shiftType == 'Regular'}">Regular</option>
+          <option value="Overtime" th:selected="${shift?.shiftType == 'Overtime'}">Overtime</option>
+          <option value="Flexi Shift" th:selected="${shift?.shiftType == 'Flexi Shift'}">Flexi Shift</option>
+          </select>
+      </div>
+        <div class="form-group" >
+          <label for="remarks">Remarks/Comments :</label>
+				  <textarea id="remarks" name="remarks" th:value="${shift?.remarks}" ></textarea>
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <button type="button" id="submitBtn" style="width: 120px;margin-left: 12px;" onclick="validateAndSubmitForm()">Submit</button>
+        <div th:if="${successMessage}" class="success-message" th:text="${successMessage}"></div>
+      </div>
+    </div>
+
+<!-- ---------------------------------------------------------------------------------------------------------------- -->
+
+    <!-- Address Details Section -->
+   
+
+<!-- ------------------------------------------------------------------------------------------------------------------------------------------- -->
+
+
+
+
+
+
+
+</div>
+
+
+
+
+
+  
+
+  <script>
+   
+    function nextSection(current) {
+      document.getElementById(`section${current}`).classList.remove('active');
+      document.getElementById(`section${current + 1}`).classList.add('active');
+    }
+
+    function prevSection(current) {
+      document.getElementById(`section${current}`).classList.remove('active');
+      document.getElementById(`section${current - 1}`).classList.add('active');
+    }
+  </script>
+  
+  <script>	function validateForm() {
+    let isValid = true;
+    // Clear previous error messages
+    document.querySelectorAll('.error-message').forEach(error => error.textContent = '');
+
+    // Validate Shift Name
+    const shiftName = document.getElementById('shiftName').value.trim();
+    if (!shiftName) {
+        showError('shiftName', 'Shift Name is mandatory.');
+        isValid = false;
+    }
+
+    // Validate Shift Start Time
+    const startTime = document.getElementById('startTime').value.trim();
+    if (!startTime) {
+        showError('startTime', 'Start Time is mandatory.');
+        isValid = false;
+    }
+
+    // Validate Shift End Time
+    const endTime = document.getElementById('endTime').value.trim();
+    if (!endTime) {
+        showError('endTime', 'End Time is mandatory.');
+        isValid = false;
+    }
+
+    // Validate Employee ID
+    const employeeId = document.getElementById('employeeId').value.trim();
+    if (!employeeId) {
+        showError('employeeId', 'Employee ID is mandatory.');
+        isValid = false;
+    }
+
+    // Validate Shift Type
+    const shiftType = document.getElementById('shiftType').value.trim();
+    if (!shiftType) {
+        showError('shiftType', 'Shift Type is mandatory.');
+        isValid = false;
+    }
+
+    // Validate Shift Date
+    const shiftDate = document.getElementById('shiftDate').value.trim();
+    if (!shiftDate) {
+        showError('shiftDate', 'Shift Date is mandatory.');
+        isValid = false;
+    }
+
+    // Validate Shift Status
+    const shiftStatus = document.getElementById('shiftStatus').value.trim();
+    if (!shiftStatus) {
+        showError('shiftStatus', 'Shift Status is mandatory.');
+        isValid = false;
+    }
+
+    return isValid;
+}
+
+function showError(fieldId, message) {
+    const errorElement = document.getElementById(`${fieldId}Error`);
+    if (errorElement) {
+        errorElement.textContent = message;
+    }
+}
+
+function validateAndSubmitForm() {
+    if (validateForm()) {
+        submitForm();
+    } else {
+        alert('Please correct the highlighted errors and try again.');
+    }
+}
+
+document.getElementById('submitBtn').addEventListener('click', validateAndSubmitForm);
+</script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+  // Auto calculate shift duration based on start time and end time
+  document.addEventListener("DOMContentLoaded", function () {
+    document.getElementById("startTime").addEventListener("change", calculateShiftDuration);
+    document.getElementById("endTime").addEventListener("change", calculateShiftDuration);
+  });
+
+  function calculateShiftDuration() {
+    const startTime = document.getElementById("startTime").value;
+    const endTime = document.getElementById("endTime").value;
+
+    if (startTime && endTime) {
+      let start = new Date(`1970-01-01T${startTime}:00`);
+      let end = new Date(`1970-01-01T${endTime}:00`);
+
+      if (end < start) {
+        end.setDate(end.getDate() + 1);
+      }
+
+      let duration = (end - start) / (1000 * 60);
+      let hours = Math.floor(duration / 60);
+      let minutes = duration % 60;
+
+      document.getElementById("shiftDuration").value = `${hours} hours ${minutes} minutes`;
+    }
+  }
+    
+
+                
+
+  function fetchEmployeeDetails() {
+  const employeeId = document.getElementById("employeeId").value;
+  if (employeeId) {
+     fetch(`/employee/${employeeId}`)
+       .then(response => {
+         if (!response.ok) throw new Error(`Employee with ID ${employeeId} not found.`);
+         return response.json();
+       })
+       .then(data => {
+       document.getElementById("employeeName").value = data.employeeName || '';
+       document.getElementById("department").value = data.department || '';
+       })
+      .catch(error => {
+      alert(error.message);
+      console.error(error);
+      });
+       }
+  }
+</script>
+  
+  <script>
+  
+  function submitForm() {
+      const formData = new FormData(document.getElementById('shiftForm'));
+      const shiftId = $('#shiftId').val();
+
+      let url, successMessage;
+
+      if (!shiftId) {
+          url = '/saveshift';
+          successMessage = 'Shift Deatails saved successfully!';
+      } else {
+          url = '/updateExistingShift';
+          successMessage = 'Shift Deatails updated successfully!';
+      }
+
+      $.ajax({
+          url: url,
+          type: 'POST',
+          data: formData,
+          processData: false,
+          contentType: false,
+          success: function(response) {
+              $('#message').text(successMessage); // Corrected this line
+              // Optionally, reset the form
+              resetForm();
+              // Optionally, redirect after successful form submission
+              window.location.href = '/viewshift';
+          },
+          error: function() {
+              alert('Error saving shift. Please fill data');
+          }
+      });
+  }
+
+
+    function resetForm() {
+        $('#shiftForm')[0].reset();
+        $('#id').val('');
+        $('#message').text('');
+        $('#form-title').text('Shift Scheduling Form');
+        $('#submitBtn').text('Submit');
+    }
+
+    function prefillForm(data) {
+        $('#shiftId').val(data.shiftId);
+        $('#shiftName').val(data.shiftName);
+        $('#startTime').val(data.startTime);
+        $('#endTime').val(data.endTime);
+        $('#shiftDuration').val(data.shiftDuration);
+        $('#employeeId').val(data.employeeId);
+        $('#employeeName').val(data.employeeName);
+        $('#department').val(data.department);
+        $('#shiftType').val(data.shiftType);
+        $('#shiftDate').val(data.shiftDate);
+        $('#shiftStatus').val(data.shiftStatus);
+        $('#remarks').val(data.remarks);
+        $('#form-title').text('Update Shift Scheduling Form');
+        $('#submitBtn').text('Update');
+    }
+  
+  </script>
+</body>
+</html>

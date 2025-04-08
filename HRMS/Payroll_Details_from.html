@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Payroll Details Form</title>
+  <link rel="stylesheet" href="hrms.css"> <!-- // for side bar code  -->
+  <link rel="stylesheet" href="sty.css">
+  <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400;700&display=swap" rel="stylesheet">
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+  </head>
+<body>
+  <div th:replace="~{HRMS.html :: sidebarFragment}"></div> <!-- // for side bar code  -->
+
+  <form id="payrollForm">
+    <div class="form-container">
+      <input type="hidden" id="id" name="id" th:value="${payrollDetails?.id}">
+      
+      <div class="form-section active">
+        <h2>Payroll Details Form</h2>
+        
+        <!-- First Row -->
+        <div class="form-row">
+          <div class="form-group">
+            <label for="employeeuid">Employee UID:</label>
+            <select id="employeeuid" name="employeeuid" onchange="fetchEmployeDetails(this.value)">
+              <option value="">Select Employee UID</option>
+              <option th:each="uid : ${employeeuid}" th:value="${uid}" th:text="${uid}"></option>
+            </select>
+          </div>
+          <div class="form-group">
+          <label>First Name:</label>
+          <input type="text" id="first_name" name="first_name" readonly>
+           </div>
+          <div class="form-group">
+            <label>Last Name:</label>
+          <input type="text" id="last_name" name="last_name" readonly>
+            </div>
+         
+        </div>
+        <!-- Second Row -->
+        <div class="form-row">
+          <div class="form-group">
+            <label>Department Name:</label>
+          <input type="text" id="departmentname" name="departmentname" readonly>
+        </div>
+          <div class="form-group">          
+            <label>Bank Name:</label>
+            <input type="text" name="bankName" th:value="${payrollDetails?.bankName}" required>
+          </div>
+          <div class="form-group">
+            <label>Branch Name:</label>
+            <input type="text" name="branchName" th:value="${payrollDetails?.branchName}" required>
+          </div>
+        
+        </div>
+
+        <!-- Third Row -->
+        <div class="form-row">
+          <div class="form-group">
+            <label>Account Holder Name:</label>
+            <input type="text" name="accountHolderName" th:value="${payrollDetails?.accountHolderName}" required>
+          </div>
+          <div class="form-group">
+            <label>Bank Account Number:</label>
+            <input type="text" name="bankAccountNumber" th:value="${payrollDetails?.bankAccountNumber}" required pattern="\d{10,18}">
+          </div>         
+          <div class="form-group">
+            <label>IFSC Code:</label>
+            <input type="text" name="ifscCode" th:value="${payrollDetails?.ifscCode}" required pattern="[A-Z]{4}0[A-Z0-9]{6}">
+          </div>
+        </div>
+
+        <!-- Other Fields -->
+        <div class="form-row">
+          <div class="form-group">
+            <label for="">Currency:</label>
+            <select id="currency" name="currency" th:value="${payrollDetails?.currency}">
+              <option value="INR" th:selected="${payrollDetails?.currency == 'INR'}">INR</option>
+              <option value="USD" th:selected="${payrollDetails?.currency == 'USD'}">USD</option>
+              <option value="EUR" th:selected="${payrollDetails?.currency == 'EUR'}">EUR</option>
+            </select>
+          </div>          
+          <div class="form-group">
+            <label for="taxResidencyStatus">Tax Residency Status:</label>
+            <select id="taxResidencyStatus" name="taxResidencyStatus" th:value="${payrollDetails?.taxResidencyStatus}" required>
+              <option value="Resident" th:selected="${payrollDetails?.taxResidencyStatus == 'Resident'}">Resident</option>
+              <option value="Non-Resident" th:selected="${payrollDetails?.taxResidencyStatus == 'Non-Resident'}">Non-Resident</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Tax Identification Number (TIN):</label>
+            <input type="text" name="taxIdentificationNumber" th:value="${payrollDetails?.taxIdentificationNumber}" required pattern="\d{11}">
+          </div>
+        </div>
+        <div class="form-actions">
+          <button type="button" id="submitBtn" onclick="submitForm()">Submit</button>
+          <div th:if="${successMessage}" class="success-message" th:text="${successMessage}"></div>
+        </div>
+      </div>
+    </div>
+  </form>
+
+  <script>
+  function fetchEmployeDetails(employeeuid) {
+      if (!employeeuid)  return;
+      
+      
+      $.ajax({
+          url: '/payroll/Edetails',
+          method: 'GET',
+          data: { employeeuid: employeeuid },
+          success: function(response) {
+                $('#first_name').val(response.firstName);
+                $('#last_name').val(response.lastName);
+                $('#departmentname').val(response.departmentName);
+
+             
+          },
+          error: function() {
+              alert('Error fetching purchased details. Please try again.');
+          }
+      });
+  }
+
+    function submitForm() {
+      const formData = new FormData(document.getElementById('payrollForm'));
+      const id = $('#id').val();
+      let url, successMessage;
+
+      if (!id) {
+        url = '/addpayroll';
+        successMessage = 'Enrollment saved successfully!';
+      } else {
+        url = '/updatePayroll';
+        successMessage = 'Enrollment updated successfully!';
+      }
+
+      $.ajax({
+        url: url,
+        type: 'POST',
+        data: formData,
+        processData: false,
+        contentType: false,
+        success: function(response) {
+          $('#message').text(successMessage);
+          resetForm();
+          window.location.href = '/hrms/grid';
+        },
+        error: function() {
+          alert('Error saving enrollment. Please try again.');
+        }
+      });
+    }
+
+    function resetForm() {
+      $('#payrollForm')[0].reset();
+      $('#id').val('');
+      $('#message').text('');
+    }
+  </script>
+</body>
+</html>

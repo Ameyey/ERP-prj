@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Employee Onboarding Form</title>
+  <link rel="stylesheet" href="hrms.css">
+  <link rel="stylesheet" href="sty.css">
+  <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <div class="form-container" style="max-width: 904px;">
+    <form id="appraisalForm" th:action="@{/submitAppraisal}" method="post" onsubmit="validateForm(event)">
+      <input type="hidden" id="id" name="id" th:value="${onboarding?.id}">
+    <!-- Personal Information Section -->
+    <div class="form-section active" id="section1">
+      <h2>Employee Onboarding Form</h2>
+      <!-- First Row -->
+     
+       <br>
+      <div class="form-row">
+        <div class="form-group">
+          <label for="employeeuid">Employee UID:</label>
+          <select id="employeeuid" name="employeeuid" onchange="fetchEmployeeDetails(this.value)" >
+              <option value="">Select Employee UID</option>
+              <option th:each="uid : ${employeeuid}" th:value="${uid}" th:text="${uid}"></option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="employeename">Employee Name:</label>
+          <input type="text" id="employeename" name="employeename"  th:value="${onboarding?.employeename}">
+        </div>
+        <div class="form-group">
+          <label for="department">Department:</label>
+        <input type="text" id="department" name="department"  th:value="${onboarding?.department}">
+        </div>
+        <div class="form-group">
+          <label for="designation">Designation:</label>
+          <input type="text" id="designation" name="designation"  th:value="${onboarding?.designation}">
+        </div>  
+        <div class="form-group">
+          <label for="dateofjoining">Date of Joining:</label>
+        <input type="date" id="dateofjoining" name="dateofjoining"  th:value="${onboarding?.dateofjoining}">
+        </div>
+      </div>
+
+      <!-- Second Row -->    
+      <div class="form-row">
+        <div class="form-group">
+          <label for="managername">Manager Name:</label>
+        <select id="managername" name="managername"  th:value="${onboarding?.managername}">
+            <option value="">-- Select Manager --</option>
+            <option value="Manager1">Manager 1</option>
+            <option value="Manager2">Manager 2</option>
+        </select>
+        </div> 
+        <div class="form-group" >      
+          <label for="academiccertificates" style="font-size: 13px;">Academic Certificates:</label>
+          <select id="academiccertificates" name="academiccertificates"  th:value="${onboarding?.academiccertificates}">
+              <option value="Submitted">Submitted</option>
+              <option value="Pending">Pending</option>
+          </select>
+        </div>      
+        <div class="form-group">
+          <label for="identityproof">Identity Proof:</label>
+          <select id="identityproof" name="identityproof"  th:value="${onboarding?.identityproof}">
+              <option value="Submitted">Submitted</option>
+              <option value="Pending">Pending</option>
+          </select>
+        </div>             
+        <div class="form-group">
+          <label for="taxdocuments">Tax Documents:</label>
+          <select id="taxdocuments" name="taxdocuments"  th:value="${onboarding?.taxdocuments}">
+              <option value="Submitted">Submitted</option>
+              <option value="Pending">Pending</option>
+          </select>
+        </div>
+        <div class="form-group">        
+          <label for="offerlettersigned">Offer Letter Signed:</label>
+          <select id="offerlettersigned" name="offerlettersigned"  th:value="${onboarding?.offerlettersigned}">
+              <option value="Submitted">Submitted</option>
+              <option value="Pending">Pending</option>
+          </select>
+        </div>
+      </div>
+
+     
+    <div class="form-row"> 
+     <div class="form-group">
+        <label for="employeeagreementsigned" style="font-size: 13px;">Employee Agreement Signed:</label>
+        <select id="employeeagreementsigned" name="employeeagreementsigned"  th:value="${onboarding?.employeeagreementsigned}">
+            <option value="Submitted">Submitted</option>
+            <option value="Pending">Pending</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="systemaccess">System Access:</label>
+        <br>
+        <input type="text" id="systemaccess" name="systemaccess"  th:value="${onboarding?.systemaccess}">
+      </div>
+      <div class="form-group">
+        <label for="accesstype">Access Type:</label>
+        <br>
+        <input type="text" id="accesstype" name="accesstype"  th:value="${onboarding?.accesstype}">
+      </div>
+      <div class="form-group">
+        <label for="levelofaccess">Level of Access:</label>
+        <br>
+        <input type="text" id="levelofaccess" name="levelofaccess"  th:value="${onboarding?.levelofaccess}">
+      </div>
+      <div class="form-group">
+        <label for="orientationdate">Orientation Date:</label>
+        <br>
+        <input type="date" id="orientationdate" name="orientationdate"  th:value="${onboarding?.orientationdate}">
+      </div>
+    </div>
+ 
+   
+  
+    <div class="form-row">
+      <div class="form-group">
+        <label for="mandatorytrainingprogram" style="font-size: 13px;">Mandatory Training Program:</label>
+        <input type="text" id="mandatorytrainingprogram" name="mandatorytrainingprogram"  th:value="${onboarding?.mandatorytrainingprogram}">
+      </div>
+      <div class="form-group">
+        <label for="assetid">Asset ID:</label>
+        <br>        
+        <input type="text" id="assetid" name="assetid"  th:value="${onboarding?.assetid}">
+      </div>
+      <div class="form-group">
+        
+        <label for="assetname">Asset Name:</label>
+        <br>        
+        <input type="text" id="assetname" name="assetname"  th:value="${onboarding?.assetname}">
+      </div>
+      <div class="form-group">
+        <label for="assettype">Asset Type:</label>
+        <br>        
+        <input type="text" id="assettype" name="assettype"  th:value="${onboarding?.assettype}">
+      </div>
+      <div class="form-group">
+        <label for="assignedto">Assigned To:</label>
+        <br>        
+        <input type="text" id="assignedto" name="assignedto"  th:value="${onboarding?.assignedto}">
+      </div>
+   
+    </div>
+
+    <div class="form-row">
+      
+        <div class="form-group">
+          <label for="allocationdate">Allocation Date:</label>
+          <br>
+          <input type="date" id="allocationdate" name="allocationdate"  th:value="${onboarding?.allocationdate}">
+        </div>
+      <div class="form-group">
+        <label for="conditionatallocation" style="font-size: 13px;">Condition at Allocation:</label>
+        <input type="text" id="conditionatallocation" name="conditionatallocation"  th:value="${onboarding?.conditionatallocation}">
+      </div>
+      <div class="form-group">
+        <label for="serialnumber">Serial Number:</label>
+        <br>
+        <input type="text" id="serialnumber" name="serialnumber"  th:value="${onboarding?.serialnumber}">
+      </div>
+      <div class="form-group">
+        <label for="configurationdetails">Configuration Details:</label>
+        <input type="text" id="configurationdetails" name="configurationdetails"  th:value="${onboarding?.configurationdetails}"></input>
+      </div>
+      <div class="form-group">
+        <label for="approvedby">Approved By:</label>
+        <br>
+        <input type="text" id="approvedby" name="approvedby"  th:value="${onboarding?.approvedby}">
+      </div>
+    </div>
+  
+      <div class="form-actions">
+        <!-- <button type="button" onclick="submitAppraisalForm()">Submit Appraisal</button>
+				<div th:if="${successMessage}" class="success-message" th:text="${successMessage}"></div> -->
+        <button type="button" id="submitBtn" onclick="submitForm()">Submit</button>
+        <div th:if="${successMessage}" class="success-message" th:text="${successMessage}"></div>
+      </div>
+  
+
+
+<!-- ---------------------------------------------------------------------------------------------------------------- -->
+
+    <!-- Address Details Section -->
+    
+
+<!-- ------------------------------------------------------------------------------------------------------------------------------------------- -->
+
+
+
+
+</div>
+
+
+
+
+
+  
+
+  <script>
+    function nextSection(current) {
+      document.getElementById(`section${current}`).classList.remove('active');
+      document.getElementById(`section${current + 1}`).classList.add('active');
+    }
+
+    function prevSection(current) {
+      document.getElementById(`section${current}`).classList.remove('active');
+      document.getElementById(`section${current - 1}`).classList.add('active');
+    }
+  </script>
+<script>
+  function fetchEmployeeDetails(employeeuid) {
+          if (!employeeuid) return;
+
+          $.ajax({
+          url: '/onboarding/getEmployeeDetails',
+              method: 'GET',
+              data: { employeeuid: employeeuid },
+              success: function(response) {
+                  if (response) {
+                      $('#employeename').val(response.employeename);
+                      $('#department').val(response.department);
+                      $('#designation').val(response.designation);
+                  }
+              },
+              error: function() {
+                  alert('Error fetching employee details. Please try again.');
+              }
+          });
+      }
+  
+function submitForm() {
+            const formData = new FormData(document.getElementById('onboarding'));
+            const id = $('#id').val();
+            let url, successMessage;
+
+            if (!id) {
+                url = '/saveon';
+                successMessage = 'Onboarding saved successfully!';
+            } else {
+                url = '/boarding/update';
+                successMessage = 'Onboarding updated successfully!';
+            }
+
+            $.ajax({
+                url: url,
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function(response) {
+                    alert(successMessage);
+                    resetForm();
+                    window.location.href = '/boardinglist';
+                },
+                error: function() {
+                    alert('Error saving onboarding level. Please try again.');
+                }
+            });
+        }
+
+        function resetForm() {
+            $('#onboarding')[0].reset();
+            $('#id').val('');
+            $('#form-title').text('Onboarding Form');
+            $('#submitBtn').text('Submit');
+        }
+
+        function prefillForm(data) {
+            $('#id').val(data.id);
+            $('#employeeuid').val(data.employeeuid);
+            $('#employeename').val(data.employeename);
+            $('#department').val(data.department);
+            $('#designation').val(data.designation);
+            $('#dateofjoining').val(data.dateofjoining);
+            $('#managername').val(data.managername);
+            $('#academiccertificates').val(data.academiccertificates);
+            $('#identityproof').val(data.identityproof);
+            $('#taxdocuments').val(data.taxdocuments);
+            $('#offerlettersigned').val(data.offerlettersigned);
+            $('#employeeagreementsigned').val(data.employeeagreementsigned);
+      $('#systemaccess').val(data.systemaccess);
+      $('#accesstype').val(data.accesstype);
+      $('#levelofaccess').val(data.levelofaccess);
+      $('#orientationdate').val(data.orientationdate);
+      $('#mandatorytrainingprogram').val(data.mandatorytrainingprogram);
+      $('#assetid').val(data.assetid);
+      $('#assetname').val(data.assetname);
+      $('#assettype').val(data.assettype);
+      $('#assignedto').val(data.assignedto);
+      $('#allocationdate').val(data.allocationdate);
+      $('#conditionatallocation').val(data.conditionatallocation);
+      $('#serialnumber').val(data.serialnumber);
+      $('#configurationdetails').val(data.configurationdetails);
+      $('#approvedby').val(data.approvedby);
+
+            $('#form-title').text('Update Onboarding Level');
+            $('#submitBtn').text('Update');
+      
+      
+
+         
+        }
+</script>
+</body>
+</html>

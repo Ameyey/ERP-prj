@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Goal Setting</title>
+  <link rel="stylesheet" href="hrms.css">
+  <link rel="stylesheet" href="sty.css">
+  <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<style>
+  label{
+    font-size: 13px;
+  }
+</style>
+<body>
+  <input type="hidden" id="id" name="id" th:value="${goal?.id}">
+  <div class="form-container" style="min-height: 397px;padding: 57px;">
+    <!-- Personal Information Section -->
+    <div class="form-section active" id="section1">
+      <h2>Goal Management</h2>
+      <!-- First Row -->
+      <div class="form-row">
+        <div class="form-group">
+          <label for="title">Goal Title:</label>
+          <input type="text" id="title" name="title" th:value="${goal?.title}" required>
+        </div>
+        <div class="form-group">
+          <label for="description">Goal Description:</label>
+				<input id="description" name="description" rows="4" th:text="${goal?.description}" required></input>
+        </div>
+        <div class="form-group">
+          <label for="targetDate">Target Date:</label>
+          <input type="date" id="targetDate" name="targetDate" th:value="${goal?.targetDate}" required>
+        </div>
+      </div>
+
+      <!-- Second Row -->
+      <div class="form-row">
+        <div class="form-group">
+          <label for="priority">Priority</label>
+          <select id="priority" name="priority">
+              <option value="">Select</option>
+              <option value="high" selected="${goal?.priority=='high'}">High</option>
+              <option value="medium" selected="${goal?.priority=='medium'}">Medium</option>
+              <option value="low"   selected="${goal?.priority=='low'}">Low</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="status">Status</label>
+                <select id="status" name="status" required>
+                    <option value="">Select</option>
+                    <option value="not_started" selected="${goal?.status=='not_started'}">Not Started</option>
+                    <option value="in_progress" selected="${goal?.status=='in_progress'}">In Progress</option>
+                    <option value="completed" selected="${goal?.status=='completed'}">Completed</option>
+                </select>
+        </div>
+        <div class="form-group">
+          <label for="regularUpdate">Regular Update</label>
+          <input id="regularUpdate" name="regularUpdate" rows="3" th:text="${goal?.regularUpdate}"></input>         
+        </div>
+      </div>
+
+      <!-- Third Row -->
+     
+      <div class="form-actions">
+        <button type="button" id="submitBtn" onclick="submitForm()">Submit</button>
+        <div th:if="${successMessage}" class="success-message" th:text="${successMessage}"></div>       
+      </div>
+    </div>
+</div>
+</body>
+<script>
+	function submitForm() {
+		    const formData = new FormData(document.getElementById('goalForm'));
+		    const goalId = $('#id').val();
+
+		    let url, successMessage;
+
+		    if (!goalId) {
+		        url = '/form';
+		        successMessage = 'goal setting saved successfully!';
+		    } else {
+		        url = '/goal/update';
+		        successMessage = 'Goal updated successfully!';
+		    }
+
+		    $.ajax({
+		        url: url,
+		        type: 'POST',
+		        data: formData,
+		        processData: false,
+		        contentType: false,
+		        success: function(response) {
+		            $('#message').text(successMessage); // Corrected this line
+		            // Optionally, reset the form
+		            resetForm();
+		            // Optionally, redirect after successful form submission
+		            window.location.href = '/goal/list';
+		        },
+		        error: function() {
+		            alert('Error saving enrollment. Please try again.');
+		        }
+		    });
+		}
+
+
+	    function resetForm() {
+	        $('#goalForm')[0].reset();
+	        $('#id').val('');
+	        $('#message').text('');
+	        $('#form-title').text('Goal Management');
+	        $('#submitBtn').text('Submit');
+	    }
+
+	    function prefillForm(data) {
+	        $('#id').val(data.id);
+	        $('#title').val(data.title);
+	        $('#description').val(data.description);
+	        $('#targetDate').val(data.targetDate);
+	        $('#priority').val(data.priority);
+	        $('#status').val(data.status);
+	        $('#regularUpdate').val(data.regularUpdate);
+	        $('#form-title').text('Update GoalSetting');
+	        $('#submitBtn').text('Update');
+	    }
+	</script>
+</html>

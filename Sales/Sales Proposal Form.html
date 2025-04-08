@@ -1,0 +1,251 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sales Proposal Form</title>
+  <link rel="stylesheet" href="hrms.css">
+  <link rel="stylesheet" href="sty.css">
+  <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+
+   <form id="spForm" enctype="/form-data" class="form-container"  >
+    <!-- Personal Information Section -->
+    <input type="hidden" id="id" name="id" th:value = "${updatesp?.id}">
+    <div class="form-section active" id="section1">
+      <h2>Sales Proposal Form</h2>
+
+      <!-- First Row -->
+    
+      <div class="form-row">
+        
+        <div class="form-group">        
+          <label for="date">Date</label>
+          <input type="date" id="date" name="date" th:value = "${updatesp?.date}">
+        </div>
+
+        <div class="form-group">
+          <label for="clientuid">Client UID:</label>
+          <select id="clientuid" name="clientuid" onchange="fetchclientDetails(this.value)"  required th:if="${updatesp == null or updatesp.id == null}">
+          <option value="">Select Client UID</option>
+          <option th:each="uid : ${clientuid}" th:value="${uid}" th:text="${uid}"></option>
+          </select>
+          <input type="text" id="clientuid" name="clientuid" th:value="${updatesp?.clientuid}" onchange="fetchclientDetails(this.value)" readonly th:if="${updatesp != null and updatesp.id != null}">        
+        </div>
+
+        <div class="form-group">
+          <label for="clientname">Client Name</label>
+                <input  id="clientname" name="clientname " readonly>   
+        </div>       
+      </div>
+
+      <div class="form-group">
+        <div class="form-group">
+          <label for="clientemail">Client Email</label>
+          <input type="email" id="clientemail" name="clientemail" readonly>
+        </div>
+      </div>
+
+      <br>
+      <br>
+      <!-- Second Row -->
+      <div class="form-row">
+        <div class="form-group">
+          <label for="clientnumber">Client Number</label>
+          <input type="text" id="clientnumber" name="clientnumber" readonly>
+	      </div>
+   
+        <div class="form-group">
+          <label for="productdescription">Product Description</label>
+				<input type="text" id="productdescription" name="productdescription" th:value = "${updatesp?.productdescription}">
+        </div>
+
+        <div class="form-group">
+          <label for="pricequotation">Price Quotation</label>
+          <input type="number" id="pricequotation" name="pricequotation" th:value = "${updatesp?.pricequotation}">
+        </div>
+
+        
+      </div>
+      <!-- Third Row -->
+    
+
+      <!-- four Row -->
+
+     
+
+   <!-- Five Row  -->
+   
+
+   </div>  
+
+ 
+
+
+    <div class="form-actions">
+      <button type="button" id="submitBtn" onclick="SubmitForm()"> Submit </button>
+			<div th:if="${successMessage}" class="success-message" th:text="${successMessage}"></div> 
+			                  
+    </div>
+  
+
+
+
+
+
+
+
+   </form>
+
+
+
+   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+ 
+   <script>
+			
+		$(document).ready(function() {
+					    // Auto-fill Item details when updating
+					    var existingclientuid = $('#clientuid').val();
+					    if (existingclientuid) {
+					    	fetchclientDetails(existingclientuid);
+					    }
+					});
+		function fetchclientDetails(clientuid) {
+	         if (!clientuid) return;
+$.ajax({
+													            url: '/client/fetchclientDetails',
+													            method: 'GET',
+													            data: { clientuid: clientuid },
+													            success: function(response) {
+																	if(response && response.length > 0) {
+																		let data = response[0];
+																		$('#clientname').val(data.clientname);
+																		$('#clientemail').val(data.clientemail);
+																		$('#clientnumber').val(data.clientnumber);
+
+												
+																		}
+																	},
+								error: function() {
+			                   alert('Error saving Sales Order Form. Please try again.');
+			                   }
+							});
+						}
+						
+														
+						
+						function validateForm() {
+						    // Get form elements
+						    const date = document.getElementById('date').value;
+						    const productDescription = document.getElementById('productdescription').value;
+						    const priceQuotation = document.getElementById('pricequotation').value;
+						    const clientUID = document.getElementById('clientuid').value;
+
+						    // Check required fields
+						    if (!clientUID) {
+						        alert('Client UID is required.');
+						        return false;
+						    }
+
+						    if (!date) {
+						        alert('Date is required.');
+						        return false;
+						    }
+
+						    if (!productDescription) {
+						        alert('Product Description is required.');
+						        return false;
+						    }
+
+						    if (!priceQuotation) {
+						        alert('Price Quotation is required.');
+						        return false;
+						    }
+
+						  
+						    // Price Quotation validation
+						    if (priceQuotation <= 0) {
+						        alert('Price Quotation must be a positive number.');
+						        return false;
+						    }
+
+						    // Product Description validation (no special characters)
+						    const regex = /^[a-zA-Z0\s]*$/; // Only allows letters, numbers, and spaces
+						    if (!regex.test(productDescription)) {
+						        alert('Product Description can only contain letters, spaces.');
+						        return false;
+						    }
+
+						    return true; // All validations passed
+						}
+														//update and delete 
+														function SubmitForm() {
+															if (!validateForm()) {
+																return;
+																}
+														        const formData = new FormData(document.getElementById('spForm'));
+														        const id = $('#id').val();
+
+														        let url, successMessage;
+
+														        if (!id) {
+														            url = '/submit';
+														            successMessage = 'ClientInfo saved successfully!';
+														        } else {
+														            url = '/updatedata';
+														            successMessage = 'ClientInfo updated successfully!';
+														        }
+
+														        $.ajax({
+														            url: url,
+														            type: 'POST',
+														            data: formData,
+														            processData: false,
+														            contentType: false,
+														            success: function(response) {
+																		
+														                $('#message').text(successMessage);
+														                resetForm();
+																		
+														                window.location.href = '/list';
+														            },
+														            error: function() {
+														                alert('Error saving client. Please fill out all required fields.');
+														            }
+														        });
+														    }
+x
+														    function resetForm() {
+														        $('#spForm')[0].reset();
+														        $('#id').val('');
+														        $('#message').text('');
+														        $('#form-title').text('Client Information Form');
+														        $('#submitBtn').text('Submit');
+														    }
+															function prefillForm(data) {
+															$('#id').val(data.id);
+														    $('#clientuid').val(data.clientuid);
+																					       
+															$('#form-title').text('Client Information  Form');
+															$('#submitBtn').text('Update');
+														}
+																					
+																						   
+																						 
+																						           																					   			// Validation for text fields (No special characters or numbers allowed)
+											               
+			
+		</script>
+
+
+
+
+
+  
+
+
+</body>
+</html>

@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Real-Time Update</title>
+  <link rel="stylesheet" href="hrms.css">
+  <link rel="stylesheet" href="sty.css">
+  <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<style>
+h5{
+  margin: 10px;
+}
+label{
+  font-size: 12px;
+}
+</style>
+<body>
+
+   <form id="realTimeUpdateForm" style="padding: 53px;min-height: 471px;" class="form-container"  >
+    <!-- Personal Information Section -->
+    <input type="hidden" id="id" name="id" th:value="${realtimeupdate?.id}" >
+    <div class="form-section active" id="section1">
+      <h2>Real-Time Update Form</h2>
+
+      <!-- First Row -->
+    
+      <div class="form-row">
+        
+        <div class="form-group">
+          <label for="productname">Product Name</label>
+          <input type="text" id="productname" name="productname"  required th:value="${realtimeupdate?.productname}">
+         </div>
+
+        <div class="form-group">
+          <label for="batchuid">Batch UID:</label>
+					<select id="batchuid" name="batchuid" onchange="fetchBatchDetails(this.value)" >
+					    <option value="">Select Batch UID</option>
+					    <option th:each="uid : ${batchuid}" th:value="${uid}" th:text="${uid}"></option>
+					</select>
+        </div>
+
+        <div class="form-group">
+          <label for="stockname">Stock Name</label>
+          <input type="text" id="stockname" name="stockname" readonly>   
+        </div>
+
+        <div class="form-group">         
+          <label for="category">Category </label>
+          <input type="text" id="category" name="category" readonly>
+        </div>
+
+      </div>
+      
+
+      <!-- Second Row -->
+      <div class="form-row">
+        <div class="form-group">
+          <label for="warehouseuid">Warehouse UID:</label>
+          <select id="warehouseuid" name="warehouseuid" onchange="fetchwarehouseDetails(this.value)">
+              <option value="">Select Warehouse UID</option>
+              <option th:each="uid : ${warehouseuid}" th:value="${uid}" th:text="${uid}"></option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="warehouselocation">Warehouse Location</label>
+          <input type="text" id="warehouselocation" name="warehouselocation" readonly>
+        </div>
+
+        <div class="form-group">
+          <label for="currentstock">Current Stock</label>
+				  <input type="text" id="currentstock" name="currentstock" readonly>				
+        </div>
+
+        <div class="form-group" >         
+          <label for="transactiontype">Transaction Type</label>
+          <input type="text" id="transactiontype" name="transactiontype" placeholder="Enter Transaction Type" required  th:value="${realtimeupdate?.transactiontype}">
+        </div>
+
+      </div>
+      <!-- Third Row -->
+       
+      <div class="form-row">
+      
+        <div class="form-group">
+          <label for="quantitytransacted">Quantity Transacted</label>
+          <input type="number" id="quantitytransacted" name="quantitytransacted" placeholder="Enter Quantity Transacted" required th:value="${realtimeupdate?.quantitytransacted}"/>
+        </div>
+
+        <div class="form-group">
+          <label for="suppliername">Supplier Name</label>
+          <input type="text" id="suppliername" name="suppliername" required th:value="${realtimeupdate?.suppliername}">
+        </div>
+
+        
+       
+        <div class="form-group">
+          <label for="transactiondate">Transaction Date</label>
+          <input type="date" id="transactiondate" name="transactiondate" required th:value="${realtimeupdate?.transactiondate}">
+        </div>
+        
+      </div>
+
+      <!-- four Row -->
+
+    
+
+   <!-- Five Row  -->
+     
+
+ 
+
+
+    <div class="form-actions">
+      <button type="button" id="submitBtn" onclick="submitForm()">Save Update</button>
+      <div th:if="${successMessage}" class="success-message" th:text="${successMessage}"></div>                   
+    </div>
+</form>
+
+
+
+   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+   <script>
+    // Function to validate input fields
+    function validateInput(field, regex, errorMessage) {
+        const value = field.value.trim();
+        if (!regex.test(value)) {
+            alert(errorMessage);
+            field.focus();
+            return false;
+        }
+        return true;
+    }
+
+    // Submit form with validation
+    function submitForm() {
+        const productNameField = document.getElementById('productname');
+        const supplierNameField = document.getElementById('suppliername');
+
+        // Regular expression for validation (no digits or special characters)
+        const nameRegex = /^[a-zA-Z\s]+$/;
+
+        // Validate Product Name
+        if (!validateInput(productNameField, nameRegex, "Product Name can only contain letters and spaces.")) {
+            return;
+        }
+
+        // Validate Supplier Name
+        if (!validateInput(supplierNameField, nameRegex, "Supplier Name can only contain letters and spaces.")) {
+            return;
+        }
+
+        // Continue with form submission if validation passes
+        const formData = new FormData(document.getElementById('realTimeUpdateForm'));
+        const id = $('#id').val().trim(); // Use trim to ensure no spaces are considered
+
+        let url, successMessage;
+
+        if (!id) { // Check if the id is empty or undefined
+            url = '/saveRealtimeupdate';
+            successMessage = 'Real-Time saved successfully!';
+        } else {
+            url = `/realtime/update/${id}`;
+            successMessage = 'Real-Time Update updated successfully!';
+        }
+
+        $.ajax({
+            url: url,
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function(response) {
+                alert(successMessage);
+                resetForm();
+                window.location.href = '/list';
+            },
+            error: function() {
+                alert('Error saving real-time update. Please try again.');
+            }
+        });
+    }
+
+    function resetForm() {
+        $('#realTimeUpdateForm')[0].reset();
+        $('#id').val('');
+        $('#message').text('');
+        $('#form-title').text('Real-Time Update Management');
+        $('#submitBtn').text('Submit');
+    }
+
+    function prefillForm(data) {
+        $('#id').val(data.id);
+        $('#realtimeuid').val(data.realtimeuid);
+        $('#productname').val(data.productname);
+        $('#batchuid').val(data.batchuid);
+        $('#warehouseuid').val(data.warehouseuid);
+        $('#transactiontype').val(data.transactiontype);
+        $('#quantitytransacted').val(data.quantitytransacted);
+        $('#suppliername').val(data.suppliername);
+        $('#form-title').text('Update Real-Time Update');
+        $('#submitBtn').text('Update');
+    }
+
+    function fetchBatchDetails(batchuid) {
+        if (!batchuid) return;
+
+        $.ajax({
+            url: '/batch/getbatchDetails',
+            method: 'GET',
+            data: { batchuid: batchuid },
+            success: function(response) {
+                $('#stockname').val(response.stockname);
+                $('#category').val(response.category);
+            },
+            error: function() {
+                alert('Error fetching Batch details. Please try again.');
+            }
+        });
+    }
+
+    function fetchwarehouseDetails(warehouseuid) {
+        if (!warehouseuid) return;
+
+        $.ajax({
+            url: '/warehouse/getwarehouseDetails',
+            method: 'GET',
+            data: { warehouseuid: warehouseuid },
+            success: function(response) {
+                $('#currentstock').val(response.currentstock);
+                $('#warehouselocation').val(response.warehouselocation);
+            },
+            error: function() {
+                alert('Error fetching Warehouse details. Please try again.');
+            }
+        });
+    }
+</script>
+<script>
+    // Function to validate input fields
+    function validateInput(field, regex, errorMessage) {
+        const value = field.value.trim();
+        if (!regex.test(value)) {
+            alert(errorMessage);
+            field.focus();
+            return false;
+        }
+        return true;
+    }
+
+    // Submit form with validation
+    function submitForm() {
+        const productNameField = document.getElementById('productname');
+        const supplierNameField = document.getElementById('suppliername');
+
+        // Regular expression for validation (no digits or special characters)
+        const nameRegex = /^[a-zA-Z\s]+$/;
+
+        // Validate Product Name
+        if (!validateInput(productNameField, nameRegex, "Product Name can only contain letters and spaces.")) {
+            return;
+        }
+
+        // Validate Supplier Name
+        if (!validateInput(supplierNameField, nameRegex, "Supplier Name can only contain letters and spaces.")) {
+            return;
+        }
+
+        // Continue with form submission if validation passes
+        const formData = new FormData(document.getElementById('realTimeUpdateForm'));
+        const id = $('#id').val().trim(); // Use trim to ensure no spaces are considered
+
+        let url, successMessage;
+
+        if (!id) { // Check if the id is empty or undefined
+            url = '/saveRealtimeupdate';
+            successMessage = 'Real-Time saved successfully!';
+        } else {
+            url = `/realtime/update/${id}`;
+            successMessage = 'Real-Time Update updated successfully!';
+        }
+
+        $.ajax({
+            url: url,
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function(response) {
+                alert(successMessage);
+                resetForm();
+                window.location.href = '/list';
+            },
+            error: function() {
+                alert('Error saving real-time update. Please try again.');
+            }
+        });
+    }
+
+    function resetForm() {
+        $('#realTimeUpdateForm')[0].reset();
+        $('#id').val('');
+        $('#message').text('');
+        $('#form-title').text('Real-Time Update Management');
+        $('#submitBtn').text('Submit');
+    }
+
+    function prefillForm(data) {
+        $('#id').val(data.id);
+        $('#realtimeuid').val(data.realtimeuid);
+        $('#productname').val(data.productname);
+        $('#batchuid').val(data.batchuid);
+        $('#warehouseuid').val(data.warehouseuid);
+        $('#transactiontype').val(data.transactiontype);
+        $('#quantitytransacted').val(data.quantitytransacted);
+        $('#suppliername').val(data.suppliername);
+        $('#form-title').text('Update Real-Time Update');
+        $('#submitBtn').text('Update');
+    }
+
+    function fetchBatchDetails(batchuid) {
+        if (!batchuid) return;
+
+        $.ajax({
+            url: '/batch/getbatchDetails',
+            method: 'GET',
+            data: { batchuid: batchuid },
+            success: function(response) {
+                $('#stockname').val(response.stockname);
+                $('#category').val(response.category);
+            },
+            error: function() {
+                alert('Error fetching Batch details. Please try again.');
+            }
+        });
+    }
+
+    function fetchwarehouseDetails(warehouseuid) {
+        if (!warehouseuid) return;
+
+        $.ajax({
+            url: '/warehouse/getwarehouseDetails',
+            method: 'GET',
+            data: { warehouseuid: warehouseuid },
+            success: function(response) {
+                $('#currentstock').val(response.currentstock);
+                $('#warehouselocation').val(response.warehouselocation);
+            },
+            error: function() {
+                alert('Error fetching Warehouse details. Please try again.');
+            }
+        });
+    }
+</script>
+
+
+
+
+
+  
+
+
+</body>
+</html>

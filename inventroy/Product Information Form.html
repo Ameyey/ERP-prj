@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Product Information Form</title>
+  <link rel="stylesheet" href="hrms.css">
+  <link rel="stylesheet" href="sty.css">
+  <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+   <form  id="ProductInfoForm"  class="form-container"  >
+    <!-- Personal Information Section -->
+    <input type="hidden" id="id" name="id" th:value="${product?.id}">
+    <div class="form-section active" id="section1">
+      <h2>Product Information Form</h2>
+
+      <!-- First Row -->
+    
+      <div class="form-row">
+        
+        <div class="form-group">        
+          <label for="productname">Product Name:</label>
+          <input type="text" id="productname" name="productname" placeholder="Enter Product Name" th:value  = "${product?.productname}" >
+        </div>
+
+        <div class="form-group">
+          <label for="productcategory">Product Category:</label>
+          <input type="text" id="productcategory" name="productcategory" placeholder="Enter Product Category" th:value = "${product?.productcategory}" >
+        </div>
+
+        <div class="form-group">
+          <label>Subcategory</label>
+          <input type="text" id="productsubcategory" name="productsubcategory" th:value="${product?.productsubcategory}" />
+        </div>
+
+        <div class="form-group">
+          <label>Specifications</label>
+        <input id="specifications" name="specifications" th:text="${product?.specifications}"></input>
+        </div>
+        </div>
+
+      <!-- Second Row -->
+      <div class="form-row">
+        <div class="form-group">
+          <label>HSN/SAC Code *</label>
+          <input type="text" id="hsnsaccode" name="hsnsaccode" th:value="${product?.hsnsaccode}" required />  
+	      </div>
+   
+        <div class="form-group">
+          <label>Unit of Measure *</label>
+          <input type="text" id="unitofmeasure" name="unitofmeasure" th:value="${product?.unitofmeasure}" required />  
+        </div>
+
+        <div class="form-group">
+          <label style="font-size: 12px;">Primary Supplier Name *</label>
+          <input type="text" id="suppliername" name="suppliername" th:value="${product?.suppliername}" required />
+        </div>
+
+        <div class="form-group" >         
+          <label style="font-size: 12px;">Supplier Contact Information *</label>
+          <input type="text" id="suppliercontact" name="suppliercontact" th:value="${product?.suppliercontact}" required />  
+        </div>
+      </div>
+      <!-- Third Row -->
+      <div class="form-row">
+      
+          <div class="form-group">            
+            <label>Lead Time (Days) *</label>
+            <input type="number" id="leadtime" name="leadtime" th:value="${product?.leadtime}" required />
+          </div>
+
+          <div class="form-group">
+            <label  style="font-size: 12px;">Minimum Order Quantity *</label>
+        <input type="number" id="minorderquantity" name="minorderquantity" min="0" th:value="${product?.minorderquantity}" required />
+        </div>
+        <div class="form-group">
+          <label>Purchase Price *</label>
+          <input type="number" id="purchaseprice" name="purchaseprice" step="0.01" th:value="${product?.purchaseprice}" required />
+        </div>
+        <div class="form-group">
+          <label>Selling Price (MRP) *</label>
+          <input type="number" id="sellingprice" name="sellingprice" step="0.01" th:value="${product?.sellingprice}" required />            
+        </div>
+        
+      </div>
+
+      <!-- four Row -->
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Tax Rate (%) *</label>
+          <input type="number" id="taxrate" name="taxrate" step="0.01" th:value="${product?.taxrate}" required />
+
+        </div>
+        <div class="form-group">
+          <label>Currency *</label>
+          <input type="text" id="currency" name="currency" th:value="${product?.currency}" required />
+        </div> 
+
+        <div class="form-group">
+          <label>Reorder Level *</label>
+          <input type="number" id="reorderlevel" name="reorderlevel" th:value="${product?.reorderlevel}" required />
+        </div>     
+        <div class="form-group">          
+          <label>Safety Stock Level *</label>
+          <input type="number" id="safetystocklevel" name="safetystocklevel" th:value="${product?.safetystocklevel}" required />
+
+        </div>
+      
+        
+    </div>
+
+   <!-- Five Row  -->
+   <div class="form-row">
+
+    <div class="form-group">
+      <label>Item Status *</label>
+      <input type="text" id="itemstatus" name="itemstatus" th:value="${product?.itemstatus}" required />
+    </div>
+
+    <div class="form-group">
+      <label for="manufacturingdate">Manufacturing Date:</label>
+        <input type="date" id="manufacturingdate" name="manufacturingdate" th:value  = "${product?.manufacturingdate}" >
+      </div>
+
+      <div class="form-group">
+        
+        <label for="expirydate">Expiry Date:</label>
+        <input type="date" id="expirydate" name="expirydate" th:value = "${product?.expirydate}" >
+      </div>
+
+      <div class="form-group">
+       
+        <label for="warrantyperiod">Warranty Period:</label>
+        <input type="text" id="warrantyperiod" name="warrantyperiod" placeholder="Enter Warranty Period"  th:value  = "${product?.warrantyperiod}" >
+      </div>
+
+   </div>  
+
+ 
+
+
+    <div class="form-actions">
+      <button type="button" id="submitBtn"  onclick="submitForm()">Submit </button>
+      <div th:if="${successMessage}" class="success-message" th:text="${successMessage}"></div>                     
+    </div>
+  
+
+
+
+
+
+
+
+   </form>
+
+
+
+   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+   <script>
+    
+    function submitForm() {
+        const formData = new FormData(document.getElementById('ProductInfoForm'));
+        const id = $('#id').val();
+
+        let url, successMessage;
+
+        if (!id) {
+            url = '/productinfo';
+            successMessage = 'ProductInfo saved successfully!';
+        } else {
+            url = '/updateproductinfo';
+            successMessage = 'ProductInfo updated successfully!';
+        }
+
+        $.ajax({
+            url: url,
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function(response) {
+                $('#message').text(successMessage);
+                resetForm();
+                window.location.href = '/viewproductinfolist';
+            },
+            error: function() {
+                alert('Error saving product. Please fill out all required fields.');
+            }
+        });
+    }
+
+    function resetForm() {
+        $('#ProductInfoForm')[0].reset();
+        $('#id').val('');
+        $('#message').text('');
+        $('#form-title').text('Product Information Form');
+        $('#submitBtn').text('Submit');
+    }
+
+    function prefillForm(data) {
+    	$('#id').val(data.id);
+    	$('#productuid').val(data.productuid);
+    	$('#productname').val(data.productname);
+    	$('#productcategory').val(data.productcategory);
+         $('#productsubcategory').val(data.productsubcategory);
+         $('#specifications').val(data.specifications);
+         $('#hsnsaccode').val(data.hsnsaccode);
+         $('#unitofmeasure').val(data.unitofmeasure);
+         $('#suppliername').val(data.suppliername);
+         $('#suppliercontact').val(data.suppliercontact);
+         $('#leadtime').val(data.leadtime);
+         $('#minorderquantity').val(data.minorderquantity);
+         $('#purchaseprice').val(data.purchaseprice);
+         $('#sellingprice').val(data.sellingprice);
+         $('#taxrate').val(data.taxrate);
+         $('#currency').val(data.currency);
+         $('#reorderlevel').val(data.reorderlevel);
+         $('#safetystocklevel').val(data.safetystocklevel);
+         $('#itemstatus').val(data.itemstatus);
+    	$('#manufacturingdate').val(data.manufacturingdate);
+    	$('#expirydate').val(data.expirydate);
+    	$('#warrantyperiod').val(data.warrantyperiod);
+    	
+    	$('#form-title').text('Update Product Information Form');
+        $('#submitBtn').text('Update');	
+    }
+    
+    
+    </script>
+  
+
+
+
+
+
+  
+
+
+</body>
+</html>

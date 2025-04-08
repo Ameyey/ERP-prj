@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Stock Information Form</title>
+  <link rel="stylesheet" href="sty.css">
+    <link rel="stylesheet" href="hrms.css"> <!-- // for side bar code  -->
+       <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<style>
+
+</style>
+<body onload="fetchProductDetails()">
+<div th:replace="~{INVENTORY.html :: sidebarFragment}"></div> <!-- // for side bar code  -->
+
+ 
+
+   <form id="StockInfoForm" class="form-container"   >
+    <!-- Personal Information Section -->
+    <h2>Stock Information Form</h2>
+    <input type="hidden" id="id" name="id" th:value="${stockinfo?.id}">
+   
+   
+    <div class="form-section active" id="section1"  >
+     
+
+      <!-- First Row -->
+    
+      <div class="form-row" >
+        
+      
+      <div class="form-group">
+        <label for="stockname">Stock Name</label>
+        <input type="text" id="stockname" name="stockname" th:value="${stockinfo?.stockname}" required>
+    </div>
+
+   
+    
+  
+      </div>
+      <div class="form-row" >
+        
+      
+      <div class="form-group">
+    <label for="batchuids">Batch UIDs</label>
+    <input type="text" id="search-batchuid" placeholder="Search Batch ID" style="font-size: 14px; margin-bottom: 5px; width: 100%;" onkeyup="filterBatchUIDs()">
+    <select id="batchuid" name="batchuid[]" multiple size="3" onchange="fetchLotuids()" th:if="${stockinfo == null or stockinfo.id == null}" style="font-size: 15px; padding-top: 7px; width: 100%;" required>
+        <option th:each="batchId : ${batchIds}" th:value="${batchId}" th:text="${batchId}"></option>
+    </select>
+</div>
+
+
+</div>
+
+
+
+      <!-- Second Row -->
+      <div class="form-row">
+       
+    
+      <div class="form-group">	
+        <label for="lotuids">Lot UIDs</label>
+        <textarea type="text" id="lotuids" name="lotuids" style="width: 100%; height: 100px"  required></textarea>
+    </div>
+    <div class="form-group">
+        <label for="batchuid" >Added Batch UIDs</label>       
+             
+    <textarea id="batchuids" name="batchuids" th:text="${stockinfo?.batchuids}"style="width: 100%; height: 100px; text-align: left;"></textarea>
+    
+     </div>
+</div>
+      <!-- Third Row -->
+      <div class="form-row">
+
+       
+         
+          <div class="form-group">
+      <label for="productuid">Product UID</label>
+
+      <!-- Show dropdown while saving -->
+      <select id="productuid" name="productuid" onchange="fetchProductDetails()" required th:if="${stockinfo == null or stockinfo.id == null}" >
+          <option value="">--Select Product ID--</option>
+          <option th:each="productId : ${ProductIds}" th:value="${productId}" th:text="${productId}"></option>
+      </select>`
+     <input type="text" id="productuid" name="productuid" th:value="${stockinfo?.productuid}" onchange="fetchProductDetails()" readonly th:if="${stockinfo?.id != null}">
+      
+    </div>
+    
+
+      <div class="form-group">
+        <label for="productname">Product Name</label>
+        <input type="text" id="productname" name="productname"  readonly>
+    </div>
+    <div class="form-group">
+      <label for="productcategory">Product Category</label>
+      <input type="text" id="productcategory" name="productcategory"  readonly>
+  </div>          
+      </div>
+
+      <!-- four Row -->
+
+   
+    </div>
+
+   <!-- Five Row  -->
+   <div class="form-row">
+    <div class="form-group">
+      <label for="lotquantity">Lot Quantity</label>
+      <input type="number" id="lotquantity" name="lotquantity" th:value="${stockinfo?.lotquantity}" required>
+  </div>
+  <div class="form-group">
+   <label for="warehouseuid">Warehouse ID:</label>
+            <select type="text" id="warehouseuid" name="warehouseuid" onchange="fetchwarehouseDetails()" required th:if="${stockinfo == null or stockinfo.id == null}">
+            <option value="">--Select Warehouse ID--</option>
+            <option th:each="warehouseuid : ${WaerhouseUids}"
+                    th:value="${warehouseuid}"
+                    th:text="${warehouseuid}"></option>
+            </select>
+           <input type="text" id="warehouseuid" name="warehouseuid" th:value="${stockinfo?.warehouseuid}" onchange="fetchwarehouseDetails()" readonly th:if="${stockinfo?.id != null}">
+           
+</div>
+<div class="form-group">
+    <label for="warehousename">Warehouse Name:</label>
+    <input type="text" id="warehousename" name="warehousename" readonly>
+   </div>
+    
+   </div>
+
+ 
+
+
+    <div class="form-actions">
+      <button type="button" id="submitBtn" onclick="submitForm()">Submit</button>
+                <div th:if="${successMessage}" class="success-message" th:text="${successMessage}"></div>                    
+    </div>
+  
+
+
+
+
+
+
+
+   </form>
+
+
+
+   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+   
+   <script>
+function filterBatchUIDs() {
+    let input = document.getElementById("search-batchuid").value.toLowerCase();
+    let select = document.getElementById("batchuid");
+    let options = select.getElementsByTagName("option");
+
+    for (let i = 0; i < options.length; i++) {
+        let txtValue = options[i].textContent || options[i].innerText;
+        options[i].style.display = txtValue.toLowerCase().includes(input) ? "" : "none";
+    }
+}
+</script>
+   <script>
+   
+   
+    
+    $(document).ready(function() {
+	    // Auto-fill Item details when updating
+	    var existingproductuid = $('#productuid').val();
+	    if (existingproductuid) {
+	    	fetchProductDetails(existingproductuid);
+	    }
+	    
+	    var existingwarehouseuid = $('#warehouseuid').val();
+	    if (existingwarehouseuid) {
+	    	fetchwarehouseDetails(existingwarehouseuid);
+	    }
+	});
+    
+       function fetchProductDetails() {
+        const productuid = $('#productuid').val();
+
+        if (!productuid) {
+            return;
+        }
+
+        $.ajax({
+            url: '/getproductdetailsinstock',
+            method: 'GET',
+            data: { productuid: productuid }, // Correct parameter name
+            success: function(response) {
+                console.log("Response from server:", response); // Log response for debugging
+                if (response && response.length > 0) {
+                    const productDetail = response[0]; 
+                    $('#productname').val(productDetail.productname || '');
+                    $('#productcategory').val(productDetail.productcategory || '');
+                } else {
+                    alert("No details found for the selected Product ID.");
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error("Error fetching product details:", error);
+                alert("An error occurred while fetching the Product details.");
+            }
+        });
+    }
+
+     
+    
+        function submitForm() {
+            const formData = new FormData(document.getElementById('StockInfoForm'));
+            const id = $('#id').val();
+
+            let url, successMessage;
+
+            if (!id) {
+                url = '/savestockinfo';
+                successMessage = 'StockInfo saved successfully!';
+            } else {
+                url = '/updatestockinfo';
+                successMessage = 'StockInfo updated successfully!';
+            }
+
+            $.ajax({
+                url: url,
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function(response) {
+                    alert(successMessage);
+                    window.location.href = '/inventory/batchlotgrid';
+                },
+                error: function() {
+                    alert('Error saving stock info. Please check the required fields.');
+                }
+            });
+        }
+
+        
+        function fetchLotuids() {
+            const batchuids = $('#batchuid').val(); // Get all selected batch UIDs as an array
+
+            if (!batchuids || batchuids.length === 0) {
+                $('#lotuids').val('');
+                return;
+            }
+
+            // Convert batch UIDs array to a comma-separated string
+            const batchuidsString = batchuids.join(',');
+            
+            
+         // Get the existing batchuids from the readonly field
+            let existingBatchUids = $('#batchuids').val().split(',').filter(Boolean);
+
+            // ✅ Validation: Prevent re-selecting an already selected batchuid
+            const duplicate = batchuids.some(uid => existingBatchUids.includes(uid));
+            if (duplicate) {
+                alert("You've already selected this Batch UID!");
+                $('#batchuid').val(existingBatchUids); // Reset to previous state
+                return;
+            }
+
+
+
+            $.ajax({
+                url: '/getlotuidsinstock',
+                method: 'GET',
+                data: { batchuid: batchuidsString },
+                success: function(response) {
+                    console.log("Response from server:", response);
+
+                    if (response && response.length > 0) {
+                        // Keep existing Lot UIDs and merge with new ones
+                        const lotUidSet = new Set($('#lotuids').val().split(',').filter(Boolean));
+
+                        response.forEach((Detail) => {
+                            if (Detail.lotuids) {
+                                Detail.lotuids.split(',').forEach(uid => lotUidSet.add(uid.trim()));
+                            }
+                        });
+
+                        // Update the lotuids field with unique, merged values
+                        $('#lotuids').val(Array.from(lotUidSet).join(','));
+
+                        // ✅ Append the selected batch UIDs to the readonly field (without overwriting!)
+                        const existingBatchUids = $('#batchuids').val();
+                        const newBatchUids = batchuids.filter(uid => !existingBatchUids.includes(uid));
+                        
+                        $('#batchuids').val(
+                            existingBatchUids ? existingBatchUids + ',' + newBatchUids.join(',') : newBatchUids.join(',')
+                        );
+                    } else {
+                        alert("No details found for the selected Batch IDs.");
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error("Error fetching Batch details:", error);
+                    alert("An error occurred while fetching the Batch details.");
+                }
+            });
+        }
+        
+        
+        
+        function fetchwarehouseDetails() {
+            const warehouseuid = $('#warehouseuid').val() ;
+
+            if (!warehouseuid) {
+                alert("Please select a Warehouse ID.");
+                return;
+            }
+
+                $.ajax({
+                    url: '/getwarehousedetailsinstock',
+                    method: 'GET',
+                    data: { warehouseuid: warehouseuid },
+                    success: function (response) {
+                        console.log("Response from server:", response);  // Log the response
+                        if (response && response.length > 0) {
+                            const WarehouseDetail = response[0];
+                            $('#warehousename').val(WarehouseDetail.warehousename || '');
+                        } else {
+                            alert("No details found for the selected Warehouse ID.");
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        console.error("Error fetching Warehouse details:", error);
+                        alert("An error occurred while fetching the Warehouse details.");
+                    }
+                });
+            }
+
+        
+
+    </script>
+
+<script>
+    function addBatchId() {
+        let textarea = document.getElementById("batchuids");
+        let batchCount = textarea.value.split("\n").length; // Count existing lines
+        
+        if (batchCount < 5) {
+            let newBatchId = "Batch" + (batchCount + 1); // Generate a new batch ID
+            textarea.value += (textarea.value ? "\n" : "") + newBatchId; // Add new line
+        } else {
+            alert("Maximum 5 batch IDs allowed!");
+        }
+    }
+</script>
+
+  	<script>
+    function addBatchId() {
+        let textarea = document.getElementById("batchuids");
+        let batchCount = textarea.value.split("\n").length; // Count existing lines
+        
+        if (batchCount < 5) {
+            let newBatchId = "Batch" + (batchCount + 1); // Generate a new batch ID
+            textarea.value += (textarea.value ? "\n" : "") + newBatchId; // Add new line
+        } else {
+            alert("Maximum 5 batch IDs allowed!");
+        }
+    }
+</script>
+
+
+</body>
+</html>

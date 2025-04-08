@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Stock Transfer</title>
+  <link rel="stylesheet" href="hrms.css">
+  <link rel="stylesheet" href="sty.css">
+  <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<style>
+h5{
+  margin: 10px;
+}
+</style>
+<body>
+
+   <div class="form-container" style="max-width: 877px;" >
+    <!-- Personal Information Section -->
+    <input type="hidden" id="id" name="id" th:value="${stocktransfer?.id}">
+    <div class="form-section active" id="section1">
+      <input type="hidden" name="id" th:value="${warehouse?.id}" />
+      <h2>Stock Transfer Form</h2>
+
+      <!-- First Row -->
+      <h5>General Information</h5>
+      <div class="form-row">
+        
+        <div class="form-group">        
+          <label for="sourceWarehouseUid">Warehouse UID :</label>
+          <select type="text" id="sourceWarehouseUid" name="sourceWarehouseUid" onchange="fetchwarehouseDetails()" >
+              <option value="">--Select Warehouse UID--</option>
+              <option th:each="warehouseuid : ${warehouseuid}"
+                              th:value="${warehouseuid}"
+                              th:text="${warehouseuid}"></option>
+              </select>
+        </div>
+        <div class="form-group">
+          <label>Source Location : </label>
+          <input type="text" id="address" name="address" readonly/>
+        </div>
+
+        <div class="form-group">
+          <label for="transferdate">Transfer Date:</label>
+          <input type="date" id="transferdate" name="transferdate" th:value= "${stocktransfer?.transferdate}" ><br>     
+        </div>
+
+        <div class="form-group">
+          <label for="transfertype">Transfer Type:</label>
+          <select id="transfertype" name="transfertype" th:value="${stocktransfer?.transfertype}" required>
+              <option value="" disabled selected>Select transfer type</option>
+              <option value="Internal Transfer" th:selected="${stocktransfer?.transfertype == 'Internal Transfer'}">Internal Transfer</option>
+              <option value="Inter-Warehouse Transfer" th:selected="${stocktransfer?.transfertype == 'Inter-Warehouse Transfer'}">Inter-Warehouse Transfer</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Second Row -->
+      <h5>Source and Destination Details</h5>      
+      <div class="form-row">
+        <div class="form-group">
+          <label for="sourcesection">Source Section:</label>
+          <input type="text" id="sourcesection" name="sourcesection" th:value= "${stocktransfer?.sourcesection}" >
+	      </div>
+   
+        <div class="form-group">
+          <label for="destinationWarehouseUid">Warehouse UID :</label>
+		        <select type="text" id="destinationWarehouseUid" name="destinationWarehouseUid" onchange="fetchdestinationwarehouseDetails()" >
+				      <option value="">--Select Warehouse UID--</option>
+				      <option th:each="warehouseuid : ${warehouseuid}"th:value="${warehouseuid}"th:text="${warehouseuid}"></option>
+	          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="toaddress" >Destination Location:</label>
+          <input type="text" id="toaddress" name="toaddress"readonly />
+        </div>
+        <div class="form-group" >
+          <label for="destinationsection">Destination Section:</label>
+          <input type="text" id="destinationsection" name="destinationsection" th:value= "${stocktransfer?.destinationsection}" >
+        </div>
+      </div>
+      <!-- Third Row -->
+      <h5>Item Details</h5>
+      <div class="form-row">
+      
+          <div class="form-group">            
+		         <label for="itemid">itemdetail UID :</label>
+	         	    <select type="text" id="itemid" name="itemid"  onchange="fetchitemdetail()">
+		            <option value="">--Select itemdetail ID--</option>
+		            <option th:each="uid : ${itemid}" th:value="${uid}" th:text="${uid}"></option>
+		          </select>
+          </div>
+
+          <div class="form-group">
+            <label >Item Name:</label>  
+            <input type="text" id="toitemname" name="toitemname" readonly /><br>   
+        </div>
+        <div class="form-group">
+          <label for="batchnumber">Batch Number:</label>
+        <input type="text" id="batchnumber" name="batchnumber" th:value= "${stocktransfer?.batchnumber}" ><br>
+        </div>
+        <div class="form-group">
+          <label for="quantitytotransfer">Quantity to Transfer:</label>
+          <input type="number" id="quantitytotransfer" name="quantitytotransfer" th:value= "${stocktransfer?.quantitytotransfer}" ><br>       
+        </div>
+        <div class="form-group">
+          <label for="unitofmeasure">Unit of Measure:</label>
+          <input type="text" id="unitofmeasure" name="unitofmeasure" th:value= "${stocktransfer?.unitofmeasure}" ><br>  
+        </div>
+      </div>
+
+      <!-- four Row -->
+
+      <h5>Transfer Information</h5>
+      <div class="form-row">
+        <div class="form-group">
+          <label for="reasonfortransfer">Reason for Transfer:</label>
+        <input type='text' id="reasonfortransfer" name="reasonfortransfer" th:text= "${stocktransfer?.reasonfortransfer}" ></input type='text'><br>
+        </div> 
+        <div class="form-group">
+          <label for="transfermode">Transfer Mode:</label>
+          <select id="transfermode" name="transfermode" th:value="${stocktransfer?.transfermode}">
+              <option value="" disabled selected>Select transfer mode</option>
+              <option value="Road" th:selected="${stocktransfer?.transfermode == 'Road'}">Road</option>
+              <option value="Air" th:selected="${stocktransfer?.transfermode == 'Air'}">Air</option>
+              <option value="Sea" th:selected="${stocktransfer?.transfermode == 'Sea'}">Sea</option>
+          </select>
+        </div>     
+        <div class="form-group">
+          <label for="carriername">Carrier Name:</label>
+          <input type="text" id="carriername" name="carriername" th:value= "${stocktransfer?.carriername}"><br>  
+        </div>   
+        <div class="form-group">
+          <label for="transfercost">Transfer Cost:</label>
+		       <input type="number" step="0" id="transfercost" name="transfercost" th:value="${stocktransfer?.transfercost}" min="0"><br>
+        </div>
+      </div>
+
+   <!-- Five Row  -->
+   <h5>Approval and Authorization</h5>
+   <div class="form-row">
+     <div class="form-group">
+      <label for="requestedby">Requested By:</label>
+      <input type="text" id="requestedby" name="requestedby" th:value= "${stocktransfer?.requestedby}" ><br>
+     </div>
+
+     <div class="form-group">
+      <label for="approvedby">Approved By:</label>
+      <input type="text" id="approvedby" name="approvedby" th:value= "${stocktransfer?.approvedby}"><br>
+     </div>  
+
+     <div class="form-group">
+      <label for="approvaldate">Approval Date:</label>
+      <input type="date" id="approvaldate" name="approvaldate" th:value= "${stocktransfer?.approvaldate}"><br>
+     </div>
+   </div>  
+
+   <h5>Additional Details</h5>
+   <div class="form-row">
+     <div class="form-group">
+      <label for="remarks">Remarks:</label>
+      <input type='text' id="remarks" name="remarks" th:text= "${stocktransfer?.remarks}"></input type='text'><br>
+     </div>
+
+     <div class="form-group">
+      <label for="status">Status:</label>
+      <select id="status" name="status" th:value="${stocktransfer?.status}" required>
+          <option value="" disabled selected>Select status</option>
+          <option value="Pending" th:selected="${stocktransfer?.status == 'Pending'}">Pending</option>
+          <option value="In Transit" th:selected="${stocktransfer?.status == 'In Transit'}">In Transit</option>
+          <option value="Completed" th:selected="${stocktransfer?.status == 'Completed'}">Completed</option>
+      </select>
+     </div>  
+
+    
+   </div> 
+
+
+      <div class="form-actions">
+        <button type="button" id="submitBtn" onclick="submitForm()">Submit</button>
+        <div th:if="${successMessage}" class="success-message" th:text="${successMessage}"></div>                      
+      </div>
+    </div>
+
+
+
+
+
+
+
+   </div>
+
+
+
+
+
+
+  
+
+  <script>
+    function nextSection(current) {
+      document.getElementById(`section${current}`).classList.remove('active');
+      document.getElementById(`section${current + 1}`).classList.add('active');
+    }
+
+    function prevSection(current) {
+      document.getElementById(`section${current}`).classList.remove('active');
+      document.getElementById(`section${current - 1}`).classList.add('active');
+    }
+  </script>
+<script>
+  function submitForm() {
+      const form = document.getElementById('stocktransfer');
+      const formData = new FormData(form);
+      const id = $('#id').val();
+
+      // Directly submit the form without validation
+      const url = id ? '/updatestock' : '/savestocktransfer';
+      const successMessage = id ? 'Stock transfer updated successfully!' : 'Stock transfer saved successfully!';
+
+      $.ajax({
+          url: url,
+          type: 'POST',
+          data: formData,
+          processData: false,
+          contentType: false,
+          success: function () {
+              $('#message').text(successMessage);
+              form.reset();
+              setTimeout(() => window.location.href = '/stocktransferlist', 1500);
+          },
+          error: function (xhr) {
+              alert('Error saving return stock transfer. Please try again.');
+              console.error(xhr.responseText);
+          }
+      });
+  }
+
+  function resetForm() {
+      $('#stocktransfer')[0].reset();
+      $('#id').val('');
+      $('#form-title').text('Stock Transfer Form');
+      $('#submitBtn').text('Submit');
+  }
+
+  function prefillForm(data) {
+      $('#id').val(data.id);
+    $('#sourceWarehouseUid').val(data.sourceWarehouseUid);
+      $('#transferdate').val(data.transferdate);
+      $('#transfertype').val(data.transfertype);
+      $('#sourcesection').val(data.sourcesection);
+    $('#destinationWarehouseUid').val(data.destinationWarehouseUid);
+      $('#destinationsection').val(data.destinationsection);
+      $('#batchnumber').val(data.batchnumber);
+      $('#quantitytotransfer').val(data.quantitytotransfer);
+      $('#unitofmeasure').val(data.unitofmeasure);
+      $('#reasonfortransfer').val(data.reasonfortransfer);
+      $('#transfermode').val(data.transfermode);
+      $('#carriername').val(data.carriername);
+      $('#transfercost').val(data.transfercost);
+      $('#requestedby').val(data.requestedby);
+      $('#approvedby').val(data.approvedby);
+      $('#approvaldate').val(data.approvaldate);
+      $('#remarks').val(data.remarks);
+      $('#status').val(data.status);
+    
+      $('#form-title').text('Update Stock Transfer');
+      $('#submitBtn').text('Update');
+  }
+  
+  
+  
+  
+  function fetchwarehouseDetails() {
+          const warehouseuid = $('#sourceWarehouseUid').val();
+
+          if (!warehouseuid) {
+              alert("Please select a warehouse ID.");
+              return;
+          }
+
+              $.ajax({
+                  url: '/getwarehousedatabyuid',
+                  method: 'GET',
+                  data: { warehouseuid: warehouseuid },
+                  success: function (response) {
+                      console.log("Response from server:", response);  // Log the response
+                      if (response && response.length > 0) {
+                          const warehouseDetail = response[0];
+                          $('#address').val(warehouseDetail.address || '');
+                      } else {
+                          alert("No details found for the selected warehouse ID.");
+                      }
+                  },
+                  error: function (xhr, status, error) {
+                      console.error("Error fetching warehouse details:", error);
+                      alert("An error occurred while fetching the warehouse details.");
+                  }
+              });
+          }
+      
+      
+      function fetchdestinationwarehouseDetails() {
+                  const warehouseuid = $('#destinationWarehouseUid').val();
+
+                  if (!warehouseuid) {
+                      alert("Please select a warehouse ID.");
+                      return;
+                  }
+
+                      $.ajax({
+                          url: '/getwarehousedatabyuid',
+                          method: 'GET',
+                          data: { warehouseuid: warehouseuid },
+                          success: function (response) {
+                              console.log("Response from server:", response);  // Log the response
+                              if (response && response.length > 0) {
+                                  const warehouseDetail = response[0];
+                                  $('#toaddress').val(warehouseDetail.address || '');
+                              } else {
+                                  alert("No details found for the selected warehouse ID.");
+                              }
+                          },
+                          error: function (xhr, status, error) {
+                              console.error("Error fetching warehouse details:", error);
+                              alert("An error occurred while fetching the warehouse details.");
+                          }
+                      });
+                  }
+              
+              
+              function fetchitemdetail() {
+                      const itemid = $('#itemid').val();
+
+                      if (!itemid) {
+                          alert("Please select a Product ID.");
+                          return;
+                      }
+
+                          $.ajax({
+                              url: '/getitemid',
+                              method: 'GET',
+                              data: { itemid: itemid },
+                              success: function (response) {
+                                  console.log("Response from server:", response);  // Log the response
+                                  if (response && response.length > 0) {
+                                      const ItemDetail = response[0];
+                                      $('#toitemname').val(ItemDetail.itemname || '');
+                                  } else {
+                                      alert("No details found for the selected Item ID.");
+                                  }
+                              },
+                              error: function (xhr, status, error) {
+                                  console.error("Error fetching Product details:", error);
+                                  alert("An error occurred while fetching the Item details.");
+                              }
+                          });
+                      }
+              
+</script>
+
+</body>
+</html>

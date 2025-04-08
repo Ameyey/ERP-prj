@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Supplier Invoice Submission Form</title>
+  <link rel="stylesheet" href="hrms.css">
+  <link rel="stylesheet" href="sty.css">
+  <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+
+   <form id="invoicesubmissionform" method="post" class="form-container"  >
+    <!-- Personal Information Section -->
+    <input type="hidden" id="id" name="id" th:value="${invoice?.id}">
+    <div class="form-section active" id="section1">
+      <h2>Supplier Invoice Submission Form</h2>
+
+      <!-- First Row -->
+    
+      <div class="form-row">
+        <div class="form-group">     
+          <label for="invoicedate">Invoice Date</label>
+          <input type="date" id="invoicedate" name="invoicedate" th:value="${invoice?.invoicedate}" required>               
+        </div>
+
+        <div class="form-group">
+          <label for="supplieruid">Supplier ID</label>
+          <select id="supplieruid" name="supplieruid"  onchange="fetchSupplierRegistration(this.value)" th:if="${invoice == null or invoice.id == null}"  required>
+             <option value=""> Select PO UId:</option>
+             <option th:each="uid :${supplieruid}" th:value="${uid}" th:text="${uid}" ></option>					
+          </select>
+            <input type="text" id="supplieruid" name="supplieruid" th:value="${invoice?.supplieruid}" onchange="fetchSupplierRegistration(this.value)" readonly th:if="${invoice?.id != null}">
+        </div>
+
+        <div class="form-group">
+          <label for="suppliername">Supplier Name</label>
+          <input type="text" id="suppliername" name="suppliername" readonly>
+        </div>
+    </div>
+
+      <!-- Second Row-->
+      <div class="form-row">
+        <div class="form-group">
+          <label for="paymentterms">Payment Terms</label>
+          <input type="text" id="paymentterms" name="paymentterms" readonly>
+        </div>
+
+        <div class="form-group">
+          <label for="bankaccountnumber">Bank Account Number</label>
+           <input type="text" id="bankaccountnumber" name="bankaccountnumber" readonly>
+	      </div>
+   
+        <div class="form-group">
+          <label for="pouid">PO UID</label>
+          <select id="pouid" name="pouid"  onchange="fetchPODetails(this.value)"  th:if="${invoice == null or invoice.id == null}"  required>
+					  <option value=""> Select PO UId:</option>
+					  <option th:each="uid :${pouid}" th:value="${uid}" th:text="${uid}" ></option>					
+				  </select>
+				<input type="text" id="pouid" name="pouid" th:value="${invoice?.pouid}" onchange="fetchPODetails(this.value)" readonly th:if="${invoice?.id != null}">
+        </div>     
+      </div>
+
+      <!-- Third Row -->
+      <div class="form-row">
+        <div class="form-group">
+          <label for="totalamount" style="font-size: 12px;color:#131313;"><b>Total Amount (Including Taxes)</b> </label>
+           <input type="number" id="totalamount" name="totalamount" readonly>
+         </div>
+ 
+        <div class="form-group" >         
+          <label for="paymentduedate">Payment Due Date</label>
+          <input type="date" id="paymentduedate" name="paymentduedate" th:value="${invoice?.paymentduedate}" required>
+        </div>
+          <div class="form-group">            
+            <label for="invoiceapprovalstatus">Invoice Approval Status</label>
+            <select id="invoiceapprovalstatus" name="invoiceapprovalstatus" th:value="${invoice?.invoiceapprovalstatus}" required>
+            	<option value="x">Select  Status </option>
+                <option value="Pending" th:selected="${invoice?.invoiceapprovalstatus == 'Pending'}">Pending</option>
+                <option value="Approved" th:selected="${invoice?.invoiceapprovalstatus == 'Rejected'}">Approved</option>
+                <option value="Rejected" th:selected="${invoice?.invoiceapprovalstatus == 'Rejected'}">Rejected</option>
+            </select>
+          </div>        
+      </div>
+
+      <!-- four Row -->
+     <div class="form-group">
+      <div class="form-row">
+        <div class="form-group">
+          <label for="approvalauthority">Approval Authority</label>
+          <input type="text" id="approvalauthority" name="approvalauthority" th:value="${invoice?.approvalauthority}" required>
+
+      </div>
+      </div>
+     </div>
+      
+        
+    </div>
+
+   <!-- Five Row  -->
+   
+
+ 
+
+
+    <div class="form-actions">
+      <button type="button" id="submitBtn" onclick="submitForm()">Submit</button>
+      <button type="button" class="back-button" th:href="@{/}">Back to Dashboard</button>
+			<div th:if="${successMessage}" class="success-message" th:text="${successMessage}"></div>                   
+    </div>
+  
+
+
+
+
+
+
+
+   </form>
+
+
+
+   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+   <script>
+    //Data fetching while form updating
+      $(document).ready(function() {
+        // Auto-fill Return details when updating
+        var existingPOUid = $('#pouid').val();
+        if (existingPOUid) {
+          fetchPODetails(existingPOUid);
+        }
+    });
+      //Data fetch from Purchase Order Details Table to Supplier Invoice Submisssion
+    function fetchPODetails(pouid) {
+        if (!pouid) return;
+  
+        $.ajax({
+            url: '/podetails', // Endpoint to fetch data
+            method: 'GET', // HTTP method
+            data: { pouid: pouid }, // Query parameter to be sent to the server
+            success: function(response) {
+                // Populate response data into form field
+                $('#totalamount').val(response.totalamount);
+                },
+        error:function(){
+          alert('Error occur');
+        }
+        });
+    }
+    //Data fetching while form updating
+      $(document).ready(function() {
+        // Auto-fill Return details when updating
+        var existingSupplierUid = $('#supplieruid').val();
+        if (existingSupplierUid) {
+          fetchSupplierRegistration(existingSupplierUid);
+        }
+    });
+    //Data fetch from Supplier Registration Table to Supplier Invoice Submisssion
+    function fetchSupplierRegistration(supplieruid) {
+        if (!supplieruid) return;
+  
+        $.ajax({
+            url: '/supplierdetails', // Endpoint to fetch data
+            method: 'GET', // HTTP method
+            data: { supplieruid: supplieruid }, // Query parameter to be sent to the server
+            success: function(response) {
+                // Populate response data into form field
+                $('#suppliername').val(response.suppliername);
+                $('#paymentterms').val(response.paymentterms);
+                $('#bankaccountnumber').val(response.bankaccountnumber);
+                },
+        error:function(){
+          alert('Error occur');
+        }
+        });
+    }
+  </script>
+  <script>
+  
+  function submitForm() {
+        
+  
+      const formData = new FormData(document.getElementById('invoicesubmissionform'));
+      const id = $('#id').val();
+  
+      let url, successMessage;
+  
+      if (!id) {
+          url = '/invoicesubmissionform';
+          successMessage = 'Supplier Invoice Submission Form Details saved successfully!';
+      } else {
+          url = '/updateinvoicesubmission';
+          successMessage = 'Supplier Invoice Submission Form Details updated successfully!';
+      }
+  
+      $.ajax({
+          url: url,
+          type: 'POST',
+          data: formData,
+          processData: false,
+          contentType: false,
+          success: function(response) {
+              $('#message').text(successMessage); // Display success message
+              resetForm();
+              window.location.href = '/viewsupplierinvoicesubmissionlist';
+          },
+          error: function() {
+              alert('Error saving Supplier Invoice Submission Form. Please fill out the data.');
+          }
+      });
+  }
+  // Reset the form
+  function resetForm() {
+          $('#invoicesubmissionform')[0].reset();
+        $('#id').val('');
+          $('#message').text(''); // Clear the message
+          $('#submitBtn').text('Submit');
+  }
+      
+  function prefillForm(data) {
+              $('#id').val(data.id);	
+              $('#invoiceuid').val(data.invoiceuid);	
+              $('#invoicedate').val(data.invoicedate);	
+              $('#supplieruid').val(data.supplieruid);
+              $('#pouid').val(data.pouid);
+              $('#paymentduedate').val(data.paymentduedate);	
+              $('#invoiceapprovalstatus').val(data.invoiceapprovalstatus);	
+              $('#approvalauthority').val(data.approvalauthority);	
+          $('#form-title').text('Updated Supplier Invoice Submission Form');
+          $('#submitBtn').text('Update');
+          
+  }
+  
+  </script>
+   
+  
+
+
+
+
+
+  
+
+
+</body>
+</html>
