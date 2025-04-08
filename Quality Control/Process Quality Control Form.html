@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Process Quality Control</title>
+  <link rel="stylesheet" href="hrms.css">
+  <link rel="stylesheet" href="sty.css">
+  <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400;700&display=swap" rel="stylesheet">
+</head>
+
+<body onload="fetchitemdetail()"> 
+
+   <form id="processQualityControl" class="form-container"  >
+    <!-- Personal Information Section -->
+    <input type="hidden" id="id" name="id" th:value="${processQualityControl?.id}">
+    <div class="form-section active" id="section1">
+      <h2>Process Quality Control Form</h2>
+
+      <!-- First Row -->
+    
+      <div class="form-row">
+        
+        <div class="form-group">        
+          <label for="productionordernumber">Production Order Number:</label>
+          <input type="text" id="productionordernumber" name="productionordernumber" th:value="${processQualityControl?.productionordernumber}" required placeholder="Enter production order number (e.g., 12345)">
+        </div>
+
+        <div class="form-group">
+          <label for="departmentname">Department Name:</label>
+			   <select id="departmentname" name="departmentname" th:value="${processQualityControl?.departmentname}" required>
+			       <option value="" disabled selected>Select department</option>
+			       <option value="assembly" th:selected="${processQualityControl?.departmentname == 'assembly'}">Assembly</option>
+			       <option value="machining" th:selected="${processQualityControl?.departmentname == 'machining'}">Machining</option>
+			       <option value="painting" th:selected="${processQualityControl?.departmentname == 'painting'}">Painting</option>
+			       <option value="quality control" th:selected="${processQualityControl?.departmentname == 'quality control'}">Quality Control</option>
+			   </select>
+        </div>
+
+        <div class="form-group">
+          <label>Batch UID:</label>
+          <select id="batchuid" name="batchuid" onchange="fetchBatchDetails(this.value)"  required th:if="${processQualityControl == null or processQualityControl.id == null}">
+              <option value="">Select Batch UID</option>
+              <option th:each="uid : ${batchuid}" th:value="${uid}" th:text="${uid}"></option>
+          </select>
+                
+          <input type="text" id="batchuid" name="batchuid" th:value="${processQualityControl?.batchuid}" onchange="fetchBatchDetails(this.value)" readonly th:if="${processQualityControl?.id != null}">
+        </div>
+
+        
+
+      </div>
+
+      <!-- Second Row -->
+      <div class="form-row">
+
+        <div class="form-group">
+          <label for="productuid">product uid :</label>
+          <input type="text" id="productuid" name="productuid" readonly>           
+      </div>
+        <div class="form-group">
+          <label >product name :</label>  
+          <input type="text" id="productname" name="productname" readonly />
+	      </div>
+   
+        <div class="form-group">
+          <label for="stageofproduction">Stage of Production:</label>
+          <select id="stageofproduction" name="stageofproduction" th:value="${processQualityControl?.stageofproduction}" required>
+              <option value="" disabled selected>Select stage</option>
+              <option value="Injection Molding" th:selected="${processQualityControl?.stageofproduction == 'Injection Molding'}">Injection Molding</option>
+              <option value="CNC Machining" th:selected="${processQualityControl?.stageofproduction == 'CNC Machining'}">CNC Machining</option>
+              <option value="Painting & Coating" th:selected="${processQualityControl?.stageofproduction == 'Painting & Coating'}">Painting & Coating</option>
+              <option value="Final Assembly" th:selected="${processQualityControl?.stageofproduction == 'Final Assembly'}">Final Assembly</option>
+          </select>
+        </div>
+
+       
+      </div>
+      <!-- Third Row -->
+      <div class="form-row">
+        <div class="form-group">
+          <label for="inspectiondatetime">Inspection Date & Time:</label>
+          <input type="datetime-local" id="inspectiondatetime" name="inspectiondatetime" th:value="${processQualityControl?.inspectiondatetime}" required>
+        </div>
+
+        <div class="form-group" >         
+        
+			   <label for="testingmethod">Testing Method:</label>
+			   <select id="testingmethod" name="testingmethod" th:value="${processQualityControl?.testingmethod}" required>
+			       <option value="" disabled selected>Select testing method</option>
+			       <option value="Visual Inspection" th:selected="${processQualityControl?.testingmethod == 'Visual Inspection'}">Visual Inspection</option>
+			       <option value="Dimensional Check" th:selected="${processQualityControl?.testingmethod == 'Dimensional Check'}">Dimensional Check</option>
+			       <option value="Functional Testing" th:selected="${processQualityControl?.testingmethod == 'Functional Testing'}">Functional Testing</option>
+			       <option value="Destructive Testing" th:selected="${processQualityControl?.testingmethod == 'Destructive Testing'}">Destructive Testing</option>
+			   </select>  
+        </div>
+      
+          <div class="form-group">            
+            <label for="tolerancelimits">Tolerance Limits:</label>
+			   <input type="text" id="tolerancelimits" name="tolerancelimits" th:value="${processQualityControl?.tolerancelimits}" required placeholder="Enter acceptable range (e.g., 50 cm ± 0.2 cm)">
+			   
+          </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+             
+			   <label for="defecttype">Defect Type:</label>
+			   <select id="defecttype" name="defecttype" th:value="${processQualityControl?.defecttype}" required>
+			       <option value="" disabled selected>Select defect type</option>
+			       <option value="dimensional defect" th:selected="${processQualityControl?.defecttype == 'dimensional defect'}">Dimensional Defect</option>
+			       <option value="material defect" th:selected="${processQualityControl?.defecttype == 'material defect'}">Material Defect</option>
+			       <option value="functional defect" th:selected="${processQualityControl?.defecttype == 'functional defect'}">Functional Defect</option>
+			       <option value="assembly defect" th:selected="${processQualityControl?.defecttype == 'assembly defect'}">Assembly Defect</option>
+			   </select>
+         </div>
+
+        <div class="form-group">
+          <label >Sample Size:</label>
+          <input type="number" id="sampleSize" name="sampleSize" min="1" placeholder="Enter sample size" required>
+        </div>
+
+        <div class="form-group">
+          <label >Defective Count:</label>
+          <input type="number" id="defectiveCount" name="defectiveCount" min="0" placeholder="Enter defective items count" required>
+      
+        </div>
+      </div>
+
+      <!-- four Row -->
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="defectrate">Defect Rate (%):</label>
+          <input type="text" id="defectrate" name="defectrate" th:value="${processQualityControl?.defectrate}">
+          
+       
+        </div>
+
+        <div class="form-group">
+          <label for="inspectionstatus">Inspection Status:</label>
+          <select id="inspectionstatus" name="inspectionstatus" th:value="${processQualityControl?.inspectionstatus}" required>
+              <option value="" disabled selected>Select status</option>
+              <option value="Pending" th:selected="${processQualityControl?.inspectionstatus == 'Pending'}">Pending</option>
+              <option value="Reviewed" th:selected="${processQualityControl?.inspectionstatus == 'Reviewed'}">Reviewed</option>
+              <option value="Finalized" th:selected="${processQualityControl?.inspectionstatus == 'Finalized'}">Finalized</option>
+          </select> 	
+        </div> 
+
+        <div class="form-group">
+          <label for="correctiveaction">Corrective Action Taken:</label>
+			   <select id="correctiveaction" name="correctiveaction" th:value="${processQualityControl?.correctiveaction}" required>
+			       <option value="" disabled selected>Select corrective action</option>
+			       <option value="process adjustment" th:selected="${processQualityControl?.correctiveaction == 'process adjustment'}">Process Adjustment</option>
+			       <option value="rework & repair" th:selected="${processQualityControl?.correctiveaction == 'rework & repair'}">Rework & Repair</option>
+			       <option value="reject & scrap" th:selected="${processQualityControl?.correctiveaction == 'reject & scrap'}">Reject & Scrap</option>
+			   </select>
+     </div>
+                 
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label for="inspectorname">Inspector Name:</label>
+        <input type="text" id="inspectorname" name="inspectorname" th:value="${processQualityControl?.inspectorname}" required>
+      </div>
+      <div class="form-group">
+        <label for="supervisorapproval">Supervisor Approval (Optional):</label>
+        <select id="supervisorapproval" name="supervisorapproval" th:value="${processQualityControl?.supervisorapproval}">
+            <option value="" disabled selected>Select approval status</option>
+            <option value="approved" th:selected="${processQualityControl?.supervisorapproval == 'approved'}">Approved</option>
+            <option value="pending" th:selected="${processQualityControl?.supervisorapproval == 'pending'}">Pending</option>
+            <option value="not required" th:selected="${processQualityControl?.supervisorapproval == 'not required'}">Not Required</option>
+        </select>
+      </div>
+    </div>
+
+   <!-- Five Row  -->
+ 
+
+ 
+
+
+    <div class="form-actions">
+      <button type="button" id="submitBtn" onclick="submitForm()">Submit</button>
+      <div th:if="${successMessage}" class="success-message" th:text="${successMessage}"></div>                
+    </div>
+  
+
+
+
+
+
+
+
+   </form>
+
+
+
+   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+   <script>
+		
+		function calculateDefectRate() {
+		       const sampleSize = document.getElementById('sampleSize').value;
+		       const defectiveCount = document.getElementById('defectiveCount').value;
+		       
+		       if (sampleSize > 0) {
+		           const defectRate = (defectiveCount / sampleSize) * 100;
+		           document.getElementById('defectrate').value = defectRate.toFixed(2) + '%';
+		       } else {
+		           document.getElementById('defectrate').value = '';
+		       }
+		   }
+
+		   document.getElementById('sampleSize').addEventListener('input', calculateDefectRate);
+		   document.getElementById('defectiveCount').addEventListener('input', calculateDefectRate);
+		   
+		   
+		   
+		   
+        function submitForm() {
+            const form = document.getElementById('processQualityControl');
+            const formData = new FormData(form);
+            const id = $('#id').val();
+
+            const url = id ? '/updateQualityControl' : '/saveQualityControl';
+            const successMessage = id ? 'Process Quality Control updated successfully!' : 'Process Quality Control saved successfully!';
+
+            $.ajax({
+                url: url,
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function () {
+                    alert(successMessage);
+                    form.reset();
+                    setTimeout(() => window.location.href = '/qualityControlList', 1500);
+                },
+                error: function (xhr) {
+                    alert('Error saving process quality control record. Please try again.');
+                    console.error(xhr.responseText);
+                }
+            });
+        }
+
+        function resetForm() {
+            $('#processQualityControl')[0].reset();
+            $('#id').val('');
+            $('#form-title').text('Process Quality Control Form');
+            $('#submitBtn').text('Submit');
+        }
+
+        function prefillForm(data) {
+            $('#id').val(data.id);
+			$('#productuid').val(data.productuid);
+            $('#productionordernumber').val(data.productionordernumber);
+            $('#departmentname').val(data.departmentname);
+         
+            $('#stageofproduction').val(data.stageofproduction);
+            $('#inspectiondatetime').val(data.inspectiondatetime);
+            $('#testingmethod').val(data.testingmethod);
+            $('#tolerancelimits').val(data.tolerancelimits);
+			$('#defecttype').val(data.defecttype);
+			$('#defectrate').val(data.defectrate);
+			$('#inspectionstatus').val(data.inspectionstatus);
+			$('#correctiveaction').val(data.correctiveaction);
+			$('#inspectorname').val(data.inspectorname);
+			$('#supervisorapproval').val(data.supervisorapproval);
+
+	       if (data.id) {
+			                // If updating, replace dropdown with readonly input
+			                $('#itemid').replaceWith('<input type="text" id="itemid" name="productuid" value="' + data.itemid + '" readonly>'); 
+}
+
+            $('#form-title').text('Update Process Quality Control');
+            $('#submitBtn').text('Update');
+        }
+		
+		$(document).ready(function() {
+										    // Auto-fill Item details when updating
+										    var existingItemid = $('#batchuid').val();
+										    if (existingItemid) {
+										    	fetchBatchDetails(existingItemid);
+										    }
+										});
+									 
+									 function fetchBatchDetails(batchuid) {
+									        if (!batchuid) return;
+
+									        $.ajax({
+									            url: '/batch/inprocessbatchdetails',
+									            method: 'GET',
+									            data: { batchuid: batchuid },
+									            success: function(response) {
+													if(response && response.length > 0) {
+														let data = response[0];
+														$('#productuid').val(data.productuid || '');
+														$('#productname').val(data.productname || '');
+														
+
+														
+												} else {
+													alert('No data found for the seleected product.')
+												}
+												
+									                },
+									            error: function() {
+									                alert('Error fetching Batch details. Please try again.');
+									            }
+									        });
+									    }
+
+    </script>
+
+
+
+
+
+
+  
+
+
+</body>
+</html>
