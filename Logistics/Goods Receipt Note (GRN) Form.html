@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Goods Receipt Note (GRN) Form</title>
+  <link rel="stylesheet" href="hrms.css">
+  <link rel="stylesheet" href="sty.css">
+  <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+
+   <form id="GRNForm" class="form-container"  >
+    <!-- Personal Information Section -->
+    <input type="hidden" id="id" name="id" th:value="${goodsreceiptnote?.id}">
+    <div class="form-section active" id="section1">
+      <h2>Goods Receipt Note (GRN) Form</h2>
+
+      <!-- First Row -->
+    
+      <div class="form-row">
+        
+        <div class="form-group">        
+          <label for="receiptdate">Receipt Date *</label>
+          <input type="date" id="receiptdate" name="receiptdate" th:value="${goodsreceiptnote?.receiptdate}" required>
+        </div>
+
+        <div class="form-group">
+          <label for="supuid">Supplier UID</label>
+          <select  id="supuid"  name="supuid" onchange="fetchSupplier(this.value)" th:if="${goodsreceiptnote == null or goodsreceiptnote.id == null}">
+      <option value="">Select Supplier UID</option>
+      <option th:each="uid : ${Supuid}" th:value="${uid}" th:text="${uid}"></option>	
+          </select>
+        <input type="text" id="supuid" name="supuid" th:value="${goodsreceiptnote?.supuid}" readonly th:if="${goodsreceiptnote?.id != null}">
+        </div>
+
+        <div class="form-group">
+          <label for="suppliername">Supplier Name *</label>
+        <input type="text" id="suppliername" name="suppliername" readonly>  
+        </div>
+
+        <div class="form-group">
+          <label for="pouid">Purchase Order Number *</label>
+          <select id="pouid" name="pouid" required>
+              <option value="" disabled selected>Select a Purchase Order</option>
+              <option th:each="uid : ${Pouid}"
+                      th:value="${uid}"
+                      th:text="${uid}"
+                      th:selected="${goodsreceiptnote?.pouid} == ${uid}">
+              </option>
+          </select>
+            </div>
+        </div>
+
+      <!-- Second Row -->
+      <div class="form-row">
+        <div class="form-group">
+          <label for="warehouseuid">Warehouse UID *</label>
+		<select  id="warehouseuid"  name="warehouseuid" onchange="fetchWarehouse(this.value)"  th:if="${goodsreceiptnote == null or goodsreceiptnote.id == null}">
+			<option value="">Select Warehouse UID</option>
+			<option th:each="uid : ${Warehouseuid}" th:value="${uid}" th:text="${uid}"></option>	
+		</select>
+		<input type="text" id="warehouseuid" name="warehouseuid" th:value="${goodsreceiptnote?.warehouseuid}" readonly th:if="${goodsreceiptnote?.id != null}">
+		
+	      </div>
+   
+        <div class="form-group">
+          <label for="warehouselocation">Warehouse Location *</label>
+        <input type="text" id="warehouselocation" name="warehouselocation" readonly>
+        </div>
+
+        <div class="form-group">
+          <label for="productuid">Product UID *</label>
+		<select  id="productuid"  name="productuid" onchange="fetchProduct(this.value)"  th:if="${goodsreceiptnote == null or goodsreceiptnote.id == null}">
+								<option value="">Select Product UID</option>
+							    <option th:each="uid : ${Productuid}" th:value="${uid}" th:text="${uid}"></option>	
+		 </select>
+										   		 			        
+		 <input type="text" id="productuid" name="productuid" th:value="${goodsreceiptnote?.productuid}" readonly th:if="${goodsreceiptnote?.id != null}">
+		
+        </div>
+
+        <div class="form-group" >         
+          <label for="productname">Product Name *</label>
+          <input type="text" id="productname" name="productname" readonly>
+     
+
+        </div>
+      </div>
+      <!-- Third Row -->
+      <div class="form-row">
+      
+          <div class="form-group">            
+            <label for="batchnumber">Batch Number</label>
+            <select id="batchnumber" name="batchnumber" th:value="${goodsreceiptnote?.batchnumber}" required>
+                <option value="">Select Batch</option>
+                <option value="Batch">Batch</option>
+                <option value="Lots">Lots</option>
+            </select>
+
+          </div>
+
+          <div class="form-group">
+            <label for="quantityreceived">Quantity Received *</label>
+            <input type="number" id="quantityreceived" name="quantityreceived" th:value="${goodsreceiptnote?.quantityreceived}" required>
+        </div>
+        <div class="form-group">
+          <label for="unitofmeasure">Unit of Measure *</label>
+          <input type="text" id="unitofmeasure" name="unitofmeasure" th:value="${goodsreceiptnote?.unitofmeasure}" required>
+        </div>
+        <div class="form-group">
+          <label for="inspectionstatus">Inspection Status *</label>
+        <select id="inspectionstatus" name="inspectionstatus" th:value="${goodsreceiptnote?.inspectionstatus}" required>
+			<option value="Select">Select</option>
+			  <option value="Approved">Approved</option>
+            <option value="Rejected">Rejected</option>
+            <option value="Rework Required">Rework Required</option>
+        </select>
+
+        </div>
+        
+      </div>
+
+      <!-- four Row -->
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="remarks">Remarks</label>
+          <textarea id="remarks" name="remarks" th:value="${goodsreceiptnote?.remarks}"></textarea>
+        </div>
+        <div class="form-group">
+         	
+          <label for="receivedby">Received By *</label>
+          <input type="text" id="receivedby" name="receivedby" th:value="${goodsreceiptnote?.receivedby}" required>
+        </div> 
+        <div class="form-group">
+          <label for="verifiedby">Verified By *</label>
+          <input type="text" id="verifiedby" name="verifiedby" th:value="${goodsreceiptnote?.verifiedby}" required>
+        </div>     
+        <div class="form-group">          
+          <label for="approvalstatus">Approval Status *</label>
+          <select id="approvalstatus" name="approvalstatus" th:value="${goodsreceiptnote?.approvalstatus}" required>
+        <option value="Select">Select</option>
+          <option value="Accepted">Accepted</option>
+              <option value="Partial">Partial</option>
+              <option value="Rejected">Rejected</option>
+          </select>
+
+        </div>
+      
+        
+    </div>
+
+   <!-- Five Row  -->
+  
+
+    <div class="form-actions">
+      <button type="button" id="submitBtn" onclick="submitGRNForm()">Submit GRN</button>
+      <div th:if="${successMessage}" class="success-message" th:value="${successMessage}"></div>                   
+    </div>
+  
+
+
+
+
+
+
+
+   </form>
+
+
+
+   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+   <script>
+		function fetchSupplier(supuid) {
+									    if (!supuid) return;
+
+									    $.ajax({
+											url: '/getSupplierDetails',
+									        method: 'GET',
+									        data: { supuid: supuid },
+									        success: function(response) {
+									            if (response) {
+									                $('#suppliername').val(response.suppliername);
+									               
+									            }
+									        },
+									        error: function() {
+									            alert('Error fetching employee details. Please try again.');
+									        }
+									    });
+									}
+			function fetchProduct(productuid) {
+					if (!productuid) return;
+
+					 $.ajax({
+					    url: '/getProductdata',
+						method: 'GET',
+						data: { productuid: productuid },
+							success: function(response) {
+								 if (response && response.length > 0) { // Ensure response is not empty
+								 let productData = response[0]; // Get first object from the list
+								 $('#productname').val(productData.productname || '');
+												             
+								} else {
+									  alert('No data found for the selected product.');
+									   }
+									  },
+				 error: function(xhr, status, error) {
+						console.error('Error fetching product details:', error);
+					    alert('Error fetching product details. Please try again.');
+								 }
+						 });
+					}	
+		 function fetchWarehouse(warehouseuid) {
+				  if (!warehouseuid) return;
+
+					 $.ajax({
+						url: '/getWarehouseInfo',
+						method: 'GET',
+						data: { warehouseuid: warehouseuid },
+						success: function(response) {
+							if (response) {
+								 $('#warehouselocation').val(response.warehouselocation);
+																												 			               
+											 }
+									},
+							 error: function() {
+							  alert('Error fetching warehouse details. Please try again.');
+							        }
+								});
+							}					
+									
+	    function submitGRNForm() {
+	        const formData = new FormData(document.getElementById('GRNForm'));
+	        const id = $('#id').val(); // Assuming an ID field exists for updates
+	        let url, successMessage;
+
+	        if (!id) {
+	            url = '/submitGoods'; // Endpoint for saving new GRN details
+	            successMessage = 'GRN details saved successfully!';
+	        } else {
+	            url = '/updateGoods'; // Endpoint for updating existing records
+	            successMessage = 'GRN details updated successfully!';
+	        }
+
+	        $.ajax({
+	            url: url,
+	            type: 'POST',
+	            data: formData,
+	            processData: false,
+	            contentType: false,
+	            success: function(response) {
+	                 $('message').text(successMessage);
+	                resetGRNForm();
+	                window.location.href = '/viewGoods'; // Redirect to GRN list
+	            },
+	            error: function() {
+	                alert('Error saving GRN details. Please try again.');
+	            }
+	        });
+	    }
+
+	    function resetGRNForm() {
+	        $('#GRNForm')[0].reset();
+	        $('#id').val('');
+	        $('#form-title').text('Goods Receipt Note (GRN) Form');
+	        $('#submitBtn').text('Submit GRN');
+	    }
+
+	    function prefillGRNForm(data) {
+	        $('#id').val(data.id);
+	        $('#receiptdate').val(data.receiptdate);
+	        $('#supplieruid').val(data.supplieruid);
+	        $('#suppliername').val(data.suppliername);
+	        $('#ponumber').val(data.ponumber);
+	        $('#warehouseuid').val(data.warehouseuid);
+	        $('#warehouselocation').val(data.warehouselocation);
+	        $('#productname').val(data.productname);
+	        $('#productuid').val(data.productuid);
+	        $('#batchnumber').val(data.batchnumber);
+	        $('#quantityreceived').val(data.quantityreceived);
+	        $('#unitofmeasure').val(data.unitofmeasure);
+	        $('#inspectionstatus').val(data.inspectionstatus);
+	        $('#remarks').val(data.remarks);
+	        $('#receivedby').val(data.receivedby);
+	        $('#verifiedby').val(data.verifiedby);
+	        $('#approvalstatus').val(data.approvalstatus);
+
+			if (data.id) {
+								                // If updating, replace dropdown with readonly input
+								                $('#productuid').replaceWith('<input type="text" id="productuid" name="productuid" value="' + data.productuid + '" readonly>');
+								                $('#warehouseuid').replaceWith('<input type="text" id="warehouseuid" name="warehouseuid" value="' + data.warehouseuid + '" readonly>');
+												$('#supuid').replaceWith('<input type="text" id="supuid" name="supuid" value="' + data.supuid + '" readonly>');
+
+								            }
+	        $('#form-title').text('Update Goods Receipt Note');
+	        $('#submitBtn').text('Update GRN');
+	    }
+		
+		
+																
+
+	</script>
+	<script>
+	        $(document).ready(function () {
+	            // Set today's date 
+	            const today = new Date().toISOString().split('T')[0];
+	            $('#receiptdate').val(today).attr('max', today).attr('min', today);
+
+	            // Prevent users from selecting other dates
+	            $('#receiptdate').on('change', function () { 
+	                if ($(this).val() !== today) {
+	                    alert('You can only select today’s date.');
+	                    $(this).val(today);
+	                }
+	            });
+				// Validation for text fields (No special characters or numbers allowed)
+									    function validateTextField(selector) {
+									        $(selector).on('input', function () {
+									            let value = $(this).val();
+									            if (!/^[a-zA-Z\s]*$/.test(value)) {
+									                alert('Only alphabets and spaces are allowed.');
+									                $(this).val(value.replace(/[^a-zA-Z\s]/g, '')); // Remove special characters and numbers
+									            }
+									        });
+									    }
+
+									    validateTextField('#remarks');
+									    validateTextField('#receivedby');
+										validateTextField('#verifiedby');
+
+									   
+									});
+
+
+	        
+									// Validate Quantity Received (must be a number > 0)
+									$('#quantityreceived').on('input', function () {
+									    let value = parseFloat($(this).val());
+									    if (isNaN(value) || value <= 0) {
+									        alert('Quantity Received must be a number greater than 0.');
+									        $(this).val('');
+									    }
+									});
+
+									// Validate Unit of Measure (no numbers or special characters)
+									$('#unitofmeasure').on('input', function () {
+									    let value = $(this).val();
+									    if (!/^[a-zA-Z\s]*$/.test(value)) {
+									        alert('Unit of Measure should contain only letters and spaces.');
+									        $(this).val(value.replace(/[^a-zA-Z\s]/g, ''));
+									    }
+									});
+	    </script>
+</body>
+
+
+
+
+
+  
+
+
+</html>
