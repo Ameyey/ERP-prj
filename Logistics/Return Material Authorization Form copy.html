@@ -17,10 +17,8 @@
     <div class="form-section active" id="section1">
       <h2>Return Material Authorization Form</h2>
 
-      <!-- First Row -->
-    
-      <div class="form-row">
-        
+      <!-- First Row -->    
+      <div class="form-row">        
         <div class="form-group">        
           <label for="returndate">Return Date:</label>
 				  <input type="date" id="returndate" name="returndate"  th:value = "${updaterma?.returndate}" >
@@ -34,9 +32,7 @@
         <div class="form-group">
           <label for="returnreason">Return Reason:</label>
           <input type="text" id="returnreason" name="returnreason" th:value = "${updaterma?.returnreason}" > 
-        </div>
-
-        
+        </div>        
 
       </div>
 
@@ -157,9 +153,8 @@
 																
 														} else {
 															alert('No data found for the seleected product.')
-														}
-														
-											                },
+														}														
+											        },
 											            error: function() {
 											                alert('Error fetching Batch details. Please try again.');
 											            }
