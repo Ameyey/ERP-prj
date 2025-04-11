@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sales Invoice Form</title>
+  <link rel="stylesheet" href="hrms.css">
+  <link rel="stylesheet" href="sty.css">
+  <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+                                                                        
+    
+   <form  id="invoiceForm"  class="form-container">
+    <!-- Personal Information Section -->
+    <input type="hidden" id="id" name="id" th:value="${salesinvoice?.id}">
+    <h2>Sales Invoice Form</h2>   
+    <div class="form-section active" id="section1">    
+      <!-- First Row -->    
+      <div class="form-row" >
+        <div class="form-group">
+          <label>Sales Order UID:</label>
+          <select id="salesorderuid" name="salesorderuid" onchange="fetchSalesOrderDetails(this.value)"  required th:if="${salesinvoice == null or salesinvoice.id == null}">
+            <option value="">Select Sales Order UID</option>
+            <option th:each="uid : ${salesorderuid}" th:value="${uid}" th:text="${uid}"></option>
+          </select>
+          <input type="text" id="salesorderuid" name="salesorderuid" th:value="${salesinvoice?.salesorderuid}" onchange="fetchSalesOrderDetails(this.value)" readonly th:if="${salesinvoice?.id != null}">                  
+        </div>
+      
+      <div class="form-group">
+        <label>Customer ID:</label>
+        <input type="text" id="customeruid" name="customeruid" readonly/>
+ 
+    </div>
+
+    <div class="form-group">
+      <label>Customer Name:</label>
+      <input type="text" id="customername" name="customername" readonly />
+    </div>
+    
+  
+      </div>
+
+      <!-- Second Row -->
+      <div class="form-row">
+        <div class="form-group">           
+          <label>Product UID:</label>
+    <input type="text" id="productuid" name="productuid" readonly />
+      </div>
+    
+        <div class="form-group">      
+        	<label>Product Name:</label>
+    <input type="text" id="productname" name="productname"  readonly/>	
+      </div>
+
+      <div class="form-group">
+        <label>Quantity:</label>
+        <input type="text" id="quantity" name="quantity"  readonly/>
+
+    </div>
+
+    
+    
+       
+    
+      </div>
+      <!-- Third Row -->
+      <div class="form-row">
+        <div class="form-group">
+          <label>Unit of Measure:</label>
+          <input type="text" id="unitofmeasure" name="unitofmeasure"  readonly/>
+      </div>
+    
+
+        <div class="form-group">
+          <label>Sub total Amount:</label>
+          <input type="text" id="subtotalamount" name="subtotalamount" readonly />
+      </div>
+      
+        <div class="form-group">
+          <label>Tax Amount:</label>
+          <input type="text" id="taxamount" name="taxamount" th:value="${salesinvoice?.taxamount}" readonly/>
+      </div>
+
+          
+      </div>
+
+      <!-- four Row -->
+      <div class="form-row">
+        <div class="form-group">
+          <label>Total Invoice Amount:</label>
+          <input type="text" id="totalinvoiceamount" name="totalinvoiceamount" th:value="${salesinvoice?.totalinvoiceamount}" readonly/>          
+        </div>
+   
+      </div>
+      
+      <div class="form-row">
+        <div class="form-group">
+          <label>Invoice Date:</label>
+          <input type="date" id="invoicedate" name="invoicedate" th:value="${salesinvoice?.invoicedate}" required/>      
+        </div>
+        <div class="form-group">
+          <label>Due Date:</label>
+          <input type="date" id="duedate" name="duedate" th:value="${salesinvoice?.duedate}" required/>
+        </div>
+        <div class="form-group">
+          <label>Payment Status:</label>
+    <select id="paymentstatus" name="paymentstatus" th:value="${salesinvoice?.paymentstatus}" required>
+      <option value="">Select Status</option>
+      <option value="Paid" th:selected="${salesinvoice?.paymentstatus == 'Paid'}">Paid</option>
+      <option value="Unpaid" th:selected="${salesinvoice?.paymentstatus == 'Unpaid'}">Unpaid</option>
+      <option value="PartiallyPaid" th:selected="${salesinvoice?.paymentstatus == 'PartiallyPaid'}">Partially Paid</option>
+    </select>
+        </div>
+        <div class="form-group">
+          <label>Payment Method:</label>
+          <select id="paymentmethods" name="paymentmethods" th:value="${salesinvoice?.paymentmethods}" required >
+            <option value="">Select Method</option>
+            <option value="Bank" th:selected="${salesinvoice?.paymentmethods == 'Bank'}">Bank Transfer</option>
+            <option value="CreditCard" th:selected="${salesinvoice?.paymentmethods == 'CreditCard'}">Credit Card</option>
+            <option value="Cash" th:selected="${salesinvoice?.paymentmethods == 'Cash'}">Cash</option>
+          </select>
+        </div>
+      </div>
+
+      
+   
+    </div>
+
+   <!-- Five Row  -->
+   
+
+ 
+
+
+    <div class="form-actions">
+      <button type="button" id="submitBtn" onclick="submitForm()">Submit</button>
+      <button class="back-button" th:href="@{/}">Back to Dashboard</button>
+
+    	<div th:if="${successMessage}" class="success-message" th:text="${successMessage}"></div>
+
+		
+    </div>
+  
+
+
+
+
+
+
+
+   </form>
+
+
+
+   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+   <script>
+    $('#duedate').on('change', function() {
+        let invoiceDate = new Date($('#invoicedate').val());
+        let dueDate = new Date($(this).val());
+  
+        if (dueDate <= invoiceDate) {
+            alert('Due Date must be greater than Invoice Date.');
+            $(this).val(''); // Clear invalid date
+        }
+    });
+    $(document).ready(function() {
+        // Auto-fill Item details when updating
+        var existingSalesOrderUid = $('#salesorderuid').val();
+        if (existingSalesOrderUid) {
+          fetchSalesOrderDetails(existingSalesOrderUid);
+        }
+    });
+    
+    function fetchSalesOrderDetails(salesorderuid) {
+          if (!salesorderuid) return;
+  
+          $.ajax({
+              url: '/sales/getsaleorderdetails',
+              method: 'GET',
+              data: { salesorderuid: salesorderuid },
+              success: function(response) {
+          if(response && response.length > 0) {
+            let data = response[0];
+            $('#customeruid').val(data.customeruid || '');
+            $('#customername').val(data.customername || '');
+            $('#productuid').val(data.productuid || '');
+            $('#productname').val(data.productname || '');
+            $('#quantity').val(data.quantity || '');
+            $('#unitofmeasure').val(data.unitofmeasure || '');
+            $('#subtotalamount').val(data.subtotalamount || '');
+            calculateInvoiceAmounts();
+        } else {
+          alert('No data found for the seleected product.')
+        }
+        
+                  },
+              error: function() {
+                  alert('Error fetching Batch details. Please try again.');
+              }
+          });
+      }
+    
+    function calculateInvoiceAmounts() {
+          let subtotal = parseFloat($('#subtotalamount').val()) || 0;
+          let taxRate = 0.10; // Example 10% tax rate
+          let taxAmount = subtotal * taxRate;
+          let totalInvoiceAmount = subtotal + taxAmount;
+  
+          $('#taxamount').val(taxAmount.toFixed(2)); // Fix to 2 decimal places
+          $('#totalinvoiceamount').val(totalInvoiceAmount.toFixed(2));
+      }
+  
+      // Recalculate amounts when subtotal changes (optional)
+      $('#subtotalamount').on('input', function() {
+          calculateInvoiceAmounts();
+      });
+    
+    function submitForm() {
+      let form = document.getElementById('invoiceForm');
+              
+              if (!form.checkValidity()) {
+                  alert('Please fill in all required fields.');
+                  return;
+              }
+  
+                  const formData = new FormData(document.getElementById('invoiceForm'));
+                  const id = $('#id').val();
+  
+                  let url, successMessage;
+  
+                  if (!id) {
+                      url = '/addsalesinvoice';
+                      successMessage = 'Stock Dispatch Details saved successfully!';
+                  } else {
+                      url = '/updateexistinginvoice';
+                      successMessage = 'Stock Dispatch Details updated successfully!';
+                  }
+  
+                  $.ajax({
+                      url: url,
+                      type: 'POST',
+                      data: formData,
+                      processData: false,
+                      contentType: false,
+                      success: function(response) {
+                          $('#message').text(successMessage); // Display success message
+                          resetForm();
+                          window.location.href = '/viewsalesinvoicelist';
+                      },
+                      error: function() {
+                          alert('Error saving Stock Dispatch. Please fill out the data.');
+                      }
+                  });
+              }
+              // Reset the form
+                  function resetForm() {
+                      $('#invoiceForm')[0].reset();
+                    $('#id').val('');
+                      $('#message').text(''); // Clear the message
+                      $('#submitBtn').text('Submit');
+                  }
+                  
+                  
+              
+    </script>
+
+</body>
+</html>

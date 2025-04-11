@@ -17,7 +17,7 @@
 		<input type="hidden" id="id" name="id">
 
     <div class="form-section active" id="section1">
-      <h2>Sales Order Form</h2>
+      <h2>Cost Adjustment Form</h2>
 
       <!-- First Row -->
     
@@ -116,30 +116,12 @@
           <input type='text' id="comments" name="comments" class="w-full border rounded px-3 py-2 mt-1" rows="3" th:value="${costadjustment?.comments}">
         </div> 
 			
-        </div>     
-       
-      
-        
-    </div>
-
-  
-
-
- 
-
-
+        </div>  
     <div class="form-actions">
       <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded shadow hover:bg-blue-600" onclick="submitForm()">Updated Stock Valuation</button>
 				<div th:if="${successMessage}" class="success-message" th:value="${successMessage}"></div>                  
     </div>
   
-
-
-
-
-
-
-
    </form>
 
 

@@ -10,92 +10,108 @@
 </head>
 
 <body>
-
-   <form id="invoicesubmissionform" method="post" class="form-container"  >
+                                                                        
+    
+   <form  id="invoicesubmissionform" method="post"  class="form-container">
     <!-- Personal Information Section -->
     <input type="hidden" id="id" name="id" th:value="${invoice?.id}">
+    <h2>Supplier Invoice Submission Form</h2>   
     <div class="form-section active" id="section1">
-      <h2>Supplier Invoice Submission Form</h2>
+     
 
       <!-- First Row -->
     
-      <div class="form-row">
-        <div class="form-group">     
+      <div class="form-row" >
+        <div class="form-group">
           <label for="invoicedate">Invoice Date</label>
-          <input type="date" id="invoicedate" name="invoicedate" th:value="${invoice?.invoicedate}" required>               
+          <input type="date" id="invoicedate" name="invoicedate" th:value="${invoice?.invoicedate}" required>            
         </div>
-
-        <div class="form-group">
-          <label for="supplieruid">Supplier ID</label>
-          <select id="supplieruid" name="supplieruid"  onchange="fetchSupplierRegistration(this.value)" th:if="${invoice == null or invoice.id == null}"  required>
-             <option value=""> Select PO UId:</option>
-             <option th:each="uid :${supplieruid}" th:value="${uid}" th:text="${uid}" ></option>					
-          </select>
-            <input type="text" id="supplieruid" name="supplieruid" th:value="${invoice?.supplieruid}" onchange="fetchSupplierRegistration(this.value)" readonly th:if="${invoice?.id != null}">
-        </div>
-
-        <div class="form-group">
-          <label for="suppliername">Supplier Name</label>
-          <input type="text" id="suppliername" name="suppliername" readonly>
-        </div>
+      
+      <div class="form-group">
+        <label for="supplieruid">Supplier ID</label>
+        <select id="supplieruid" name="supplieruid"  onchange="fetchSupplierRegistration(this.value)" th:if="${invoice == null or invoice.id == null}"  required>
+  <option value=""> Select PO UId:</option>
+  <option th:each="uid :${supplieruid}" th:value="${uid}" th:text="${uid}" ></option>					
+</select>
+ <input type="text" id="supplieruid" name="supplieruid" th:value="${invoice?.supplieruid}" onchange="fetchSupplierRegistration(this.value)" readonly th:if="${invoice?.id != null}">
+ 
     </div>
 
-      <!-- Second Row-->
-      <div class="form-row">
-        <div class="form-group">
-          <label for="paymentterms">Payment Terms</label>
-          <input type="text" id="paymentterms" name="paymentterms" readonly>
-        </div>
-
-        <div class="form-group">
-          <label for="bankaccountnumber">Bank Account Number</label>
-           <input type="text" id="bankaccountnumber" name="bankaccountnumber" readonly>
-	      </div>
-   
-        <div class="form-group">
-          <label for="pouid">PO UID</label>
-          <select id="pouid" name="pouid"  onchange="fetchPODetails(this.value)"  th:if="${invoice == null or invoice.id == null}"  required>
-					  <option value=""> Select PO UId:</option>
-					  <option th:each="uid :${pouid}" th:value="${uid}" th:text="${uid}" ></option>					
-				  </select>
-				<input type="text" id="pouid" name="pouid" th:value="${invoice?.pouid}" onchange="fetchPODetails(this.value)" readonly th:if="${invoice?.id != null}">
-        </div>     
+    <div class="form-group">
+      <label for="suppliername">Supplier Name</label>
+      <input type="text" id="suppliername" name="suppliername" readonly>
+    </div>
+    
+  
       </div>
 
+      <!-- Second Row -->
+      <div class="form-row">
+        <div class="form-group">           
+          <label for="paymentterms">Payment Terms</label>
+          <input type="text" id="paymentterms" name="paymentterms" readonly>
+      </div>
+    
+        <div class="form-group">      
+          <label for="bankaccountnumber">Bank Account Number</label>
+          <input type="text" id="bankaccountnumber" name="bankaccountnumber" readonly>
+      </div>
+
+      <div class="form-group">
+        <label for="pouid">PO UID</label>
+        <select id="pouid" name="pouid"  onchange="fetchPODetails(this.value)"  th:if="${invoice == null or invoice.id == null}"  required>
+  <option value=""> Select PO UId:</option>
+  <option th:each="uid :${pouid}" th:value="${uid}" th:text="${uid}" ></option>					
+</select>
+ <input type="text" id="pouid" name="pouid" th:value="${invoice?.pouid}" onchange="fetchPODetails(this.value)" readonly th:if="${invoice?.id != null}">
+
+    </div>
+
+    
+    
+       
+    
+      </div>
       <!-- Third Row -->
       <div class="form-row">
+
         <div class="form-group">
-          <label for="totalamount" style="font-size: 12px;color:#131313;"><b>Total Amount (Including Taxes)</b> </label>
-           <input type="number" id="totalamount" name="totalamount" readonly>
-         </div>
- 
-        <div class="form-group" >         
+          <label for="totalamount">Total Amount (Including Taxes)</label>
+          <input type="number" id="totalamount" name="totalamount" readonly>
+      </div>
+    
+
+        <div class="form-group">
           <label for="paymentduedate">Payment Due Date</label>
           <input type="date" id="paymentduedate" name="paymentduedate" th:value="${invoice?.paymentduedate}" required>
-        </div>
-          <div class="form-group">            
-            <label for="invoiceapprovalstatus">Invoice Approval Status</label>
+      </div>
+      
+        <div class="form-group">
+          <label for="invoiceapprovalstatus">Invoice Approval Status</label>
             <select id="invoiceapprovalstatus" name="invoiceapprovalstatus" th:value="${invoice?.invoiceapprovalstatus}" required>
             	<option value="x">Select  Status </option>
                 <option value="Pending" th:selected="${invoice?.invoiceapprovalstatus == 'Pending'}">Pending</option>
                 <option value="Approved" th:selected="${invoice?.invoiceapprovalstatus == 'Rejected'}">Approved</option>
                 <option value="Rejected" th:selected="${invoice?.invoiceapprovalstatus == 'Rejected'}">Rejected</option>
             </select>
-          </div>        
+      </div>
+
+          
       </div>
 
       <!-- four Row -->
-     <div class="form-group">
       <div class="form-row">
         <div class="form-group">
           <label for="approvalauthority">Approval Authority</label>
           <input type="text" id="approvalauthority" name="approvalauthority" th:value="${invoice?.approvalauthority}" required>
-
-      </div>
-      </div>
-     </div>
+          
+        </div>
+       
       
-        
+      </div>
+      
+      
+   
     </div>
 
    <!-- Five Row  -->
@@ -106,8 +122,10 @@
 
     <div class="form-actions">
       <button type="button" id="submitBtn" onclick="submitForm()">Submit</button>
-      <button type="button" class="back-button" th:href="@{/}">Back to Dashboard</button>
-			<div th:if="${successMessage}" class="success-message" th:text="${successMessage}"></div>                   
+      <button class="back-button" th:href="@{/}">Back to Dashboard</button>
+		
+			<div th:if="${successMessage}" class="success-message" th:text="${successMessage}"></div>
+     
     </div>
   
 
@@ -233,15 +251,6 @@
   }
   
   </script>
-   
-  
-
-
-
-
-
-  
-
 
 </body>
 </html>
