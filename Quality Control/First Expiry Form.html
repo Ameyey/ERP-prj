@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>First Expiry First Out Form</title>
+  <link rel="stylesheet" href="hrms.css">
+  <link rel="stylesheet" href="sty.css">
+  <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+   <form  id="fefoform" enctype="/form-data"  class="form-container"  >
+    <!-- Personal Information Section -->
+    <input type="hidden" id="id" name="id" th:value="${fe?.id}">
+    <div class="form-section active" id="section1">
+      <br>
+      <h2>First Expiry First Out Form</h2>
+      <br>
+      
+      <!-- First Row -->    
+     
+    
+      <div class="form-row">
+        <div class="form-group">        
+          <label for="stockquantity">Stock Quantity:</label>
+          <input type="number" id="stockquantity" name="stockquantity" th:value="${fe?.stockquantity}" required min="1">
+        </div>
+
+        <div class="form-group">
+          <label for="dispatchpriority">Dispatch Priority:</label>
+          <input type="text" id="dispatchpriority" name="dispatchpriority" th:value="${fe?.dispatchpriority}" required>
+        </div>
+
+        <div class="form-group">
+          <label for="dispatchquantity">Dispatch Quantity:</label>
+		    	<input type="number" id="dispatchquantity" name="dispatchquantity" th:value="${fe?.dispatchquantity}" required min="1">
+        </div>
+        <div class="form-group">
+          <label for="procurementuid">Procurement UID:</label>
+          <select id="procurementuid" name="procurementuid" onchange="fetchprocurementdetails(this.value)">
+              <option value="">SELECT Procurement UID</option>
+              <option th:each="uid : ${procurementuid}" th:value="${uid}" th:text="${uid}"></option>
+          </select>    
+	      </div>
+
+      </div>
+
+      <!-- Second Row -->
+      
+      <div class="form-row">    
+        <div class="form-group">
+          <label for="expirydate">Expiry Date:</label>
+          <input type="text" id="expirydate" name="expirydate" readonly>    
+        </div>  
+
+        <div class="form-group">
+          <label for="daysuntilexpiry">Days Until Expiry:</label>
+		    	<input type="text" id="daysuntilexpiry" name="daysuntilexpiry" readonly>
+        </div> 
+
+        <div class="form-group">
+          <label for="earliestexpirybatch">Earliest Expiry Batch:</label>
+          <input type="text" id="earliestexpirybatch" name="earliestexpirybatch" readonly>
+        </div>  
+
+        <div class="form-group">
+          <label for="customeruid">Customer UID:</label>
+            <select id="customeruid" name="customeruid" onchange="fetchCustomerDetails(this.value)">
+              <option value="">Select Customer UID</option>
+              <option th:each="uid : ${customeruid}" th:value="${uid}" th:text="${uid}"></option>
+            </select>         
+        </div> 
+      </div>
+
+       <!-- three row  -->
+      <div class="form-row">    
+        <div class="form-group" >         
+           <label for="customername">Customer Name:</label>
+           <input type="text" id="customername" name="customername" readonly>
+        </div>
+
+        <div class="form-group">
+          <label for="batchuid">Batch UID:</label>
+          <select id="batchuid" name="batchuid" onchange="fetchbatchdetails(this.value)">
+              <option value="">SELECT BATCH UID</option>
+              <option th:each="uid :${batchuid}" th:value="${uid}" th:text="${uid}"></option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="productuid">Product UID:</label>
+			    <input type="text" id="productuid" name="productuid" readonly>
+        </div>
+        
+        <div class="form-group">
+          <label for="productname">Product Name:</label>
+			    <input type="text" id="productname" name="productname" readonly>
+        </div>
+      </div>
+
+      <!-- Five Row  -->
+ 
+   <div class="form-row">
+    <div class="form-group">
+      <label for="aprrovalrequired">Approval Required:</label>
+			<select id="aprrovalrequired" name="aprrovalrequired" required>
+			    <option value="">Select</option>
+			    <option value="Yes">Yes</option>
+			    <option value="No">No</option>
+			</select>
+    </div>
+    <div class="form-group">      
+			<label for="actiontaken">Action Taken:</label>
+			<input type="text" id="actiontaken" name="actiontaken" th:value="${fe?.actiontaken}" required>
+    </div>
+     <div class="form-group">
+        <label for="processedby">Processed By:</label>
+		   	<input type="text" id="processedby" name="processedby" th:value="${fe?.processedby}" required>
+     </div>
+     <div class="form-group">
+        <label for="dispatchdate">Dispatch Date:</label>
+			  <input type="date" id="dispatchdate" name="dispatchdate" th:value="${fe?.dispatchdate}" required>
+     </div>
+   </div>
+
+
+    <div class="form-actions">
+       <button type="button" id="submitBtn" onclick="validateAndSubmit()">Submit</button>
+		  	<div th:if="${successMessage}" class="success-message" th:text="${successMessage}"></div>
+    </div>
+ </form>
+    
+
+
+
+   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+   <script>
+			
+			
+    function validateAndSubmit() {
+        let stockQuantity = document.getElementById('stockquantity').value.trim();
+        let dispatchPriority = document.getElementById('dispatchpriority').value.trim();
+        let dispatchQuantity = document.getElementById('dispatchquantity').value.trim();
+        let approvalRequired = document.getElementById('aprrovalrequired').value.trim();
+        let actionTaken = document.getElementById('actiontaken').value.trim();
+        let processedBy = document.getElementById('processedby').value.trim();
+        let dispatchDate = document.getElementById('dispatchdate').value.trim();
+
+        if (stockQuantity === '' || stockQuantity <= 0) {
+            alert('Stock quantity is required and must be greater than 0.');
+            return;
+        }
+
+        if (dispatchPriority === '') {
+            alert('Dispatch priority is required.');
+            return;
+        }
+
+        if (dispatchQuantity === '' || dispatchQuantity <= 0) {
+            alert('Dispatch quantity is required and must be greater than 0.');
+            return;
+        }
+
+        if (approvalRequired === '') {
+            alert('Approval required selection is mandatory.');
+            return;
+        }
+
+        if (actionTaken === '') {
+            alert('Action taken field is required.');
+            return;
+        }
+
+        if (processedBy === '') {
+            alert('Processed by field is required.');
+            return;
+        }
+
+        if (dispatchDate === '') {
+            alert('Dispatch date is required.');
+            return;
+        }
+
+        // Proceed with form submission if all validations pass
+        submitForm();
+    }
+
+
+
+function fetchbatchdetails(batchuid) {
+            if (!batchuid) return;
+
+            $.ajax({
+                url: '/fefopro/getproducts',
+                method: 'GET',
+                data: { batchuid: batchuid },
+                success: function(response) {
+                    $('#productname').val(response.productname);
+                    $('#productuid').val(response.productuid);
+                   
+                },
+                error: function() {
+                    alert('ERROR WHILE FETCHING PRODUCT DETAILS. TRY AGAIN.');
+                }
+            });
+        }
+
+
+
+
+
+
+
+function fetchCustomerDetails(customeruid) {
+            if (!customeruid) return;
+
+            $.ajax({
+                url: '/customers/getname',
+                method: 'GET',
+                data: { customeruid: customeruid },
+                success: function(response) {
+                    $('#customername').val(response.customername);
+                    
+                },
+                error: function() {
+                    alert('ERROR FETCHING CUSTOMER DETAILS. PLEASE TRY AGAIN.');
+                }
+            });
+        }
+
+
+
+
+function fetchprocurementdetails(procurementuid) {
+            if (!procurementuid) return;
+
+            $.ajax({
+                url: '/pro/getprocureDetails',
+                method: 'GET',
+                data: { procurementuid: procurementuid },
+                success: function(response) {
+                    $('#expirydate').val(response.expirydate);
+                    $('#daysuntilexpiry').val(response.daysuntilexpiry);
+                    $('#earliestexpirybatch').val(response.earliestexpirybatch);
+                   
+                },
+                error: function() {
+                    alert('ERROR WHILE FETCHING PRODUCT DETAILS. TRY AGAIN.');
+                }
+            });
+        }
+
+
+
+      function submitForm() {
+        const formData = new FormData(document.getElementById('fefoform'));
+        const id = $('#id').val();
+
+        let url, successMessage;
+        if (!id) {
+    url ='/savefirstefo';
+            successMessage = 'fefo Form saved successfully!';
+        } else {
+    url = '/fefo/update';
+            successMessage = 'fefo Form updated successfully!';
+        }
+
+        $.ajax({
+            url: url,
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function(response) {
+                alert(successMessage);
+                resetForm();
+                window.location.href = '/fefoshowlist';
+            },
+            error: function() {
+                alert('Error saving FEFO Form. Please try again.');
+            }
+        });
+    }
+    
+    function resetForm() {
+        $('#fefoform')[0].reset();
+        $('#id').val('');  // Clear requisitionuid to prepare for new form
+        $('#form-title').text('FEFO Form');
+        $('#submitBtn').text('Submit');
+    }
+
+function prefillForm(data) {
+    
+    $('#firstexpiryuid').val(data.firstexpiryuid);
+    $('#stockquantity').val(data.stockquantity);
+    $('#dispatchpriority').val(data.dispatchpriority);
+    $('#dispatchquantity').val(data.dispatchquantity);
+    $('#aprrovalrequired').val(data.aprrovalrequired);
+    $('#actiontaken').val(data.actiontaken);
+    $('#processedby').val(data.processedby);
+    $('#dispatchdate').val(data.dispatchdate);
+    
+
+    $('#form-title').text('Update FEFO Form');
+    $('#submitBtn').text('Update');
+}
+
+
+
+
+
+</script>
+
+</body>
+</html>
