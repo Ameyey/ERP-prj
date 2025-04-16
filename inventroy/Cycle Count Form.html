@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cycle Count Form</title>
+  <link rel="stylesheet" href="hrms.css">
+  <link rel="stylesheet" href="sty.css">
+  <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400;700&display=swap" rel="stylesheet">
+</head>
+
+<body onload="fetchProductDetails(this.value)"> 
+
+   <form id="PhysicalcyclecountForm" class="form-container"   >
+    <!-- Personal Information Section -->
+    <input type="hidden" id="id" name="id" th:value="${physicalcyclecount?.id}">
+    <div class="form-section active" id="section1">
+      <h2>Cycle Count Form</h2>
+
+      <!-- First Row -->
+    
+      <div class="form-row">
+        
+        <div class="form-group">        
+          <label for="cyclecountuid">Cycle Count UID</label>
+        <input type="text" id="cyclecountuid" name="cyclecountuid" th:value="${physicalcyclecount?.cyclecountuid}" required>
+        </div>
+
+        <div class="form-group">
+          <label for="category">Category</label>
+          <input type="text" id="category" name="category" th:value="${physicalcyclecount?.category}" required>
+        </div>
+
+        <div class="form-group">
+          <label for="scheduleddate">Scheduled Date</label>
+          <input type="date" id="scheduleddate" name="scheduleddate" th:value="${physicalcyclecount?.scheduleddate}" required>  
+        </div>
+
+        <div class="form-group">
+          <label for="cyclecounttype">Cycle Count Type</label>
+        <select id="cyclecounttype" name="cyclecounttype" th:value="${physicalcyclecount?.cyclecounttype}" required>
+            <option value="">Select Type</option>
+            <option value="Daily">Daily</option>
+            <option value="Weekly">Weekly</option>
+            <option value="Monthly">Monthly</option>
+        </select>
+      </div>
+        
+      
+
+      </div>
+
+      <!-- Second Row -->
+      <div class="form-row">
+        
+       
+
+       
+      </div>
+      <!-- Third Row -->
+      <div class="form-row">
+        <div class="form-group">
+          <label for="warehouseuid">Warehouse UID</label>
+          <input type="text" id="warehouseuid" name="warehouseuid" th:value="${physicalcyclecount?.warehouseuid}" required> 
+        </div>
+
+        <div class="form-group" >         
+          <label for="warehouselocation">Warehouse Name</label>
+          <input type="text" id="warehouselocation" name="warehouselocation" required>
+        </div>
+      
+          <div class="form-group">            
+            <label for="productuid">Product UID</label>
+            <input type="text" id="productuid" name="productuid" th:value="${physicalcyclecount?.productuid}" required>
+          </div>
+          <div class="form-group">
+            <label for="productname">Product Name</label>
+          <input type="text" id="productname" name="productname" required>
+           </div>
+      </div>
+
+      <div class="form-row">
+       
+
+        <div class="form-group">
+          <label for="shelfnumber">Shelf Number</label>
+          <input type="text" id="shelfnumber" name="shelfnumber" th:value="${physicalcyclecount?.shelfnumber}" required>       
+        </div>
+
+        <div class="form-group">
+          <label for="unitofmeasure">Unit of Measure</label>
+        <input type="text" id="unitofmeasure" name="unitofmeasure" th:value="${physicalcyclecount?.unitofmeasure}" required>         
+        </div>
+        <div class="form-group">
+          <label for="systemstock">System Stock</label>
+          <input type="number" id="systemstock" name="systemstock" th:value="${physicalcyclecount?.systemstock}" required>
+        </div>
+
+        <div class="form-group">
+          <label for="physicalstock">Physical Stock</label>
+          <input type="number" id="physicalstock" name="physicalstock" th:value="${physicalcyclecount?.physicalstock}" required>
+        </div> 
+
+      </div>
+
+      <!-- four Row -->
+
+      <div class="form-row">
+        
+        <div class="form-group">
+          <label for="stockdifference">Stock Difference</label>
+          <input type="number" id="stockdifference" name="stockdifference" th:value="${physicalcyclecount?.stockdifference}" readonly>
+     </div>
+     <div class="form-group">
+      <label for="reasonofdiscrepancy">Reason of Discrepancy</label>
+      <select id="reasonofdiscrepancy" name="reasonofdiscrepancy" th:value="${physicalcyclecount?.reasonofdiscrepancy}" required>
+          <option value="">Reason of Discrepancy</option>
+          <option value="Counting Error">Counting Error</option>
+          <option value="Data Entry Error">Data Entry Error</option>
+          <option value="Theft/Pilferage">Theft/Pilferage</option>
+          <option value="Supplier Delivery Error">Supplier Delivery Error</option>
+          <option value="Damaged or Expired Stock">Damaged or Expired Stock</option>
+          <option value="Item Misplacement">Item Misplacement</option>
+          <option value="Other">Other</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="remark">Remark</label>
+      <input id="remark" name="remark" th:value="${physicalcyclecount?.remark}" >        
+    </div>
+    <div class="form-group">
+      <label for="correctiveactiontaken">Corrective Action Taken</label>
+      <select id="correctiveactiontaken" name="correctiveactiontaken" th:value="${physicalcyclecount?.correctiveactiontaken}" required>
+         <option value="">Select Status</option>
+         <option value="Adjust System Stock ">Adjust System Stock </option>
+         <option value="Investigate & Report Theft">Investigate & Report Theft</option>
+         <option value="Restock or Reallocate Items">Restock or Reallocate Items</option>
+         <option value="Update Data Entry Records">Update Data Entry Records</option>
+         <option value="Other">Other</option>
+     </select>
+    </div>
+         
+      
+      
+        
+    </div>
+
+   <!-- Five Row  -->
+    <div class="form-row">
+      
+      <div class="form-group">
+        <label for="resolvedby">Resolved By</label>
+        <input type="text" id="resolvedby" name="resolvedby" th:value="${physicalcyclecount?.resolvedby}" required>
+      </div>
+      <div class="form-group">
+        <label for="resolvedby">Resolved By</label>
+        <input type="text" id="resolvedby" name="resolvedby" th:value="${physicalcyclecount?.resolvedby}" required>
+      </div>
+      <div class="form-group">
+        <label for="resolutiondate">Resolution Date</label>
+        <input type="date" id="resolutiondate" name="resolutiondate" th:value="${physicalcyclecount?.resolutiondate}" required>
+      </div>
+      <div class="form-group">
+        <label for="approvalstatus">Approval Status</label>
+        <select id="approvalstatus" name="approvalstatus" th:value="${physicalcyclecount?.approvalstatus}" required>
+            <option value="">Select Status</option>
+            <option value="Pending">Pending</option>
+            <option value="Approved">Approved</option>
+            <option value="Rejected">Rejected</option>
+        </select>
+      </div>
+    </div>
+ 
+    <div class="form-row">
+  
+      <div class="form-group">
+        <label for="verifiedby">Verified By</label>
+        <input type="text" id="verifiedby" name="verifiedby" th:value="${physicalcyclecount?.verifiedby}" required>
+      </div>
+      <div class="form-group">
+        <label for="reviewedby">Reviewed By</label>
+        <input type="text" id="reviewedby" name="reviewedby" th:value="${physicalcyclecount?.reviewedby}" required>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label for="finalapproval">Final Approval</label>
+        <input type="text" id="finalapproval" name="finalapproval" th:value="${physicalcyclecount?.finalapproval}" required>
+      </div>
+    </div>
+ 
+
+
+    <div class="form-actions">
+      <button type="button" id="submitBtn"  onclick="submitForm()">Submit</button>
+        <div th:if="${successMessage}" class="success-message" th:text="${successMessage}"></div>                   
+    </div>
+  
+
+
+
+
+
+
+
+   </form>
+
+
+
+   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+   <script>
+    function submitForm() {
+        const formData = new FormData(document.getElementById('PhysicalcyclecountForm'));
+        const id = $('#id').val();
+
+        let url, successMessage;
+
+        if (!id) {
+            url = '/physicalcyclecount';
+            successMessage = 'PhysicalCycleCount saved successfully!';
+        } else {
+            url = '/updatephysicalcyclecount';
+            successMessage = 'PhysicalCycleCount updated successfully!';
+        }
+
+        $.ajax({
+            url: url,
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function(response) {
+                $('#message').text(successMessage);
+                resetForm();
+                window.location.href = '/viewphysicalcyclecountlist';
+            },
+            error: function() {
+                alert('Error saving batch. Please fill out all required fields.');
+            }
+        });
+    }
+
+    function resetForm() {
+        $('#PhysicalcyclecountForm')[0].reset();
+        $('#id').val('');
+        $('#message').text('');
+        $('#form-title').text('Physical Cycle Count Form');
+        $('#submitBtn').text('Submit');
+    }
+    
+    
+    
+    function fetchBatchDetails() {
+        const batchuid = $('#batchuid').val();
+
+        if (!batchuid) {
+            alert("Please select a Batch ID.");
+            return;
+        }
+
+            $.ajax({
+                url: '/getbatchdetails',
+                method: 'GET',
+                data: { batchuid: batchuid },
+                success: function (response) {
+                    console.log("Response from server:", response);  // Log the response
+                    if (response && response.length > 0) {
+                        const ProductDetail = response[0];
+                        $('#productname').val(ProductDetail.productname || '');
+                        $('#productuid').val(ProductDetail.productuid || '');
+                        $('#warehouseuid').val(ProductDetail.warehouseuid || '');
+                        $('#warehouselocation').val(ProductDetail.warehouselocation || '');
+                    } else {
+                        alert("No details found for the selected Product ID.");
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error("Error fetching Product details:", error);
+                    alert("An error occurred while fetching the Product details.");
+                }
+            });
+        }
+
+    </script>
+
+
+</body>
+</html>
