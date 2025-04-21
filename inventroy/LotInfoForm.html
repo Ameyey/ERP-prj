@@ -14,9 +14,7 @@ h2{
 }
 </style>
 <body>
-<div th:replace="~{INVENTORY.html :: sidebarFragment}"></div> <!-- // for side bar code  -->
-
-                                                                        
+<div th:replace="~{INVENTORY.html :: sidebarFragment}"></div> <!-- // for side bar code  -->                                                                        
     
    <form id="LotInfoForm"  class="form-container"   >
     <!-- Personal Information Section -->
@@ -30,8 +28,7 @@ h2{
       <!-- First Row -->
     
       <div class="form-row" >
-        <div class="form-group">
-         
+        <div class="form-group">         
           <label for="productuid">Product ID:</label>
           <select type="text" id="productuid" name="productuid" onchange="fetchProductDetails()" required th:if="${lotinfo == null or lotinfo.id == null}" readonly>
           <option value="">--Select Product ID--</option>
@@ -39,31 +36,27 @@ h2{
                   th:value="${productId}"
                   th:text="${productId}"></option>
          </select>
-          <input type="text" id="productuid" name="productuid" th:value="${lotinfo?.productuid}" onchange="fetchProductDetails()" readonly th:if="${lotinfo?.id != null}">
-         
+          <input type="text" id="productuid" name="productuid" th:value="${lotinfo?.productuid}" onchange="fetchProductDetails()" readonly th:if="${lotinfo?.id != null}">         
       </div>       
       </div>
 
       <!-- Second Row -->
-      <div class="form-row">
-      
+    <div class="form-row">      
        <div class="form-group">
-      <label for="productname">Product Name:</label>
-      <input type="text" id="productname" name="productname" readonly>
-      </div>
+        <label for="productname">Product Name:</label>
+        <input type="text" id="productname" name="productname" readonly>
+       </div>
     
         <div class="form-group">   
           <label for="productcategory">Product Category:</label>
           <input type="text" id="productcategory" name="productcategory" readonly>
-      </div>
+        </div>
     
         <div class="form-group">
           <label for="productsubcategory">Product SubCategory:</label>
           <input type="text" id="productsubcategory" name="productsubcategory" readonly>
-      </div>
-	 
-				  
-  </div>
+        </div>				  
+    </div>
   <div class="form-row">
     <div class="form-group">
         <label for="manufacturingdate">Manufacturingdate:</label>
@@ -76,14 +69,14 @@ h2{
     <div class="form-group">
         <label for="sellingprice">Sellingprice:</label>
         <input type="number" id="sellingprice" name="sellingprice" readonly>
-</div>  
+    </div>  
   </div>
       <!-- Third Row -->
       <div class="form-row">
        <div class="form-group">
         <label for="productquantity">Product Quantity:</label>
         <input type="number" id="productquantity" name="productquantity" th:value = "${lotinfo?.productquantity}" required>
-    </div>
+       </div>
 	<div class="form-group">
 	    <label for="lotprice">Lot Price:</label>
 	    <input type="number" id="lotprice" name="lotprice" readonly>
