@@ -16,6 +16,7 @@
   }
   </style>
 <body onload="fetchItemDetail()">
+  <div th:replace="~{INVENTORY.html :: sidebarFragment}"></div> <!-- // for side bar code  -->
 
   <form id="supplierContractForm" onsubmit="validateForm(event)">
     <div class="form-container">
