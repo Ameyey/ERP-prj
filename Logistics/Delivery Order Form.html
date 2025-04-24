@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Delivery Order Form</title>
+  <link rel="stylesheet" href="hrms.css">
+  <link rel="stylesheet" href="sty.css">
+  <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+                                                                        
+    
+   <form  id="deliveryOrderForm"   class="form-container">
+    <!-- Personal Information Section -->
+    <input type="hidden" id="id" name="id" th:value="${deliveryOrder?.id}">
+    <h2>Delivery Order Form</h2>   
+    <div class="form-section active" id="section1">
+     
+
+      <!-- First Row -->
+    
+      <div class="form-row" >
+        <div class="form-group">
+          <label for="salesordernumber">Sales Order Number:</label>
+		<input type="number" id="salesordernumber" name="salesordernumber" th:value="${deliveryOrder?.salesordernumber}" min="1"required
+			placeholder="Enter sales order number">
+        </div>
+      
+      <div class="form-group">
+        <label for="deliverydate">Delivery Date:</label>
+        <input type="date" id="deliverydate" name="deliverydate"  th:value="${deliveryOrder?.deliverydate}" required>
+    
+    </div>
+
+    <div class="form-group">
+      <label for="deliveryaddress">Delivery Address:</label>
+      <input type="text" id="deliveryaddress" name="deliveryaddress"  th:value="${deliveryOrder?.deliveryaddress}" required placeholder="Enter delivery address">
+    </div>
+    
+  
+      </div>
+
+      <!-- Second Row -->
+      <div class="form-row">
+        <div class="form-group">           
+          <label>Batch UID:</label>
+								<select id="batchuid" name="batchuid" onchange="fetchBatchDetails(this.value)" th:if="${deliveryOrder == null or deliveryOrder.id == null}"  >
+								    <option value="">Select Batch UID</option>
+								    <option th:each="batchuid : ${batchuid}" th:value="${batchuid}" th:text="${batchuid}"></option>
+								</select>
+								<input type="text" id="batchuid" name="batchuid" th:value="${deliveryOrder?.batchuid}" onchange="fetchBatchDetails(this.value)" readonly th:if="${deliveryOrder?.id != null}">
+      </div>
+    
+        <div class="form-group">      
+          <label for="productuid">product uid :</label>
+          <input type="text" id="productuid" name="productuid" readonly>
+      </div>
+
+      <div class="form-group">
+        <label >product name :</label>  
+		       <input type="text" id="productname" name="productname" readonly />
+    </div>
+
+    
+    
+       
+    
+      </div>
+      <!-- Third Row -->
+      <div class="form-row">
+
+        <div class="form-group">
+          <label>Unit of Measure:</label>
+          <input type="text" id="unitofmeasure" name="unitofmeasure" readonly>
+      </div>
+    
+
+        <div class="form-group">
+          <label>Customer UID:</label>
+          <select id="customeruid" name="customeruid" onchange="fetchCustomerDetails(this.value)"  th:if="${deliveryOrder == null or deliveryOrder.id == null}" >
+              <option value="">Select Customer UID</option>
+              <option th:each="customeruid : ${customeruid}" th:value="${customeruid}" th:text="${customeruid}"></option>
+          </select>
+       <input type="text" id="customeruid" name="customeruid" th:value="${deliveryOrder?.customeruid}" onchange="fetchCustomerDetails(this.value)" readonly th:if="${deliveryOrder?.id != null}">
+
+          
+      </div>
+      
+        <div class="form-group">
+          <label >Customer name :</label>  
+          <input type="text" id="customername" name="customername" readonly />
+      </div>
+
+          
+      </div>
+
+      <!-- four Row -->
+      <div class="form-row">
+        <div class="form-group">
+         
+          <label for="quantitydispatched">Quantity Dispatched:</label>
+		<input type="number" id="quantitydispatched" name="quantitydispatched"  th:value="${deliveryOrder?.quantitydispatched}" min="1" required
+			placeholder="Enter quantity dispatched">
+        </div>
+        <div class="form-group">
+          <label>Action Required:</label>
+          <label for="shippingmethod">Shipping Method :</label>
+          <select id="shippingmethod" name="shippingmethod" th:value="${deliveryOrder?.shippingmethod}" required>
+              <option value="" disabled selected>Select Shipping Method</option>
+              <option value="Air" th:selected="${deliveryOrder?.shippingmethod == 'Air'}">Air</option>
+              <option value="Sea" th:selected="${deliveryOrder?.shippingmethod == 'Sea'}">Sea</option>
+              <option value="Road" th:selected="${deliveryOrder?.shippingmethod == 'Road'}">Road</option>
+              <option value="Rail" th:selected="${deliveryOrder?.shippingmethod == 'Rail'}">Rail</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="dispatchedby">Dispatched By :</label>
+		<input type="text" id="dispatchedby" name="dispatchedby"   th:value="${deliveryOrder?.dispatchedby}" required placeholder="Enter dispatchedby">
+        </div>
+       
+      
+      </div>
+      
+      
+   
+    </div>
+
+   <!-- Five Row  -->
+
+   <div class="form-row">
+    <div class="form-group">
+      <label for="receivedby">Received By :</label>
+		<input type="text" id="receivedby" name="receivedby"  th:value="${deliveryOrder?.receivedby}" required placeholder="Enter receivedby">
+		
+    </div>
+    <div class="form-group">
+      <label for="deliverystatus">Delivery Status :</label>
+		<select id="deliverystatus" name="deliverystatus" th:value="${deliveryOrder?.deliverystatus}" required>
+		    <option value="" disabled selected>Select Delivery Status</option>
+		    <option value="Delivered" th:selected="${deliveryOrder?.deliverystatus == 'Delivered'}">Delivered</option>
+		    <option value="Pending" th:selected="${deliveryOrder?.deliverystatus == 'Pending'}">Pending</option>
+		    <option value="Failed" th:selected="${deliveryOrder?.deliverystatus == 'Failed'}">Failed</option>
+		</select>
+    </div>
+    <div class="form-group">
+      <label for="remarks">Remarks :</label>
+		<input type="text" id="remarks" name="remarks"  th:value="${deliveryOrder?.remarks}" required placeholder="Enter remarks">
+
+    </div>
+   </div>
+   
+
+ 
+
+
+    <div class="form-actions">
+      <button type="button" id="submitBtn" onclick="submitForm()">Submit</button>
+      <div th:if="${successMessage}" class="success-message" th:text="${successMessage}"></div>
+     
+    </div>
+  
+
+
+
+
+
+
+
+   </form>
+
+
+
+   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+   <script>
+
+		function validateTextField(fieldId) {
+		    const field = document.getElementById(fieldId);
+		    const regex = /^[A-Za-z\s]*$/; // Only letters and spaces
+		    if (!regex.test(field.value)) {
+		        alert(`Invalid input in ${fieldId.replace(/([A-Z])/g, ' $1').trim()}. Only letters and spaces are allowed.`);
+		        field.focus();
+		        return false;
+		    }
+		    return true;
+		}
+		
+		function validateDropdown(fieldId) {
+		    const field = document.getElementById(fieldId);
+		    if (field.value === "") {
+		        alert(`Please select a value for ${fieldId.replace(/([A-Z])/g, ' $1').trim()}.`);
+		        field.focus();
+		        return false;
+		    }
+		    return true;
+		}
+		
+		function validateRequiredField(fieldId) {
+		    const field = document.getElementById(fieldId);
+		    if (!field.value) {
+		        alert(`Please fill out the ${fieldId.replace(/([A-Z])/g, ' $1').trim()}.`);
+		        field.focus();
+		        return false;
+		    }
+		    return true;
+		}
+		
+		function submitForm() {
+			const form = document.getElementById('deliveryOrderForm');
+			
+			// Validate fields
+			   if (!validateTextField('deliveryaddress') || 
+			       !validateTextField('dispatchedby') || 
+				   !validateTextField('receivedby') || 
+			       !validateTextField('remarks')) {
+			       return; // Stop form submission if validation fails
+			   } 
+			   
+			   // Validate dropdowns
+			      if (!validateDropdown('shippingmethod') || 
+			          !validateDropdown('deliverystatus')) {
+			          return; // Stop form submission if validation fails
+			      }
+
+				  // Validate other required fields
+				      if (!validateRequiredField('salesordernumber') || 
+				          !validateRequiredField('deliverydate') || 
+				          !validateRequiredField('quantitydispatched')||
+						  !validateRequiredField('dispatchedby')||
+						  !validateRequiredField('receivedby')||
+						  !validateRequiredField('remarks')||
+						  !validateRequiredField('batchuid')||
+						  !validateRequiredField('customeruid')||
+						  !validateRequiredField('deliveryaddress')) {
+
+				          return; // Stop form submission if validation fails
+				      }
+				  
+			const formData = new FormData(form);
+			const id = $('#id').val();
+
+			const url = id ? '/deliveryOrder/update' : '/deliveryOrder/save';
+			const successMessage = id ? 'Delicery order  updated successfully!' : 'Delicery order saved successfully!';
+
+			$.ajax({
+				url: url,
+				type: 'POST',
+				data: formData,
+				processData: false,
+				contentType: false,
+				success: function () {
+					alert(successMessage);
+					form.reset();
+					setTimeout(() => window.location.href = '/deliveryOrder/list', 1500);
+				},
+				error: function (xhr) {
+					alert('Error saving Delicery order record. Please try again.');
+					console.error(xhr.responseText);
+				}
+			});
+		}
+ 
+
+		$(document).ready(function() {
+				    var existingItemid = $('#batchuid').val();
+				    if (existingItemid) {
+				    	fetchBatchDetails(existingItemid);
+				    }
+				});
+
+				function fetchBatchDetails(batchuid) {
+				       if (!batchuid) return;
+
+				       $.ajax({
+				           url: '/fetchbatchdata',
+				           method: 'GET',
+				           data: { batchuid: batchuid },
+				           success: function(response) {
+							if(response && response.length > 0) {
+								let data = response[0];
+								$('#productuid').val(data.productuid || '');
+								$('#productname').val(data.productname || '');
+								$('#unitofmeasure').val(data.unitofmeasure || '');			
+
+								
+						} else {
+							alert('No data found for the seleected product.')
+						}
+						
+				               },
+				           error: function() {
+				               alert('Error fetching Batch details. Please try again.');
+				           }
+				       });
+				   }
+				   
+				   
+				   $(document).ready(function() {
+				   	    // Auto-fill customer details when updating
+				   	    var existingItemid = $('#customeruid').val();
+				   	    if (existingItemid) {
+				   	    	fetchCustomerDetails(existingItemid);
+				   	    }
+				   	});
+				   function fetchCustomerDetails(customeruid) {
+				   			       if (!customeruid) return;
+
+				   			       $.ajax({
+				   			           url: '/fetchcustomerdata',
+				   			           method: 'GET',
+				   			           data: { customeruid: customeruid },
+				   			           success: function(response) {
+				   						if(response && response.length > 0) {
+				   							let data = response[0];
+				   							$('#customername').val(data.customername || '');
+				   							
+
+				   							
+				   					} else {
+				   						alert('No data found for the seleected product.')
+				   					}
+				   					
+				   			               },
+				   			           error: function() {
+				   			               alert('Error fetching Batch details. Please try again.');
+				   			           }
+				   			       });
+				   			   }
+
+
+	</script>
+</body>
+</html>
