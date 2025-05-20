@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Logistics Request Form</title>
+<link rel="stylesheet" href="/css/empinfo.css">
+  <link rel="stylesheet" href="/css/hrms.css"> <!-- // for side bar code  -->
+  <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+
+  <div th:replace="~{SUPPLIER.html :: sidebarFragment}"></div> <!-- // for side bar code  -->                                                                        
+    
+   <form  id="logisticsform" method="POST" th:action="@{/logistics/save}"  class="form-container">
+    <!-- Personal Information Section -->
+         <input type="hidden" name="id" id="id" th:value="${request?.id}">
+    <h2>Logistics Request Form</h2>   
+    <div class="form-section active" id="section1">
+     
+
+      <!-- First Row -->
+    
+      <div class="form-row" >
+        <div class="form-group">
+      <label for="sourcewarehouseuids">Source UID :</label>
+	            <select id="sourcewarehouseuids" name="sourcewarehouseuids" onchange="fetchWarehouseDetails(this.value)" >
+	                <option value="">--Select Warehouse UID--</option>
+	                <option th:each="uid : ${warehouseuid}"
+	                        th:value="${uid}"
+	                        th:text="${uid}"></option>
+	            </select>
+        </div>
+      
+      <div class="form-group">
+       <label>Source Location</label>
+	<input type="text" id="sourcelocation" name="sourcelocation" readonly>
+    </div>
+
+    <div class="form-group">
+     <label>Request Date:</label>
+    <input type="date" id="requestdate" name="requestdate" th:value="${request?.requestdate}">
+    </div>
+    
+  
+      </div>
+
+      <!-- Second Row -->
+      <div class="form-row">
+        <div class="form-group">           
+         <label for="pickupwarehouseuid">Pickup Uid :</label>
+	           <select id="pickupwarehouseuid" name="pickupwarehouseuid" onchange="fetchdestinationwarehouseDetails(this.value)">
+	               <option value="">--Select Source Uid--</option>
+	               <option th:each="uid : ${warehouseuid}"
+	                       th:value="${uid}"
+	                       th:text="${uid}"></option>
+	           </select>
+      </div>
+    
+        <div class="form-group">      
+       <label>Pickup Location:</label>
+   <input type="text" id="pickuplocation" name="pickuplocation" readonly>
+      </div>
+
+      <div class="form-group">
+       <label>Requested By:</label>
+    <input type="text" id="requestedby" name="requestedby" th:value="${request?.requestedby}">
+
+    </div>
+
+    
+    
+       
+    
+      </div>
+      <!-- Third Row -->
+      <div class="form-row">
+
+        <div class="form-group">
+        	 <label>Department Name:</label>
+    <input type="text" id="departmentname" name="departmentname" th:value="${request?.departmentname}">
+      </div>
+    
+
+        <div class="form-group">
+        <label for="shipmenttype">Shipment Type<span style="color:red;">*</span>:</label>
+	<select id="shipmenttype" name="shipmenttype" required>
+	    <option value="">--Select Shipment Type--</option>
+	    <option value="Raw Material" th:selected="${request?.shipmenttype == 'Raw Material'}">Raw Material</option>
+	    <option value="Finished Goods" th:selected="${request?.shipmenttype == 'Finished Goods'}">Finished Goods</option>
+	    <option value="Internal Transfer" th:selected="${request?.shipmenttype == 'Internal Transfer'}">Internal Transfer</option>
+	</select>
+         
+      </div>
+      
+        <div class="form-group">
+        <label>Weight/Volume:</label>
+    <input type="text" id="weightvolume" name="weightvolume" th:value="${request?.weightvolume}">
+      </div>
+
+          
+      </div>
+
+      <!-- four Row -->
+      <div class="form-row">
+        <div class="form-group">
+         
+         <label for="modeoftransport">Mode of Transport<span style="color:red;">*</span>:</label>
+	<select id="modeoftransport" name="modeoftransport" required>
+	    <option value="">--Select Mode of Transport--</option>
+	    <option value="Truck" th:selected="${request?.modeoftransport == 'Truck'}">Truck</option>
+	    <option value="Air" th:selected="${request?.modeoftransport == 'Air'}">Air</option>
+	    <option value="Rail" th:selected="${request?.modeoftransport == 'Rail'}">Rail</option>
+	    <option value="Sea" th:selected="${request?.modeoftransport == 'Sea'}">Sea</option>
+	</select>
+        </div>
+       <div class="form-group">
+            <label>Expected Delivery Date:</label>
+    <input type="date" id="expecteddeliverydate" name="expecteddeliverydate" th:value="${request?.expecteddeliverydate}">
+       </div>
+      <div class="form-group">
+         <label>Transport Provider:</label>
+    <input type="text" id="transportprovider" name="transportprovider" th:value="${request?.transportprovider}">
+      </div>
+       
+      
+      </div>
+      
+      <div class="form-row">
+        <div class="form-group">
+            <label>Vehicle Number:</label>
+    <input type="text" id="vehiclenumber" name="vehiclenumber" th:value="${request?.vehiclenumber}">
+        </div>
+        <div class="form-group">
+          <label>Driver Name:</label>
+    <input type="text" id="drivername" name="drivername" th:value="${request?.drivername}">
+        </div>
+        <div class="form-group">
+           <label>Driver Contact:</label>
+    <input type="text" id="drivercontact" name="drivercontact" th:value="${request?.drivercontact}">
+        </div>
+      </div>
+      
+      <div class="form-row">
+        <div class="form-group">
+          <label for="approvalstatus">Approval Status<span style="color:red;">*</span>:</label>
+	<select id="approvalstatus" name="approvalstatus" required>
+	    <option value="">--Select Approval Status--</option>
+	    <option value="Approved" th:selected="${request?.approvalstatus == 'Approved'}">Approved</option>
+	    <option value="Rejected" th:selected="${request?.approvalstatus == 'Rejected'}">Rejected</option>
+	    <option value="On Hold" th:selected="${request?.approvalstatus == 'On Hold'}">On Hold</option>
+	</select>
+          
+        </div>
+      </div>
+   
+    </div>
+
+   <!-- Five Row  -->
+
+   
+
+ 
+
+
+    <div class="form-actions">
+   <button type="button" id="submitBtn" onclick="submitForm()">Submit</button>
+		<div th:if="${successMessage}" class="success-message" th:text="${successMessage}"></div>     
+    </div>
+  
+   </form>
+
+
+
+   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+   	<script>
+    	
+		function submitForm() {
+		    const formData = new FormData(document.getElementById('logisticsform'));
+		    const id = $('#id').val();
+
+		    let url, successMessage;
+
+		    if (!id || id === '0') {
+		        url = '/logistics/save';
+		        successMessage = 'Logistics form saved successfully!';
+		    } else {
+		        url = '/logistics/update';
+		        successMessage = 'Logistics form updated successfully!';
+		    }
+
+		    $.ajax({
+		        type: 'POST',
+		        url: url,
+		        data: formData,
+		        processData: false,
+		        contentType: false,
+		        success: function () {
+		            $('#status-message').css('color', 'green').text(successMessage);
+
+		            
+		            setTimeout(() => {
+		                window.location.href = '/logistics/list';
+		            }, 1500);
+		        },
+		        error: function () {
+		            $('#status-message').css('color', 'red').text('Something went wrong. Please try again.');
+		        }
+		    });
+		}
+							 
+		function fetchWarehouseDetails(sourcewarehouseuids) {
+			const warehouseuid =$('#sourcewarehouseuids').val();
+
+		    if (!warehouseuid) return;
+
+		    $.ajax({
+		        url: '/logistics/getwarehousedatabyuid',
+		        method: 'GET',
+		        data: { warehouseuid: warehouseuid },
+		        success: function(response) {
+		            if (response.length > 0) {
+		                var data = response[0]; 
+		                $('#sourcelocation').val(data.address); 
+		            } else {
+		                alert('No data found for this warehouse UID.');
+		            }
+		        },
+		        error: function() {
+		            alert('Error fetching warehouse details. Please try again.');
+		        }
+		    });
+		}
+		function fetchdestinationwarehouseDetails(pickupwarehouseuid) { 
+			const warehouseuid = $('#pickupwarehouseuid').val();
+		    
+			if (!warehouseuid) return;
+
+		    $.ajax({
+		        url: '/logistics/getwarehousedatabyuid',
+		        method: 'GET',
+		        data: { warehouseuid: warehouseuid },
+		        success: function(response) {
+		            if (response.length > 0) {
+		                var data = response[0];
+		                $('#pickuplocation').val(data.address); 
+		            } else {
+		                alert('No data found for this source warehouse UID.');
+		            }
+		        },
+		        error: function() {
+		            alert('Error fetching source warehouse details. Please try again.');
+		        }
+		    });
+		}
+		function validateForm() {
+					        let isValid = true;
+
+					        
+					        let today = new Date().toISOString().split('T')[0];
+
+					       
+					        let requestDate = document.getElementById("requestdate").value;
+					        if (requestDate !== today) {
+					            document.getElementById("dateError").textContent = "Request date must be today's date.";
+					            isValid = false;
+					        } else {
+					            document.getElementById("dateError").textContent = "";
+					        }
+
+					        return isValid;
+					    }
+				
+		      document.addEventListener("DOMContentLoaded", function() {
+			        let today = new Date().toISOString().split('T')[0];
+			        document.getElementById("requestdate").setAttribute("value", today);
+			    });
+				
+				$(document).ready(function () {
+
+				    // ✅ Text fields: alphabets and spaces only
+				    function validateTextField(selector) {
+				        $(selector).on('input', function () {
+				            let value = $(this).val();
+				            if (!/^[a-zA-Z\s]*$/.test(value)) {
+				                alert('Only alphabets and spaces are allowed.');
+				                $(this).val(value.replace(/[^a-zA-Z\s]/g, ''));
+				            }
+				        });
+				    }
+
+				    // ✅ Number fields: digits only
+				    function validateNumberField(selector) {
+				        $(selector).on('input', function () {
+				            let value = $(this).val();
+				            if (!/^\d*$/.test(value)) {
+				                alert('Only numbers are allowed.');
+				                $(this).val(value.replace(/\D/g, ''));
+				            }
+				        });
+				    }
+					function validateContactNumber(selector) {
+					    $(selector).on('input', function () {
+					        let value = $(this).val().replace(/\D/g, '');
+					        if (value.length > 10) value = value.slice(0, 10);
+					        $(this).val(value);
+					    });
+
+					    $(selector).on('blur', function () {
+					        if ($(this).val().length !== 10) {
+					            alert('Driver contact must be exactly 10 digits.');
+					           
+					        }
+					    });
+					}
+
+				    // Apply text validation
+				    validateTextField('#requestedby');
+				    validateTextField('#drivername');
+				    validateTextField('#departmentname');
+
+				    // Apply number validation
+				   
+				    validateNumberField('#weightvolume');
+					 validateNumberField('#vehiclenumber');
+					 
+					 validateContactNumber('#drivercontact');
+				});
+
+				
+		        
+    </script>
+
+ 
+   
+</body>
+</html>

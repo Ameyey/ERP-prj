@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calibration Form</title>
+<link rel="stylesheet" href="/css/empinfo.css">
+  <link rel="stylesheet" href="/css/hrms.css"> <!-- // for side bar code  -->
+  <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+
+  <div th:replace="~{SUPPLIER.html :: sidebarFragment}"></div> <!-- // for side bar code  -->                                                                        
+    
+   <form style="padding: 102px;"  id="calibform" onsubmit="submitForm(event)"  class="form-container">
+    <!-- Personal Information Section -->
+     <input type="hidden" id="crid" name="crid" th:value="${records?.crid}">
+    <h2 style="position: relative;top: -41px;">Calibration Entry Form</h2>   
+    <div class="form-section active" id="section1">
+       <!-- First Row -->
+      <div class="form-row" >
+        <div class="form-group">
+      <label for="equipmentname">Equipment Name:</label>
+			<input type="text" id="equipmentname" name="equipmentname" th:value="${records?.equipmentname}" required
+				pattern="[A-Za-z\s\-]+" title="Only letters, spaces, and hyphens allowed.">
+        </div>
+      
+      <div class="form-group">
+       <label for="serialnumber">Serial Number:</label>
+			<input type="text" id="serialnumber" name="serialnumber" th:value="${records?.serialnumber}" required
+				pattern="^[0-9]+$" title="Only numbers allowed.">
+    </div>
+
+    <div class="form-group">
+     <label for="calibrationdate">Calibration Date:</label>
+			<input type="date" id="calibrationdate" name="calibrationdate" th:value="${records?.calibrationdate}"
+				required>
+    </div>
+    
+  
+      </div>
+
+      <!-- Second Row -->
+      <div class="form-row">
+        <div class="form-group">           
+         <label for="nextduedate">Next Due Date:</label>
+			<input type="date" id="nextduedate" name="nextduedate" th:value="${records?.nextduedate}" required>
+    
+      </div>
+    
+        <div class="form-group">      
+        <label for="performedby">Performed By:</label>
+			<select id="performedby" name="performedby" required>
+				<option value="">-- Select Party --</option>
+				<option value="Internal Party" th:selected="${records?.performedby == 'Internal Party'}">Internal Party
+				</option>
+				<option value="External Party" th:selected="${records?.performedby == 'External Party'}">External Party
+				</option>
+			</select>
+      </div>
+
+      <div class="form-group">
+       <label for="status">Status:</label>
+			<select id="status" name="status" required>
+				<option value="">-- Select Status --</option>
+				<option value="Pass" th:selected="${records?.status == 'Pass'}">Pass</option>
+				<option value="Fail" th:selected="${records?.status == 'Fail'}">Fail</option>
+			</select>
+    </div>
+      
+      </div>
+   
+      
+      
+      
+   
+    </div>
+
+   <!-- Five Row  -->
+   
+
+ 
+
+
+    <div class="form-actions">
+      <button type="submit" value="Submit">Submit</button>
+     
+    </div>
+  
+   </form>
+
+
+
+   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+		function submitForm(event) {
+			event.preventDefault(); // Prevent default form submission
+			const crId = $('#crid').val();
+			const formData = new FormData(document.getElementById("calibform"));
+			let crurl = crId ? `/updaterecord/${crId}` : '/addrecord';
+			$.ajax({
+				url: crurl,
+				type: 'POST',
+				data: formData,
+				processData: false,
+				contentType: false,
+				success: function (response) {
+					alert(response.status);
+					resetForm();
+					window.location.href = '/allrecords';
+				},
+				error: function () {
+					alert('Error saving form. Please fill out the data.');
+				}
+			});
+		}
+
+		function resetForm() {
+			$('#calibform')[0].reset();
+			$('#crid').val('');
+		}
+	</script>
+
+</body>
+</html>

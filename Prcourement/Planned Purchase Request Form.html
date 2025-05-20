@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Planned Purchase Request Form</title>
+<link rel="stylesheet" href="/css/empinfo.css">
+  <link rel="stylesheet" href="/css/hrms.css"> <!-- // for side bar code  -->
+  <link rel="stylesheet" href="sty.css">
+  <link rel="stylesheet" href="hrms.css">
+  
+  <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+
+  <div th:replace="~{SUPPLIER.html :: sidebarFragment}"></div> <!-- // for side bar code  -->                                                                        
+    
+   <form  id="plannedpurchaserequestform" th:action="@{${pprf.id != null} ? '/plannedpurchaserequest/update' : '/plannedpurchaserequest/save'}" method="post" th:object="${pprf}" onsubmit="return validateForm(event)" class="form-container" style="max-width: 840px;" > 
+    <!-- Personal Information Section -->
+<input type="hidden" th:field="*{id}"/>         
+    <h2>Planned Purchase Request Form</h2>   
+    <div class="form-section active" id="section1">
+     
+
+      <!-- First Row -->
+    
+      <div class="form-row" >
+        <div class="form-group">
+       <label class="form-label">Request Date *</label>
+	            <input type="date" class="form-control" th:field="*{requestdate}" required>
+	            <div class="error"></div>
+        </div>
+      
+      <div class="form-group">
+       <label class="form-label">Requesting Department *</label>
+	            <input type="text" class="form-control" th:field="*{requestingdepartment}" pattern="[A-Za-z ]+" title="Only alphabets are allowed" required>
+	            <div class="error"></div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Requested By *</label>
+	            <input type="text" class="form-control" th:field="*{requestedby}" pattern="[A-Za-z ]+" title="Only alphabets are allowed" required>
+	            <div class="error"></div>
+    </div>
+     <div class="form-group">           
+          <label class="form-label">Request Frequency *</label>
+		           <select class="form-select" th:field="*{requestfrequency}" required>
+		               <option value="">Select Frequency</option>
+		               <option value="Monthly">Monthly</option>
+		               <option value="Quarterly">Quarterly</option>
+		               <option value="Yearly">Yearly</option>
+		           </select>
+		           <div class="error"></div>
+      </div>
+    
+  
+      </div>
+
+      <!-- Second Row -->
+      <div class="form-row">
+       
+    
+        <div class="form-group">      
+ <label class="form-label">Budget Allocation *</label>
+		           <input type="number" class="form-control" th:field="*{budgetallocation}" required min="1">
+		           <div class="error"></div>
+      </div>
+
+      <div class="form-group">
+         <label class="form-label">Planned Start Date *</label>
+		           <input type="date" class="form-control" th:field="*{plannedstartdate}" id="plannedstartdate" required>
+		           <div class="error"></div>
+                       
+    </div>
+
+      <div class="form-group">
+       <label class="form-label">Planned End Date</label>
+		           <input type="date" class="form-control" th:field="*{plannedenddate}" id="plannedenddate">
+		           <div class="error"></div>
+      </div>
+    
+
+        <div class="form-group">
+       <label class="form-label">Justification for Planned Purchase *</label>
+		           <textarea class="form-control" th:field="*{justification}" required></textarea>
+		           <div class="error"></div>
+         
+      </div>
+    
+    
+       
+    
+      </div>
+      <!-- Third Row -->
+      <div class="form-row"> 
+      
+        <div class="form-group">
+       <label for="productuid" class="form-label">Product UID</label>
+				    <select id="productuid" name="productuid" onchange="fetchProductDetails(this.value)">
+				        <option value="">Select productuid</option>
+				        <option th:each="productuid: ${productuid}"
+				                th:value="${productuid}"
+				                th:text="${productuid}"></option>
+
+				    </select>
+
+      </div>
+<div class="form-group">
+         
+          <label>Product Name *</label>
+         <label class="form-label">Product Name *</label>
+            <input type="text" class="form-control" id="productname" name="productname" readonly>
+        </div>
+       <div class="form-group">
+         <label>Product Description *</label>
+         <label class="form-label">Product Description *</label>
+            <textarea class="form-control" id="productdescription" name="productdescription" readonly></textarea>
+       </div>
+      <div class="form-group">
+              <label class="form-label">Product Category *</label>
+            <input type="text" class="form-control" id="productcategory" name="productcategory" readonly>
+      </div>
+          
+      </div>
+
+      <!-- four Row -->
+      <div class="form-row">
+        
+       
+      
+      </div>
+      
+      <div class="form-row">
+        <div class="form-group">
+                   
+         <label class="form-label">Quantity Per Purchase Cycle *</label>
+            <input type="number" class="form-control" th:field="*{quantity}" required>
+        </div>
+        <div class="form-group">
+            <label class="form-label">Unit Price *</label>
+		                   <input type="number" class="form-control" th:field="*{unitprice}" required>
+        </div>
+        <div class="form-group">
+             <label class="form-label">Total Cost per cycle*</label>
+            <input type="number" class="form-control" th:field="*{totalcostpercycle}" required>
+        </div>
+         <div class="form-group">
+            <label class="form-label">annualestimatedcost *</label>
+		            <input type="number" class="form-control" th:field="*{annualestimatedcost}" required>
+          
+        </div>
+      </div>
+      
+      <div class="form-row">
+       
+        <div class="form-group">
+           <label for="supplieruid" class="form-label">Supplier UID</label>
+		    <select id="supplieruid" name="supplieruid" onchange="fetchSupplierDetails(this.value)">
+		        <option value="">Select Supplier UID</option>
+		        <option th:each="supplieruid : ${supplieruid}"
+		                th:value="${supplieruid}"
+		                th:text="${supplieruid}"></option>
+		    </select>
+        </div>
+        <div class="form-group">
+        <label class="form-label">Preferred Supplier Name</label>
+		    <input type="text" id="preferredsupplier" name="preferredsupplier" readonly>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Alternative Supplier Name</label>
+		    <input type="text" id="alternativesuppliername" name="alternativesuppliername" readonly>
+
+        </div>
+          <div class="form-group">
+        <label class="form-label">Supplier Contact Information</label>
+		    <input type="text" id="suppliercontact" name="suppliercontact" readonly>
+
+        </div>
+      </div>
+
+      <div class="form-row">
+      
+        <div class="form-group">
+             <label class="form-label">Preferred Delivery Location *</label>
+            <input type="text" class="form-control" th:field="*{deliverylocation}" required>
+        </div>
+        <div class="form-group">
+       <label class="form-label">Expected Delivery Date per Cycle *</label>
+            <input type="date" class="form-control" th:field="*{expecteddeliverydate}" required>
+        </div>
+          <div class="form-group">
+         <label class="form-label">Budget Code/Account Number *</label>
+            <!--<input type="text" class="form-control" th:field="*{budgetcode}" required>-->
+			<input type="text" class="form-control" th:field="*{budgetcode}" required>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Funding Source *</label>
+            <input type="text" class="form-control" th:field="*{fundingsource}" required>
+      </div>
+      </div>
+     <div class="form-row">
+    
+      <div class="form-group">
+             
+        <label class="form-label">Finance Approver Name *</label>
+            <input type="text" class="form-control" th:field="*{financeapprover}" pattern="[A-Za-z ]+" title="Only alphabets and spaces are allowed" required>
+      </div>
+      <div class="form-group">
+            <label class="form-label">Approval Date *</label>
+            <input type="date" class="form-control" th:field="*{approvaldate}" required>
+      </div>
+       <div class="form-group">
+             <label class="form-label">Procurement Approver Name *</label>
+            <input type="text" class="form-control" th:field="*{procurementapprover}" pattern="[A-Za-z ]+" title="Only alphabets and spaces are allowed" required>
+        </div>
+
+      </div>
+     </div>
+    
+    </div>
+
+   <!-- Five Row  -->
+
+   
+
+ 
+
+
+    <div class="form-actions">
+    <button type="submit" class="btn btn-primary">Submit Request</button>
+   <button type="button" class="back-button" onclick="goBack();">Back</button>
+        <div id="message" th:if="${successMessage}" class="success-message" th:text="${successMessage}"></div>     
+    </div>
+  
+   </form>
+
+
+
+   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+   <script>
+       function goBack() {
+		window.location.href = '/logistics/goodsreceiptnotegrid';
+	   }
+  
+
+ 
+	function fetchSupplierDetails(supplieruid) {
+				            if (!supplieruid) return;
+
+				            $.ajax({
+				                url: '/plannedpurchaserequest/getsupplierdatabyuid',
+				                method: 'GET',
+				                data: { supplieruid: supplieruid },
+				                success: function(response) {
+				                    $('#preferredsupplier').val(response.preferredsupplier);
+				                    $('#suppliercontact').val(response.suppliercontact);
+				                    $('#alternativesuppliername').val(response.alternativesuppliername);
+				                   
+				                },
+				                error: function() {
+				                    alert('ERROR WHILE FETCHING PRODUCT DETAILS. TRY AGAIN.');
+				                }
+				            });
+				        }
+	
+ function fetchProductDetails(productuid){
+	if(!productuid) return;
+	$.ajax({
+		url:'/plannedpurchaserequest/getproductdatabyuid',
+		method:'GET',
+		data: { productuid: productuid },
+					                success: function(response) {
+					                    $('#productname').val(response.productname);
+					                    $('#productdescription').val(response.productdescription);
+					                    $('#productcategory').val(response.productcategory);
+					                   
+					                },
+					                error: function() {
+					                    alert('ERROR WHILE FETCHING PRODUCT DETAILS. TRY AGAIN.');
+					                }
+					            });
+					        }
+		
+		
+
+
+
+	function submitForm() 
+	{
+		
+			            const formData = new FormData(document.getElementById('plannedpurchaseform'));
+			            const id = $('#id').val();
+
+			            let url, successMessage;
+
+			            if (!id) {
+			                url = '/plannedpurchaserequest/save';
+			                successMessage = 'saved successfully!';
+			            } else {
+			                url = '/plannedpurchaserequest/edit/{id}';
+			                successMessage = ' updated successfully!';
+			            }
+
+			            $.ajax({
+			                url: url,
+			                type: 'POST',
+			                data: formData,
+			                processData: false,
+			                contentType: false,
+			                success: function () {
+			                    $('#message').text(successMessage).fadeIn();
+			                    setTimeout(function () {
+			                        window.location.href = '/plannedpurchaserequest/list';
+			                    }, 1500);
+			                },
+			                error: function () {
+			                    alert('Error saving  Please fill out all required fields.');
+			                }
+			            });
+			        }
+    document.addEventListener("input", function () {
+        let quantity = document.querySelector("[name='quantity']").value;
+        let unitPrice = document.querySelector("[name='unitprice']").value;
+        let frequency = document.querySelector("[name='requestfrequency']").value;
+
+        let totalCost = quantity * unitPrice;
+        document.querySelector("[name='totalcostpercycle']").value = totalCost;
+
+        let annualCost = totalCost * (frequency === "Monthly" ? 12 : (frequency === "Quarterly" ? 4 : 1));
+        document.querySelector("[name='annualestimatedcost']").value = annualCost;
+    });
+	function validateForm() {
+							        let isValid = true;
+
+							        
+							        let today = new Date().toISOString().split('T')[0];
+
+							       
+							        let requestDate = document.getElementById("requestdate").value;
+							        if (requestDate !== today) {
+							            document.getElementById("dateError").textContent = "Request date must be today's date.";
+							            isValid = false;
+							        } else {
+							            document.getElementById("dateError").textContent = "";
+							        }
+
+							        return isValid;
+							    }
+						
+				      document.addEventListener("DOMContentLoaded", function() {
+					        let today = new Date().toISOString().split('T')[0];
+					        document.getElementById("requestdate").setAttribute("value", today);
+					    });
+						$(document).ready(function () {
+
+						    // ✅ Validation for text fields (Only alphabets and spaces)
+						    function validateTextField(selector) {
+						        $(selector).on('input', function () {
+						            let value = $(this).val();
+						            if (!/^[a-zA-Z\s]*$/.test(value)) {
+						                alert('Only alphabets and spaces are allowed.');
+						                $(this).val(value.replace(/[^a-zA-Z\s]/g, ''));
+						            }
+						        });
+						    }
+						    // ✅ Validation for numeric fields (Only digits allowed — no alphabets or special characters)
+						    function validateNumericField(selector) {
+						        $(selector).on('input', function () {
+						            let value = $(this).val();
+						            if (!/^\d*$/.test(value)) {
+						                alert('Only numbers are allowed in this field.');
+						                $(this).val(value.replace(/\D/g, '')); // Remove non-digit characters
+						            }
+						        });
+						    }
+
+						    // Apply validation on specified fields (text)
+						    validateTextField('#requestedby');
+						    validateTextField('#requestingdepartment');
+						    validateTextField('#justification');
+						    validateTextField('#procurementapprover');
+						    validateTextField('#deliverylocation');
+						    validateTextField('#fundingsource');
+						    validateTextField('#financeapprover');
+						  
+
+						    // ✅ Apply numeric validation to account number
+						    validateNumericField('#budgetcode');
+
+						});
+
+</script>   
+
+
+ 
+   
+</body>
+</html>

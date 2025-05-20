@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Request for Proposal (rfpdata) Form</title>
+<link rel="stylesheet" href="sty.css">
+  <link rel="stylesheet" href="hrms.css"> <!-- // for side bar code  --> 
+  <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+
+  <div th:replace="~{SUPPLIER.html :: sidebarFragment}"></div> <!-- // for side bar code  -->                                                                        
+    
+   <form id="rfpdataForm"  class="form-container">
+    <!-- Personal Information Section -->
+    <h2>Request for Proposal  Form</h2>   
+    <br>
+    <br>
+
+<input type="hidden" id="id" name="id" th:value="${rfpdata?.id}">
+    <div class="form-section active" id="section1">
+     
+
+      <!-- First Row -->
+    
+      <div class="form-row" >
+        <div class="form-group">
+     <label for="rfpissuedate">rfpdata Issue Date *</label>
+    <input type="date" id="rfpissuedate" name="rfpissuedate" th:value="${rfpdata?.rfpissuedate}" required/>
+        </div>
+      
+      <div class="form-group">
+         <label for="submissiondeadline">Submission Deadline *</label>
+    <input type="date" id="submissiondeadline" name="submissiondeadline"  th:value="${rfpdata?.submissiondeadline}"required />
+    </div>
+    <div class="form-group">
+      	<label>Supplier UID:</label>
+	<select id="supplieruid" name="supplieruid" onchange="fetchSupplierDetails(this.value)" th:if="${rfpdata == null or rfpdata.id == null}" >
+		<option value="">Select Supplier UID</option>
+		<option th:each="uid : ${supplieruid}" th:value="${uid}" th:text="${uid}"></option>
+	</select>
+    	<input type="text" id="supplieruid" name="supplieruid" th:value="${rfpdata?.supplieruid}" onchange="fetchSupplierDetails(this.value)" readonly th:if="${rfpdata?.id != null}">
+    </div>
+
+    
+    
+  
+      </div>
+
+      <!-- Second Row -->
+      <div class="form-row">
+        <div class="form-group">
+    <label>Supplier Name:</label>
+    <input type="text" id="suppliername" name="suppliername" readonly />
+    </div>
+        <div class="form-group">           
+         <label>Contact Email :</label>
+    <input type="email" id="email" name="email" readonly />
+      </div>
+    <div class="form-group">
+       <label>Contact Phone :</label>
+    <input type="number" id="phonenumber" name="phonenumber" readonly />
+    </div>
+
+
+      
+    
+    
+       
+    
+      </div>
+      <!-- Third Row -->
+              
+       <div class="form-row">
+        <div class="form-group">
+           <label for="scopeofwork">Scope of Work *</label>
+      <input type="text" id="scopeofwork" name="scopeofwork" th:value="${rfpdata?.scopeofwork}" required>
+        </div>
+        <div class="form-group">
+           <label for="projectstartdate">Project Start Date *</label>
+    <input type="date" id="projectstartdate" name="projectstartdate" th:value="${rfpdata?.projectstartdate}" required />
+        </div>
+        <div class="form-group">
+            <label for="projectenddate">Project End Date *</label>
+    <input type="date" id="projectenddate" name="projectenddate" th:value="${rfpdata?.projectenddate}" required />
+        </div>
+       </div>
+    
+      </div>
+
+      <!-- four Row -->
+   
+     <div class="form-row">
+     <div class="form-group">
+      <label>Technical Requirements *</label>
+	<select id="technicalrequirement" name="technicalrequirement" th:value="${rfpdata?.technicalrequirement}" required>
+ 		 <option value="">Select Technical Requirement</option>
+ 		 <option value="SoftwareIntegration" th:selected="${rfpdata?.technicalrequirement == 'SoftwareIntegration'}">Software Integration</option>
+ 		 <option value="SecurityCompliance" th:selected="${rfpdata?.technicalrequirement == 'SecurityCompliance'}">Security Compliance</option>
+  		 <option value="DataEncryption" th:selected="${rfpdata?.technicalrequirement == 'DataEncryption'}">Data Encryption</option>
+ 		 <option value="Scalability" th:selected="${rfpdata?.technicalrequirement == 'Scalability'}">Scalability</option>
+  		 <option value="APISupport" th:selected="${rfpdata?.technicalrequirement == 'APISupport'}">API Support</option>
+  		 <option value="CrossPlatformCompatibility" th:selected="${rfpdata?.technicalrequirement == 'CrossPlatformCompatibility'}">Cross-Platform Compatibility</option>
+  		 <option value="CloudInfrastructure" th:selected="${rfpdata?.technicalrequirement == 'CloudInfrastructure'}">Cloud Infrastructure</option>
+  		 <option value="PerformanceOptimization" th:selected="${rfpdata?.technicalrequirement == 'PerformanceOptimization'}">Performance Optimization</option>
+  		 <option value="MobileResponsiveness" th:selected="${rfpdata?.technicalrequirement == 'MobileResponsiveness'}">Mobile Responsiveness</option>
+  		 <option value="AccessibilityStandards" th:selected="${rfpdata?.technicalrequirement == 'AccessibilityStandards'}">Accessibility Standards</option>
+	</select>
+     </div>
+     <div class="form-group">
+       <label for="proposedcost">Proposed Cost ($) *</label>
+    <input type="number" id="proposedcost" name="proposedcost" th:value="${rfpdata?.proposedcost}" step="0.01" required />
+     </div>  
+    </div>
+      
+     
+   
+    </div>
+
+   <!-- Five Row  -->
+
+   
+
+ 
+
+
+    <div class="form-actions">
+    <button type="button" id="submitBtn" onclick="submitForm()">Submit</button>
+    <button type="button" class="back-button" onclick="goBack();">Back</button>
+   	<div th:if="${successMessage}" class="success-message" th:text="${successMessage}"></div>   
+	
+    </div>
+  
+   </form>
+
+
+
+   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+   	<script>
+		function goBack() {
+		window.location.href = '/logistics/goodsreceiptnotegrid';
+	  }
+	
+	</script>
+  <script>
+$('#submissiondeadline').on('change', function() {
+    let issueDate = new Date($('#rfpissuedate').val()); 
+    let submissionDeadline = new Date($(this).val());
+
+    if (submissionDeadline <= issueDate) {
+        alert('Submission deadline must be greater than the issue date.');
+        $(this).val(''); // Clear invalid date
+    }
+});
+$('#projectenddate').on('change', function() {
+    let startDate = new Date($('#projectstartdate').val());
+    let endDate = new Date($(this).val());
+
+    if (endDate <= startDate) {
+        alert('Project End Date must be greater than Project Start Date.');
+        $(this).val(''); // Clear invalid date
+    }
+});
+$(document).ready(function() {
+    // Auto-fill Item details when updating
+    var existingsupplieruid = $('#supplieruid').val();
+    if (existingsupplieruid) {
+    	fetchSupplierDetails(existingsupplieruid);
+    }
+});
+//Fetch Supplier Details data 
+function fetchSupplierDetails(supplieruid) {
+ if (!supplieruid) return; 
+
+    $.ajax({
+		url: '/requestforproposal/fetchSupplierDetails',
+		method: 'GET',
+		data: { supplieruid: supplieruid },
+		success: function(response) {
+			$('#suppliername').val(response.suppliername);	
+			$('#email').val(response.email);
+			$('#phonenumber').val(response.phonenumber);	
+		
+	},
+	error:function() {
+   alert('Error fetching Supplier Details. Please try again.');
+			                }
+							});
+}
+
+function submitForm() {
+	let form = document.getElementById('rfpdataForm');
+			    
+			    if (!form.checkValidity()) {
+			        alert('Please fill in all required fields.');
+			        return;
+			    }
+
+					    const formData = new FormData(document.getElementById('rfpdataForm'));
+					    const id = $('#id').val();
+
+					    let url, successMessage;
+
+					    if (!id) {
+					        url = '/requestforproposal/save';
+					        successMessage = 'rfp Form data saved successfully!';
+					    } else {
+					        url = '/requestforproposal/updateExistingForm';
+					        successMessage = 'rfp Form data updated successfully!';
+					    }
+
+					    $.ajax({
+					        url: url,
+					        type: 'POST',
+					        data: formData,
+					        processData: false,
+					        contentType: false,
+					        success: function(response) {
+					            $('#message').text(successMessage); // Display success message
+					            resetForm();
+					            window.location.href = '/requestforproposal/list';
+					        },
+					        error: function() {
+					            alert('Error saving rfpdata Form . Please fill out the data.');
+					        }
+					    });
+					}
+					// Reset the form
+							function resetForm() {
+							    $('#rfpdataForm')[0].reset();
+								$('#id').val('');
+							    $('#message').text(''); // Clear the message
+							    $('#submitBtn').text('Submit');
+							}
+							
+
+</script>
+
+
+ 
+   
+</body>
+</html>

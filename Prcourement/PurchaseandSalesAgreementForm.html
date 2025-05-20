@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Purchaseand Sales AgreementForm</title>
+<link rel="stylesheet" href="/css/empinfo.css">
+  <link rel="stylesheet" href="/css/hrms.css"> <!-- // for side bar code  --> 
+  <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+
+  <div th:replace="~{SUPPLIER.html :: sidebarFragment}"></div> <!-- // for side bar code  -->                                                                        
+    
+   <form  id="psaform" enctype="/form-data"  class="form-container">
+    <!-- Personal Information Section -->
+    <h2>Purchaseand Sales Agreement Form</h2>   
+    <br><br><br>
+
+    <input type="hidden" id="id" name="id" th:value="${pa?.id}">
+    <div class="form-section active" id="section1">
+     
+
+      <!-- First Row -->
+    
+      <div class="form-row" >
+        <div class="form-group">
+      <label for="agreementdate">Agreement Date:</label>
+      <input type="date" id="agreementdate" name="agreementdate" th:value="${pa?.agreementdate}">
+        </div>
+      
+      <div class="form-group">
+        <label for="buyername">Buyer Name:</label>
+        <input type="text" id="buyername" name="buyername" th:value="${pa?.buyername}">
+    </div>
+
+    
+    
+  
+      </div>
+
+      <!-- Second Row -->
+      <div class="form-row">
+        <div class="form-group">
+    <label for="suppliername">Supplier Name:</label>
+        <input type="text" id="suppliername" name="suppliername" th:value="${pa?.suppliername}">
+    </div>
+        <div class="form-group">           
+        <label for="contractvalue">Contract Value:</label>
+        <input type="text" id="contractvalue" name="contractvalue" th:value="${pa?.contractvalue}">
+      </div>
+    
+
+
+      
+    
+    
+       
+    
+      </div>
+      <!-- Third Row -->
+             <div class="form-group">      
+  <label for="deliveryterm">Delivery Term:
+    <br>
+    <br>
+		Are you ok with this
+   <input type="checkbox" id="deliveryterm" name="deliveryterm" th:value="${pa?.deliveryterm}" style="position: absolute;left: -53px;">
+
+    
+      </div>
+
+      <!-- four Row -->
+   
+     
+      
+     
+   
+    </div>
+
+   <!-- Five Row  -->
+
+   
+
+ 
+
+
+    <div class="form-actions">
+    <button type="button" id="submitBtn" onclick="submitForm()">Submit</button>
+    <button type="button" class="back-button" onclick="goBack();">Back</button>	
+	  <div th:if="${successMessage}" class="success-message" th:text="${successMessage}"></div>
+    </div>
+  
+   </form>
+
+
+
+   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+   	<script>
+		function goBack() {
+		window.location.href = '/logistics/goodsreceiptnotegrid';
+	  }
+		function submitForm()
+		{
+			const formData=new FormData(document.getElementById('psaform'));
+			const id = $('#id').val();
+			
+			let url, successMessage;
+			
+			if(!id){
+				url='/savedpsa';
+				successMessage='PSA form saved successfully!';
+			}else{
+				url='/psa/update';
+				successMessage='PSA form updated successfully!';
+			}
+			
+			$.ajax({
+				url:url,
+				type:'POST',
+				data:formData,
+				processData:false,
+				contentType:false,
+				success: function(response){
+					alert(successMessage);
+					resetForm();
+					window.location.href= '/psalistshow';
+				},
+				error:function(){
+					alert('Error in saving psa form.please try again');
+				}
+			});
+			
+		}
+		
+		function resetForm()
+		{
+			$('#psaform')[0].reset();
+			$('#id').val('');
+		    $('#form-title').text('psa Form');
+			$('#submitBtn').text('Submit');
+			
+		}
+		
+		function prefillForm(data)
+		{
+			$('agreementdate').val(data.agreementdate);
+			$('buyername').val(data.buyername);
+			$('suppliername').val(data.suppliername);
+			$('contractvalue').val(data.contractvalue);
+			$('deliveryterm').val(data.deliveryterm);
+			$('#form-title').text('Update PSA Form');
+		    $('#submitBtn').text('Update');
+
+		}
+	</script>
+
+
+ 
+   
+</body>
+</html>

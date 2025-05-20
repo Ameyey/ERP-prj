@@ -4,8 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Business Registration Form</title>
-  <link rel="stylesheet" href="hrms.css">
-  <link rel="stylesheet" href="sty.css">
+<link rel="stylesheet" href="/css/empinfo.css">
+  <link rel="stylesheet" href="/css/hrms.css"> <!-- // for side bar code  -->
   <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400;700&display=swap" rel="stylesheet">
 </head>
 
@@ -17,18 +17,14 @@
     <!-- Personal Information Section -->
      <input type="hidden" id="wid" name="wid" th:value="${wr?.wid}">
     <h2>Business Registration Form</h2>   
-    <div class="form-section active" id="section1">
-     
-
-      <!-- First Row -->
-    
-      <div class="form-row" >
+    <div class="form-section active" id="section1">  
+      <!-- First Row -->    
+      <div class="form-row"  >
         <div class="form-group">
        <label for="companyname">Company Name :</label>
 			<input type="text" id="companyname" name="companyname" th:value="${wr?.companyname}"
 				placeholder="Enter company name" required>
         </div>
-      
       <div class="form-group">
        <label for="contactperson">Contact Person :</label>
 			<input type="text" id="contactperson" name="contactperson" th:value="${wr?.contactperson}"
