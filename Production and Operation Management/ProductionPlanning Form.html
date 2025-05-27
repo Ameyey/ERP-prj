@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Production Plan Form</title>
+<link rel="stylesheet" href="sty.css">
+  <link rel="stylesheet" href="hrms.css"> <!-- // for side bar code  --> 
+  <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+
+  <div th:replace="~{SUPPLIER.html :: sidebarFragment}"></div> <!-- // for side bar code  -->                                                                        
+    
+   <form id="ProductionPlanForm"  class="form-container">
+    <!-- Personal Information Section -->
+    <h2>Production Planning Form</h2>   
+     <div class="form-row">
+      <div class="form-group">
+         <label for="productuid">Product UID <span class="required">*</span></label>
+		
+			<select  id="productuid"  name="productuid" onchange="fetchProductin(this.value)"  th:if="${productionplanning == null or productionplanning.id == null}">
+				<option value="">Select Product UID</option>
+			    <option th:each="uid : ${Productuid}" th:value="${uid}" th:text="${uid}"></option>	
+			 </select>										   		 			        
+			 <input type="text" id="productuid" name="productuid" th:value="${productionplanning?.productuid}" readonly th:if="${productionplanning?.id != null}">
+			
+
+      </div>
+     </div>
+
+   
+      <!-- First Row -->
+    
+      <div class="form-row" >
+        <div class="form-group">
+    <label for="productname">Product Name *</label>
+			 <input type="text" id="productname" name="productname" readonly>
+        </div>
+      
+      <div class="form-group">
+        <label for="productiontype">Production Type <span class="required">*</span></label>
+        <select id="productiontype" name="productiontype" th:value="${productionplanning?.productiontype}" required>
+            <option value="">--Select--</option>
+            <option value="Make-to-Order" th:selected="${productionplanning?.productiontype == 'Make-to-Order'}">Make-to-Order</option>
+            <option value="Make-to-Stock" th:selected="${productionplanning?.productiontype == 'Make-to-Stock'}">Make-to-Stock</option>
+        </select>
+    </div>
+    <div class="form-group">
+           <label for="productionstartdate">Production Start Date <span class="required">*</span></label>
+        <input type="date" id="productionstartdate" name="productionstartdate" th:value="${productionplanning?.productionstartdate}" required>
+    </div>
+
+    
+    
+  
+      </div>
+
+      <!-- Second Row -->
+      <div class="form-row">
+        <div class="form-group">
+    <label for="productionenddate">Production End Date <span class="required">*</span></label>
+        <input type="date" id="productionenddate" name="productionenddate" th:value="${productionplanning?.productionenddate}" required>
+    </div>
+        <div class="form-group">           
+        <label for="responsiblemanager">Responsible Manager <span class="required">*</span></label>
+        <input type="text" id="responsiblemanager" name="responsiblemanager" th:value="${productionplanning?.responsiblemanager}" required>
+      </div>
+    <div class="form-group">
+     <label for="rawmaterialavailabilitystatus">Raw Material Availability <span class="required">*</span></label>
+        <select id="rawmaterialavailabilitystatus" name="rawmaterialavailabilitystatus" th:value="${productionplanning?.rawmaterialavailabilitystatus}" required>
+            <option value="">--Select--</option>
+            <option value="Available" th:selected="${productionplanning?.rawmaterialavailabilitystatus == 'Available'}">Available</option>
+            <option value="Not Available" th:selected="${productionplanning?.rawmaterialavailabilitystatus == 'Not Available'}">Not Available</option>
+        </select>
+
+    </div>
+
+
+      
+    
+    
+       
+    
+      </div>
+      <!-- Third Row -->
+              
+       <div class="form-row">
+        <div class="form-group">
+          <label for="requiredrawmaterials">Required Raw Materials <span class="required">*</span></label>
+        <textarea id="requiredrawmaterials" name="requiredrawmaterials" rows="2" cols="26" th:value="${productionplanning?.requiredrawmaterials}" required></textarea>
+        </div>
+        <div class="form-group">
+          <label for="productioncostestimation">Production Cost Estimation <span class="required">*</span></label>
+        <input type="number" step="0.01" id="productioncostestimation" name="productioncostestimation" th:value="${productionplanning?.productioncostestimation}" required>
+        </div>
+        <div class="form-group">
+             <label for="leadtimedays">Lead Time (Days) <span class="required">*</span></label>
+        <input type="number" id="leadtimedays" name="leadtimedays" th:value="${productionplanning?.leadtimedays}" required>
+        </div>
+       </div>
+    
+      </div>
+
+      <!-- four Row -->
+   
+     <div class="form-row">
+     <div class="form-group">
+      <label for="productiondependencies" >Production Dependencies </label>
+        <textarea id="productiondependencies" name="productiondependencies" th:value="${productionplanning?.productiondependencies}" rows="2"></textarea>
+     </div>
+     <div class="form-group">
+        <label for="approvalstatus">Approval Status <span class="required">*</span></label>
+        <br>
+        <select id="approvalstatus" name="approvalstatus" th:value="${productionplanning?.approvalstatus}" required>
+            <option value="">--Select--</option>
+            <option value="Approved" th:selected="${productionplanning?.approvalstatus == 'Approved'}">Approved</option>
+            <option value="Pending" th:selected="${productionplanning?.approvalstatus == 'Pending'}">Pending</option>
+            <option value="Rejected" th:selected="${productionplanning?.approvalstatus == 'Rejected'}">Rejected</option>
+        </select>
+
+     </div>  
+     <div class="form-group">    
+      <label for="approvedby">Approved By <span class="required">*</span></label>
+        <br>
+        <input type="text" id="approvedby" name="approvedby" th:value="${productionplanning?.approvedby}" required>
+     </div>
+     <div class="form-group">
+         <label for="remarks">Remarks</label>
+           <br>
+        <textarea id="remarks" name="remarks" rows="2" th:value="${productionplanning?.remarks}"></textarea>
+
+     </div>
+    </div>
+      
+     
+   
+    </div>
+
+   <!-- Five Row  -->
+
+   
+
+ 
+
+
+    <div class="form-actions">
+   <button type="button" id="submitBtn" onclick="submitProductionPlanForm()">Submit </button>
+    <button type="button" class="back-button" onclick="goBack();">Back</button>
+    		<div th:if="${successMessage}" class="success-message" th:value="${successMessage}"></div>   
+
+	
+    </div>
+  
+   </form>
+
+
+
+   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+   	<script>
+		function goBack() {
+		window.location.href = '/logistics/goodsreceiptnotegrid';
+	  }
+	
+	</script>
+
+<script>
+	$(document).ready(function () {
+
+	       // ✅ Validation for text fields (No special characters or numbers allowed)
+	       function validateTextField(selector) {
+	           $(selector).on('input', function () {
+	               let value = $(this).val();
+	               if (!/^[a-zA-Z\s]*$/.test(value)) {
+	                   alert('Only alphabets and spaces are allowed.');
+	                   $(this).val(value.replace(/[^a-zA-Z\s]/g, ''));
+	               }
+	           });
+	       }
+
+	       // Apply validation on specified fields
+		   validateTextField('#productiondependencies');
+	       validateTextField('#responsiblemanager');
+	       validateTextField('#approvedby');
+	       validateTextField('#remarks');
+	   });
+	   // Validate productioncostestimation (must be a number > 0)
+	   	$('#productioncostestimation').on('input', function () {
+	   		let value = parseFloat($(this).val());
+	   		if (isNaN(value) || value < 0) {
+	   		alert('Productioncostestimation Received must be a number greater than 0.');
+	   	    $(this).val('');
+	   	  }
+	   });
+	   // Validate leadtimedays (must be a number > 0)
+	   	   	$('#leadtimedays').on('input', function () {
+	   	   		let value = parseFloat($(this).val());
+	   	   		if (isNaN(value) || value < 0) {
+	   	   		alert('leadtimedays Received must be a number greater than 0.');
+	   	   	    $(this).val('');
+	   	   	  }
+	   	   });
+
+    function submitProductionPlanForm() {
+        const formData = new FormData(document.getElementById('ProductionPlanForm'));
+        const id = $('#id').val();
+        let url, successMessage;
+
+        if (!id) {
+            url = '/productionplanning/save';
+            successMessage = 'Production plan submitted successfully!';
+        } else {
+            url = '/productionplanning/update';
+            successMessage = 'Production plan updated successfully!';
+        }
+
+        $.ajax({
+            url: url,
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function(response) {
+               $('message').text(successMessage);
+                resetProductionPlanForm();
+                window.location.href = '/productionplanning/list';
+            },
+            error: function() {
+                alert('Error submitting production plan. Please try again.');
+            }
+        });
+    }
+
+    function resetProductionPlanForm() {
+        $('#ProductionPlanForm')[0].reset();
+        $('#id').val('');
+		$('#form-title').text('ProductionPlanning Form');
+        $('#submitBtn').text('Submit');
+    }
+
+    function prefillProductionPlanForm(data) {
+        $('#id').val(data.id);
+        $('#productuid').val(data.productuid);
+        $('#productname').val(data.productname);
+        $('#productiontype').val(data.productiontype);
+        $('#productionstartdate').val(data.productionstartdate);
+        $('#productionenddate').val(data.productionenddate);
+        $('#responsiblemanager').val(data.responsiblemanager);
+        $('#rawmaterialavailabilitystatus').val(data.rawmaterialavailabilitystatus);
+        $('#requiredrawmaterials').val(data.requiredrawmaterials);
+        $('#productioncostestimation').val(data.productioncostestimation);
+        $('#leadtimedays').val(data.leadtimedays);
+        $('#productiondependencies').val(data.productiondependencies);
+        $('#approvalstatus').val(data.approvalstatus);
+        $('#approvedby').val(data.approvedby);
+        $('#remarks').val(data.remarks);
+		
+		$('#form-title').text('ProductionPlanning Form');
+        $('#submitBtn').text('Update');
+    }
+	
+	function fetchProductin(productuid) {
+						if (!productuid) return;
+
+						 $.ajax({
+						    url: '/getProductinfodetail',
+							method: 'GET',
+							data: { productuid: productuid },
+								success: function(response) {
+									 if (response && response.length > 0) { // Ensure response is not empty
+									 let productData = response[0]; // Get first object from the list
+									 $('#productname').val(productData.productname || '');
+													             
+									} else {
+										  alert('No data found for the selected product.');
+										   }
+										  },
+					 error: function(xhr, status, error) {
+							console.error('Error fetching product details:', error);
+						    alert('Error fetching product details. Please try again.');
+									 }
+							 });
+							 
+						}
+						
+</script>
+
+
+ 
+   
+</body>
+</html>
