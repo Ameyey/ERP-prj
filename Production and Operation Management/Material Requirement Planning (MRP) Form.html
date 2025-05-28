@@ -41,17 +41,13 @@
 		<option value="">Select Supplier UID</option>
 		<option th:each="uid : ${productuid}" th:value="${uid}" th:text="${uid}"></option>
 	</select>
-	    	<input type="text" id="productuid" name="productuid" th:value="${mrp?.productuid}" onchange="fetchProductDetails(this.value)" readonly th:if="${mrp?.id != null}">
+	    	<input type="text" id="productuid" name="productuid" th:value="${mrp?.productuid}" onchange="fetchProductDetails(this.value)" readonly th:if="${mrp?.id != null}" >
 	
     </div>
     <div class="form-group">
       	 <label for="productname">Product Name *</label>
-      <input type="text" id="productname" name="productname" readonly>
+      <input type="text" id="productname" name="productname" readonly > 
     </div>
-
-         
-    
-  
       </div>
 
       <!-- Second Row -->

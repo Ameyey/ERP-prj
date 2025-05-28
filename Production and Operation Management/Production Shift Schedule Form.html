@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Production Shift Schedule Form</title>
+<link rel="stylesheet" href="sty.css">
+  <link rel="stylesheet" href="hrms.css"> <!-- // for side bar code  --> 
+  <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+
+  <div th:replace="~{SUPPLIER.html :: sidebarFragment}"></div> <!-- // for side bar code  -->                                                                        
+    
+   <form id="ShiftscheduleForm"  class="form-container">
+    <!-- Personal Information Section -->
+    <h2>Production Shift Schedule Form</h2>   
+    <input type="hidden" id="id" name="id" th:value="${shift?.id}" />
+     <div class="form-row">
+      <div class="form-group">
+         <label for="productiondepartment">Production Department *</label>
+        <input type="text" id="productiondepartment" name="productiondepartment" th:value="${shift?.productiondepartment}" required />
+      </div>
+      <div class="form-group">
+        <label for="shiftdate">Shift Date *</label>
+        <input type="date" id="shiftdate" name="shiftdate" th:value="${shift?.shiftdate}" required />
+
+      </div>
+      <div class="form-group">
+        <label for="shifttiming">Shift Timing *</label>
+		<input type="text" id="shifttiming" name="shifttiming"
+		       th:value="${shift?.shifttiming}"
+		       placeholder="e.g. 09:00 AM - 05:00 PM"
+		       onblur="calculateDuration()" required />
+      </div>
+     </div>
+
+   
+      <!-- First Row -->
+    <div class="form-row">
+      <div class="form-group">
+        <label for="shiftduration">Shift Duration (hours) *</label>
+		<input type="text" id="shiftduration" name="shiftduration"
+		       th:value="${shift?.shiftduration}" readonly  />
+
+      </div>
+
+      <div class="form-group">
+        <label for="employeeuid">Product UID *</label>
+		       <select id="employeeuid" name="employeeuid" onchange="fetchEmployeeDetails(this.value)" th:if="${shift == null or shift.id == null}" required>
+		           <option value="">Select Product UID</option>
+		           <option th:each="uid : ${employeeuid}" th:value="${uid}" th:text="${uid}"></option>
+		       </select>
+		       <input type="text" id="employeeuid" name="employeeuid" th:value="${shift?.employeeuid}" readonly th:if="${shift?.id != null}">
+		       <span id="employeeuid-error" class="error-message"></span>
+
+      </div>
+      <div class="form-group">
+         <label>First Name *</label>
+		       <input type="text" id="firstname" name="firstname" readonly />
+		       <span id="firstname-error" class="error-message"></span>
+      </div>
+      <div class="form-group">
+         <label>Last Name*</label>
+		       <input type="text" id="lastname" name="lastname" readonly />
+		       <span id="lastname-error" class="error-message"></span>
+      </div>
+    </div>
+   
+
+      <!-- Second Row -->
+       <div class="form-row">
+        <div class="form-group">
+           <label for="workstation">Workstation Assigned *</label>
+        <input type="text" id="workstation" name="workstation" th:value="${shift?.workstation}" required />
+        </div>
+        <div class="form-group">
+          <label for="breaktiming">Break Type *</label>
+		<select id="breaktiming" name="breaktiming" required onchange="toggleBreakInputs()">
+		    <option value="" disabled selected>Select Break Type</option>
+		    <option value="lunch">Lunch Break</option>
+		    <option value="tea">Tea Break</option>
+		</select>
+
+        </div>
+       
+       </div>
+     
+       <div class="form-row">
+        <div class="form-group">
+          <div id="lunchBreak" style="display: none;">
+		    <label>Lunch Break Timing *</label>
+		    <input type="time" id="lunchStart" name="lunchStart" required />
+		    <span>to</span>
+		    <input type="time" id="lunchEnd" name="lunchEnd" required />
+		</div>
+    <div id="teaBreak" style="display: none;" >
+		    <label>Tea Break Timing *</label>
+		    <input type="time" id="teaStart" name="teaStart" required />
+		    <span>to</span>
+		    <input type="time" id="teaEnd" name="teaEnd" required />
+		</div>
+    </div>
+
+
+        
+       </div>
+      <!-- Third Row -->
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="totalshiftcountperday">Total Shift Count per Day *</label>
+		<input type="number" id="totalshiftcountperday" name="totalshiftcountperday"
+		       min="1" placeholder="e.g. 3"
+		       th:value="${shift?.totalshiftcountperday}" required />
+                </div>
+                <div class="form-group">
+                  <label for="supervisorname">Supervisor Name *</label>
+			   <select id="supervisorname" name="supervisorname" required>
+			       <option value="" disabled selected>Select Supervisor</option>
+			       <option value="Dr. Anjali Patil" th:selected="${shift?.supervisorname == 'Dr. Anjali Patil'}">Dr. Anjali Patil</option>
+			       <option value="Mr. Rohit Mehra" th:selected="${shift?.supervisorname == 'Mr. Rohit Mehra'}">Mr. Rohit Mehra</option>
+			       <option value="Ms. Sneha Kulkarni" th:selected="${shift?.supervisorname == 'Ms. Sneha Kulkarni'}">Ms. Sneha Kulkarni</option>
+			       <option value="Dr. Ramesh Iyer" th:selected="${shift?.supervisorname == 'Dr. Ramesh Iyer'}">Dr. Ramesh Iyer</option>
+			   </select>
+                </div>
+              </div>
+   
+    
+      </div>
+
+      <!-- four Row -->
+   
+
+      
+     
+   
+
+   <!-- Five Row  -->
+
+   
+
+ 
+
+
+    <div class="form-actions">
+       <button type="button" onclick="submitForm()">Submit</button>
+    <button type="button" class="back-button" onclick="goBack();">Back</button>
+        <div id="message" th:if="${successMessage}" class="success-message" th:text="${successMessage}"></div>
+
+	
+    </div>
+  
+   </form>
+
+
+
+   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+   	<script>
+		function goBack() {
+		window.location.href = '/logistics/goodsreceiptnotegrid';
+	  }
+	
+	</script>
+   <script>
+        function submitForm() {
+            const formData = new FormData(document.getElementById('ShiftscheduleForm'));
+            const id = $('#id').val();
+            let url, successMessage;
+
+            if (!id) {
+                url = '/shiftscheduleform/save';
+                successMessage = 'Shift Schedule saved successfully!';
+            } else {
+                url = '/shiftschedule/update';
+                successMessage = 'Shift Schedule updated successfully!';
+            }
+
+            $.ajax({
+                url: url,
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function(response) {
+                    $('#message').text(successMessage);
+                    resetForm();
+                    window.location.href = '/shiftschedule/List';
+                },
+                error: function() {
+                    alert('Error saving shift schedule. Please check the form and try again.');
+                }
+            });
+        }
+
+        function resetForm() {
+            $('#ShiftscheduleForm')[0].reset();
+            $('#id').val('');
+            $('#message').text('');
+        }
+		
+		
+		
+		$(document).ready(function() {
+					           // Auto-fill Item details when updating
+					           var existingemployeeuid = $('#employeeuid').val();
+					           if (existingemployeeuid) {
+					               fetchEmployeeDetails(existingemployeeuid);
+					           }
+							   });
+		
+		function fetchEmployeeDetails() {
+		    const employeeuid = $('#employeeuid').val();
+
+		    if (!employeeuid) {
+		        alert("Please select an Employee UID.");
+		        return;
+		    }
+
+		    $.ajax({
+		        url: '/getemployeedetails',
+		        method: 'GET',
+		        data: { employeeuid: employeeuid },
+		        success: function(response) {
+		            console.log("Employee details fetched:", response);
+		            if (response && response.length > 0) {
+		                const employee = response[0];
+		                $('#firstname').val(employee.firstname || '');
+		                $('#lastname').val(employee.lastname || '');
+		            } else {
+		                alert("No employee details found.");
+		            }
+		        },
+		        error: function(xhr, status, error) {
+		            console.error("Error fetching employee details:", error);
+		            alert("An error occurred while fetching employee details.");
+		        }
+		    });
+		}
+
+		
+		
+		
+		    function calculateDuration() {
+		        const shiftInput = document.getElementById("shifttiming").value.trim();
+		        const durationOutput = document.getElementById("shiftduration");
+
+		        if (!shiftInput.includes("-")) {
+		            durationOutput.value = "";
+		            alert("Please enter shift timing in format like: 10:00 AM - 06:00 PM");
+		            return;
+		        }
+
+		        const [startStr, endStr] = shiftInput.split("-").map(part => part.trim());
+
+		        const startTime = parseTime(startStr);
+		        const endTime = parseTime(endStr);
+
+		        if (!startTime || !endTime) {
+		            durationOutput.value = "";
+		            alert("Invalid time format. Use e.g. 09:00 AM - 05:00 PM");
+		            return;
+		        }
+
+		        let diff = (endTime - startTime) / (1000 * 60 * 60); // in hours
+
+		        if (diff < 0) diff += 24; // handle overnight shifts
+
+		        durationOutput.value = diff.toFixed(2);
+		    }
+
+		    function parseTime(timeStr) {
+		        const timePattern = /^(\d{1,2}):(\d{2})\s?(AM|PM)$/i;
+		        const match = timeStr.match(timePattern);
+
+		        if (!match) return null;
+
+		        let [_, hours, minutes, period] = match;
+		        hours = parseInt(hours, 10);
+		        minutes = parseInt(minutes, 10);
+		        period = period.toUpperCase();
+
+		        if (period === "PM" && hours !== 12) hours += 12;
+		        if (period === "AM" && hours === 12) hours = 0;
+
+		        return new Date(1970, 0, 1, hours, minutes);
+		    }
+	
+
+			
+			
+			
+			    function toggleBreakInputs() {
+			        const breakType = document.getElementById("breaktiming").value;
+
+			        document.getElementById("lunchBreak").style.display = "none";
+			        document.getElementById("teaBreak").style.display = "none";
+
+			        if (breakType === "lunch") {
+			            document.getElementById("lunchBreak").style.display = "block";
+			        } else if (breakType === "tea") {
+			            document.getElementById("teaBreak").style.display = "block";
+			        }
+			    }
+			
+
+		
+
+		
+    </script>
+
+
+
+
+ 
+   
+</body>
+</html>
