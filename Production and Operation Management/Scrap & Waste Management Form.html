@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Scrap & Waste Management Form</title>
+<link rel="stylesheet" href="sty.css">
+  <link rel="stylesheet" href="hrms.css"> <!-- // for side bar code  --> 
+  <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+
+  <div th:replace="~{SUPPLIER.html :: sidebarFragment}"></div> <!-- // for side bar code  -->                                                                        
+    
+   <form  id="swmForm"  class="form-container">
+    <!-- Personal Information Section -->
+    <h2>Scrap & Waste Management Form</h2>   
+    <br>
+    <br>
+    	<input type="hidden" id="id" name="id" th:value = "${updateswm?.id}">  
+
+    <div class="form-section active" id="section1">
+     
+
+      <!-- First Row -->
+    
+      <div class="form-row" >
+        <div class="form-group">
+          <label for="productname">Product Name</label>
+			<input type="text" id="productname" name="productname" th:value="${updateswm?.productname}" required>
+        </div>
+      
+      <div class="form-group">
+        <label for="scraptype">Scrap Type</label>
+			<select id="scraptype" name="scraptype" th:value="${updateswm?.scraptype}" required>
+                <option value="">Select Scrap Type</option>
+                <option value="Materialscrap" th:selected="${updateswm?.scraptype == 'Materialscrap'}">Material scrap</option>
+                <option value="Processwaste" th:selected="${updateswm?.scraptype == 'Processwaste'}">Process waste</option>
+                <option value="Packagingscrap" th:selected="${updateswm?.scraptype == 'Packagingscrap'}">Packaging scrap</option>
+            </select>
+    </div>
+    <div class="form-group">
+     <label for="quantityscrapped">Quantity Scrapped</label>
+			<input type="number" id="quantityscrapped" name="quantityscrapped" th:value="${updateswm?.quantityscrapped}" required>
+       
+    </div>
+      </div>
+
+      <!-- Second Row -->
+      <div class="form-row">
+        <div class="form-group">
+         <label for="recyclingmethod">Recycling Method</label>
+			<select id="recyclingmethod" name="recyclingmethod" th:value="${updateswm?.recyclingmethod}" required>
+                <option value="">Select recycling method</option>
+                <option value="Melting" th:selected="${updateswm?.recyclingmethod == 'Melting'}">Melting</option>
+                <option value="Reuse" th:selected="${updateswm?.recyclingmethod == 'Reuse'}">Reuse</option>
+                <option value="Disposal" th:selected="${updateswm?.recyclingmethod == 'Disposal'}">Disposal</option>
+            </select>
+
+    </div>
+       
+    <div class="form-group">
+        <label for="environmentalimpactassessment">Environmental Impact Assessment</label>
+			<input type="text" id="environmentalimpactassessment" name="environmentalimpactassessment" th:value="${updateswm?.environmentalimpactassessment}" required>
+		
+   </div>        
+
+   
+    </div>
+
+		<div class="form-row">
+			<div class="form-group">
+       <div id="wastedisposalcampany" >
+							<label>
+				    <input type="radio" name="disposalMethod" value="Third-party" style="position: relative;top: 21px;"
+					th:checked="${updateswm?.wastedisposalcampany != null and updateswm?.wastedisposalcampany != 'Own Agency'}"
+					 onclick="toggleInput(true)"> Third-party disposal agency
+				</label>
+
+				<label>
+				    <input type="radio" style="position: relative;top: 21px;" name="disposalMethod" value="Own Agency" onclick="toggleInput(false)"> Own Agency
+				</label>
+<br>
+				<div id="environmentalInput">
+				    <input type="text" id="agencyInput" name="wastedisposalcampany" th:value="${updateswm?.wastedisposalcampany}" placeholder="Enter third-party agency details...">
+				</div>
+		</div>
+
+    
+
+
+   
+
+ 
+
+
+    <div class="form-actions">
+      <button type="button" id="submitBtn" onclick="SubmitForm()"> Submit </button>
+    <button type="button" class="back-button" onclick="goBack();">Back</button>
+    		<div th:if="${successMessage}" class="success-message" th:text="${successMessage}"></div> 
+
+
+	
+    </div>
+  
+   </form>
+
+
+
+   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+   	<script>
+		function goBack() {
+		window.location.href = '/logistics/goodsreceiptnotegrid';
+	  }
+	
+	</script>
+<script>
+	function toggleInput(isThirdParty) {
+	        const inputDiv = document.getElementById("environmentalInput");
+	        const inputField = document.getElementById("agencyInput");
+
+	        if (isThirdParty) {
+	            inputDiv.classList.remove("hidden");
+	            inputField.removeAttribute("readonly");
+	            inputField.value = "";
+	            inputField.placeholder = "Enter third-party agency details...";
+	        } else {
+	            inputDiv.classList.remove("hidden");
+	            inputField.value = "Own Agency";
+	            inputField.setAttribute("readonly", true);
+	        }
+			}
+</script>
+<script>
+	
+		    function SubmitForm() {
+		        const productname = $('#productname').val().trim();
+		        const scraptype = $('#scraptype').val();
+		        const quantityscrapped = $('#quantityscrapped').val();
+		        const recyclingmethod = $('#recyclingmethod').val();
+		        const environmentalimpactassessment = $('#environmentalimpactassessment').val().trim();
+		        const disposalMethod = $('input[name="disposalMethod"]:checked').val();
+		        const agencyInput = $('#agencyInput').val().trim();
+
+		        let errors = [];
+
+		        if (productname === '') {
+		            errors.push("Product Name is required.");
+		        }
+
+		        if (scraptype === '') {
+		            errors.push("Scrap Type must be selected.");
+		        }
+
+		        if (quantityscrapped === '' || isNaN(quantityscrapped) || parseFloat(quantityscrapped) <= 0) {
+		            errors.push("Quantity Scrapped must be a valid positive number.");
+		        }
+
+		        if (recyclingmethod === '') {
+		            errors.push("Recycling Method must be selected.");
+		        }
+
+		        if (environmentalimpactassessment === '') {
+		            errors.push("Environmental Impact Assessment is required.");
+		        }
+
+		        if (!disposalMethod) {
+		            errors.push("Please select a disposal method.");
+		        }
+
+		        if (disposalMethod === 'Third-party' && agencyInput === '') {
+		            errors.push("Please enter third-party agency details.");
+		        }
+
+		        if (errors.length > 0) {
+		            alert("Form validation failed:\n\n" + errors.join("\n"));
+		            return;
+		        }
+
+		        const formData = new FormData(document.getElementById('swmForm'));
+		        const id = $('#id').val();
+		        let url = id ? '/scarpandwastemanagement/updatedata' : '/scarpandwastemanagement/submit';
+		        let successMessage = id ? 'Scrap & Waste Management updated successfully!' : 'Scrap & Waste Management saved successfully!';
+
+		        $.ajax({
+		            url: url,
+		            type: 'POST',
+		            data: formData,
+		            processData: false,
+		            contentType: false,
+		            success: function (response) {
+		                $('#message').text(successMessage);
+		                resetForm();
+		                window.location.href = '/scarpandwastemanagement/swmlist';
+		            },
+		            error: function () {
+		                alert('Error saving Scrap & Waste Management. Please try again.');
+		            }
+		        });
+		    }
+
+		    function resetForm() {
+		        $('#swmForm')[0].reset();
+		        $('#id').val('');
+		        $('#message').text('');
+		        $('#submitBtn').text('Submit');
+		    }
+		</script>
+
+
+
+				
+
+
+
+ 
+   
+</body>
+</html>

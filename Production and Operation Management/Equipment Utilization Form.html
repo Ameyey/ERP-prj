@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Equipment Utilization Form</title>
+<link rel="stylesheet" href="sty.css">
+  <link rel="stylesheet" href="hrms.css"> <!-- // for side bar code  --> 
+  <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+
+  <div th:replace="~{SUPPLIER.html :: sidebarFragment}"></div> <!-- // for side bar code  -->                                                                        
+    
+   <form  style="padding: 91px;" id="equipment" method="post" th:action="@{/equipmentutilization/save}" th:object="${equipment}" onsubmit="submitForm(); return false;" class="form-container">
+    <!-- Personal Information Section -->
+    <h2>Equipment Utilization Form</h2>   
+    <br>
+    <br>
+<input type="hidden" id="id" name="id" th:value="${equipment?.id}">
+		<input type="hidden" id="equipmentuid" name="equipmentuid" th:value="${equipment?.equipmentuid}">
+    <div class="form-section active" id="section1">
+     
+
+      <!-- First Row -->
+    
+      <div class="form-row" style="gap: 94px;" >
+        <div class="form-group">
+         <label for="equipmentname" class="form-label">Equipment Name <span class="text-danger">*</span></label>
+         <input type="text" class="form-control" id="equipmentname" name="equipmentname"    th:value="${equipment?.equipmentname}" required>
+        </div>
+      
+      <div class="form-group">
+         <label for="utilizationRate" class="form-label" style="font-size: 11px;">Machine Utilization Rate (%) <span class="text-danger">*</span></label>
+                <input type="number" step="0.1" min="0" max="100" class="form-control" id="utilizationrate" name="utilizationrate" th:value="${equipment?.utilizationrate}" required> 
+
+    </div>
+    
+      </div>
+
+      <!-- Second Row -->
+      <div class="form-row" style="gap: 80px;">
+        <div class="form-group">
+         <label for="downtimeoccurrence" class="form-label">Downtime Occurrence <span class="text-danger">*</span></label>
+         <input type="number" min="0" class="form-control" id="downtimeoccurrence" name="downtimeoccurrence" th:value="${equipment?.downtimeoccurrence}" required>
+    </div>
+    <div class="form-group">
+      <label for="energyconsumption" class="form-label" style="font-size: 11px;">Energy Consumption (kWh)</label>
+      <input type="number" step="0.1" min="0" class="form-control" id="energyconsumption" name="energyconsumption" th:value="${equipment?.energyconsumption}">
+    </div>       
+         
+    </div>
+    <br>
+
+		
+
+    
+
+
+   
+
+ 
+
+
+    <div class="form-actions">
+    <button type="submit" class="btn btn-primary">Submit</button>
+    <button type="button" class="back-button" onclick="goBack();">Back</button>
+    <div id="message"></div>
+
+
+	
+    </div>
+  
+   </form>
+
+
+
+   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+   	<script>
+		function goBack() {
+		window.location.href = '/logistics/goodsreceiptnotegrid';
+	  }
+	
+	</script>
+<script>
+	// Submit Form using AJAX
+			function submitForm() {
+				const formData = new FormData(document.getElementById('equipment'));
+				const id = $('#id').val();
+
+					let url, successMessage;
+
+					if (!id) {
+						url = '/equipmentutilization/save';
+						successMessage = 'saved successfully!';
+					} else {
+						url = '/equipmentutilization/update';
+						successMessage = 'updated successfully!';
+					}
+
+
+					$.ajax({ 
+						url: url,
+						type: 'POST',
+						data: formData,
+						processData: false,
+						contentType: false,
+						success: function () {
+							alert(successMessage);
+							window.location.href = '/equipmentutilization/list';
+						},
+						error: function () {
+							alert('Error saving equipment. Please try again.');
+						}
+					});
+				}
+	
+</script>
+
+
+				
+
+
+
+ 
+   
+</body>
+</html>
