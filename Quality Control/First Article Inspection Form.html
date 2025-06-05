@@ -24,27 +24,23 @@
       <div class="form-row">
         <div class="form-group">        
            	<label>Batch UID:</label>
-										<select id="batchuid" name="batchuid" onchange="fetchBatchDetails(this.value)"  required th:if="${fai == null or fai.id == null}">
-										    <option value="">Select Batch UID</option>
-										    <option th:each="uid : ${batchuid}" th:value="${uid}" th:text="${uid}"></option>
-										</select>
-							       	   
-										<input type="text" id="batchuid" name="batchuid" th:value="${fai?.batchuid}" onchange="fetchBatchDetails(this.value)" readonly th:if="${fai?.id != null}">
+                <select id="batchuid" name="batchuid" onchange="fetchBatchDetails(this.value)"  required th:if="${fai == null or fai.id == null}">
+				    <option value="">Select Batch UID</option>
+					<option th:each="uid : ${batchuid}" th:value="${uid}" th:text="${uid}"></option>
+				</select>
+						       	   
+            <input type="text" id="batchuid" name="batchuid" th:value="${fai?.batchuid}" onchange="fetchBatchDetails(this.value)" readonly th:if="${fai?.id != null}">
 					 
-          </div>
+        </div>
 
         <div class="form-group">
-                         <label for="productuid">product uid :</label>
-								            <input type="text" id="productuid" name="productuid" readonly>
-				 				       	   
-								       
-           </div>
+            <label for="productuid">product uid :</label>
+			<input type="text" id="productuid" name="productuid" readonly>
+		</div>
 
         <div class="form-group">
-          <label >product name :</label>  
-				       <input type="text" id="productname" name="productname" readonly /><br>
-
-        
+            <label >product name :</label>  
+			<input type="text" id="productname" name="productname" readonly /><br>       
          </div>
        
 

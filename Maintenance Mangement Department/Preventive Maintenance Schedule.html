@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Preventive Maintenance Schedule</title>
+  <link rel="stylesheet" href="hrms.css">
+  <link rel="stylesheet" href="sty.css">
+  <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body onload="fetchBatchDetails()">
+   <form    id="maintenanceform"
+		        th:action="@{${pmsf.id != null} ? '/preventivemaintenanceschedule/update' : '/preventivemaintenanceschedule/save'}"
+		        method="post"  class="form-container"  >
+    <!-- Personal Information Section -->
+	<input type="hidden" name="id" id="id" th:value="${pmsf?.id}" />
+    <div class="form-section active" id="section1">
+      <br>
+      <h2>Preventive Maintenance Schedule</h2>
+      <br>
+      
+      <!-- First Row -->    
+     
+    
+      <div class="form-row">
+        <div class="form-group">        
+          <label for="equipmentuid">Equipment UID<span style="color:red;">*</span></label>
+	<select id="equipmentuid" name="equipmentuid" onchange="fetchEquipmentDetails(this.value)">
+	    <option value="">--select equipment uid--</option>
+	    <option th:each="uid : ${equipmentuid}"
+	            th:value="${uid}"
+	            th:text="${uid}"></option>
+	</select>
+        </div>
+
+        <div class="form-group">
+           <label for="equipmentname">Equipment Name<span style="color:red;">*</span></label>
+	<!--<input type="text" id="equipmentname" name="equipmentname" th:value="${pmsf.equipmentname}" readonly>-->
+	<input type="text" id="equipmentname" name="equipmentname" readonly>
+
+		</div>
+
+        <div class="form-group">
+            <label for="maintenancetask">Maintenance Task<span style="color:red;">*</span></label>
+    <textarea id="maintenancetask" name="maintenancetask" rows="2" required
+              th:text="${pmsf?.maintenancetask}"></textarea>
+
+          </div>
+       
+
+      </div>
+
+      <!-- Second Row -->
+      
+      <div class="form-row"> 
+         <div class="form-group">
+          <label for="frequency">Frequency<span style="color:red;">*</span></label>
+    <select id="frequency" name="frequency" required>
+        <option value="">-- Select Frequency --</option>
+        <option value="Weekly" th:selected="${pmsf?.frequency == 'Weekly'}">Weekly</option>
+        <option value="Monthly" th:selected="${pmsf?.frequency == 'Monthly'}">Monthly</option>
+        <option value="Quarterly" th:selected="${pmsf?.frequency == 'Quarterly'}">Quarterly</option>
+    </select>
+	      </div>   
+        <div class="form-group">
+           <label for="nextduedate">Next Due Date<span style="color:red;">*</span></label>
+    <input type="date" id="nextduedate" name="nextduedate" th:value="${pmsf?.nextduedate}" required>
+
+             </div>  
+
+        <div class="form-group">
+       <label for="assignedtechnician">Assigned Technician<span style="color:red;">*</span></label>
+    <input type="text" id="assignedtechnician" name="assignedtechnician" th:value="${pmsf?.assignedtechnician}" required>
+
+           </div> 
+
+        
+      </div>
+
+       <!-- three row  -->
+      <div class="form-row">  
+        <div class="form-group">
+ <label for="checklistitems">Checklist Items<span style="color:red;">*</span></label>
+    <textarea id="checklistitems" name="checklistitems" cols="33" rows="2" required
+              th:text="${pmsf?.checklistitems}"></textarea>
+	         
+        </div>  
+
+        <div class="form-group">
+        <label for="status">Status<span style="color:red;">*</span></label>
+    <select id="status" name="status" required>
+        <option value="">-- Select Status --</option>
+        <option value="Pending" th:selected="${pmsf?.status == 'Pending'}">Pending</option>
+        <option value="Completed" th:selected="${pmsf?.status == 'Completed'}">Completed</option>
+        <option value="Overdue" th:selected="${pmsf?.status == 'Overdue'}">Overdue</option>
+    </select>
+        </div>   
+
+      
+        
+      </div>
+      
+      <!-- Five Row  -->
+ 
+   
+
+
+    <div class="form-actions">
+          <button type="submit">Submit</button>
+          <button type="button" class="back-button" onclick="goBack();">Back</button>
+
+        <div th:if="${successMessage}" class="success-message" th:text="${successMessage}"></div>
+    </div>
+
+ </form>
+    
+
+
+
+   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+  function goBack() {
+		window.location.href = '/logistics/goodsreceiptnotegrid';
+	  }
+</script>
+<script>
+	function fetchEquipmentDetails(equipmentuid){
+		if(!equipmentuid) return;
+		$.ajax({
+			url:'/preventivemaintenanceschedule/getproductdatabyuid',
+			method:'GET',
+			data: { equipmentuid: equipmentuid },
+						                success: function(response) {
+						                    $('#equipmentname').val(response.equipmentname);
+						                    
+						                   
+						                },
+						                error: function() {
+						                    alert('ERROR WHILE FETCHING EQUIPMENT DETAILS. TRY AGAIN.');
+						                }
+						            });
+						        }
+function submitForm() 
+	{
+		
+			            const formData = new FormData(document.getElementById('preventive'));
+			            const id = $('#id').val();
+
+			            let url, successMessage;
+
+			            if (!id) {
+			                url = '/preventivemaintenanceschedule/save';
+			                successMessage = 'saved successfully!';
+			            } else {
+			                url = '/preventivemaintenanceschedule/edit/{id}';
+			                successMessage = ' updated successfully!';
+			            }
+
+			            $.ajax({
+			                url: url,
+			                type: 'POST',
+			                data: formData,
+			                processData: false,
+			                contentType: false,
+			                success: function () {
+			                    $('#message').text(successMessage).fadeIn();
+			                    setTimeout(function () {
+			                        window.location.href = '/preventivemaintenanceschedule/list';
+			                    }, 1500);
+			                },
+			                error: function () {
+			                    alert('Error saving  Please fill out all required fields.');
+			                }
+			            });
+			        }
+					$(document).ready(function () {
+
+											    // ✅ Validation for text fields (Only alphabets and spaces)
+											    function validateTextField(selector) {
+											        $(selector).on('input', function () {
+											            let value = $(this).val();
+											            if (!/^[a-zA-Z\s]*$/.test(value)) {
+											                alert('Only alphabets and spaces are allowed.');
+											                $(this).val(value.replace(/[^a-zA-Z\s]/g, ''));
+											            }
+											        });
+											    }
+											   
+											    // Apply validation on specified fields (text)
+											    validateTextField('#maintenancetask');
+											    validateTextField('#assignedtechnician');
+												});
+					
+					</script>
+
+</body>
+</html>
