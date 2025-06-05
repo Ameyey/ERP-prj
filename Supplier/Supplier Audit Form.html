@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Supplier Audit Form</title>
+  <link rel="stylesheet" href="hrms.css">
+  <link rel="stylesheet" href="sty.css">
+  <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+   <form  id="supplier-audit-form" method="POST" th:action="@{/supplieraudit/save}"   class="form-container"  >
+    <!-- Personal Information Section -->
+     	<input type="hidden" id="id" name="id" th:value="${audit.id}">
+    <div class="form-section active" id="section1">
+      <br>
+      <h2>Supplier Audit Form</h2>
+      <br>
+      
+      <!-- First Row -->    
+     
+    
+      <div class="form-row">
+        <div class="form-group">        
+            <label class="form-label">Supplier UID <span class="text-danger">*</span></label>
+					<select class="form-control" id="supplieruid" name="supplieruid" onchange="fetchSupplierDetails(this.value)" required>
+					    <option value="">Select Supplier UID</option>
+					    <option th:each="id : ${supplieruid}" th:value="${id}" th:text="${id}" 
+					            th:selected="${audit?.supplieruid == id}"></option>
+					</select>
+          </div>
+
+        <div class="form-group">
+             <label class="form-label" for="suppliername">Supplier Name <span class="text-danger">*</span></label>
+					    <input type="text" class="form-control" id="suppliername" name="suppliername" 
+					           th:value="${suppliername ?: audit?.suppliername}" readonly 
+							   pattern="[A-Za-z\s]+"
+							   title="Only Alphabets alowed"/>
+           </div>
+
+        <div class="form-group">
+           <label class="form-label" for="auditdate">Audit Date <span class="text-danger">*</span></label>
+                    <input type="date" class="form-control" id="auditdate" name="auditdate" th:value="${audit?.auditdate}" min="" required>
+            
+         </div>
+       
+
+      </div>
+
+      <!-- Second Row -->
+      
+      <div class="form-row"> 
+         <div class="form-group">
+          <label class="form-label" for="auditorname">Auditor Name <span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" id="auditorname" name="auditorname" th:value="${audit?.auditorname}" required
+					pattern="[A-Za-z\s]+"
+		           title="Only Alphabets alowed"/>
+	      </div>   
+        <div class="form-group">
+            <label class="form-label" for="qualitycompliancescore">Quality Compliance Score (1-10) <span class="text-danger">*</span></label>
+                    <input type="number" class="form-control" id="qualitycompliancescore" name="qualitycompliancescore" min="1" max="10" th:value="${audit?.qualitycompliancescore}" required>
+               
+             </div>  
+
+        <div class="form-group">
+            <label class="form-label" for="safetystandardscompliance">Safety Standards Compliance <span class="text-danger">*</span></label>
+                    <select class="form-control" id="safetystandardscompliance" name="safetystandardscompliance" required>
+                        <option value="">Select</option>
+                        <option value="Yes">Yes</option>
+                        <option value="No">No</option>
+                    </select>
+           </div> 
+
+        
+      </div>
+
+       <!-- three row  -->
+      <div class="form-row">  
+        <div class="form-group">
+          <label class="form-label" for="deliveryperformance">Delivery Performance <span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" id="deliveryperformance" name="deliveryperformance" th:value="${audit?.deliveryperformance}" required
+					pattern="[A-Za-z\s]+"
+					title="Only alphabets are allowed"/>
+        </div>  
+
+        <div class="form-group">
+           <label class="form-label" for="correctiveactionrequired">Corrective Action Required <span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" id="correctiveactionrequired" name="correctiveactionrequired" th:value="${audit?.correctiveactionrequired}" required>
+                  
+        </div>   
+        <div class="form-group" >         
+           <label class="form-label" for="auditoutcome">Audit Outcome <span class="text-danger">*</span></label>
+                    <select class="form-control" id="auditoutcome" name="auditoutcome" required>
+                        <option value="">Select</option>
+                        <option value="Passed">Passed</option>
+                        <option value="Failed">Failed</option>
+                        <option value="Conditional Approval">Conditional Approval</option>
+                    </select>
+        </div>
+
+        
+      </div>
+
+      <!-- Five Row  -->
+ 
+   <div id="status-message" style="color: green; font-weight: bold; margin-bottom: 10px;"></div>
+                <!-- Success Message -->
+                <div id="message" class="text-success text-center"></div>
+
+
+
+    <div class="form-actions">
+        <button type="button" class="btn btn-primary" id="submitBtn">Submit</button>
+    </div>
+ </form>
+    
+
+
+
+   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+     <script>
+		
+		function validateAlphabets(input) {
+		    const regex = /^[A-Za-z\s]+$/;
+		    if (!regex.test(input.value)) {
+		        alert('Only alphabets are allowed in ' + input.name);
+		        input.value = input.value.replace(/[^A-Za-z\s]/g, ''); 
+		    }
+		}
+
+		
+		$('#suppliername, #auditorname, #deliveryperformance').on('input', function () {
+		    validateAlphabets(this);
+		});
+
+		
+		$(document).ready(function () {
+
+		    const today = new Date().toISOString().split('T')[0];
+		    $('#auditdate').attr('min', today);
+
+		    $('#submitBtn').click(function () {
+		        const selectedDate = $('#auditdate').val();
+		        if (selectedDate < today) {
+		            alert('Audit Date cannot be in the past. Please select today or a future date.');
+		            return;
+		        }
+		        submitForm();
+		    });
+
+		   
+		    const supplieruid = $('#supplieruid').val();  
+		    if (supplieruid) {
+		        fetchSupplierDetails(supplieruid);  
+		    }
+
+		  
+		    $('#supplieruid').change(function () {
+		        const supplieruid = $(this).val();
+		        if (supplieruid) {
+		            fetchSupplierDetails(supplieruid);
+		        }
+		    });
+		});
+
+		function submitForm() {
+		    const formData = new FormData(document.getElementById('supplier-audit-form'));
+		    const id = $('#id').val();
+
+		    let url, successMessage;
+
+		    if (!id || id === '0') {
+		        url = '/supplieraudit/save';
+		        successMessage = 'Supplier Audit saved successfully!';
+		    } else {
+		        url = '/supplieraudit/update';
+		        successMessage = 'Supplier Audit updated successfully!';
+		    }
+
+		    $.ajax({
+		        type: 'POST',
+		        url: url,
+		        data: formData,
+		        processData: false,
+		        contentType: false,
+		        success: function () {
+		            $('#status-message').text(successMessage);
+
+		            // Optionally, redirect after a short delay
+		            setTimeout(() => {
+		                window.location.href = '/supplieraudit/list';
+		            }, 1500);
+		        },
+		        error: function () {
+		            $('#status-message').css('color', 'red').text('Something went wrong. Please try again.');
+		        }
+		    });
+		}
+
+
+
+		function fetchSupplierDetails(supplieruid) {
+		    if (!supplieruid) return;
+		    $.ajax({
+		        url: '/supplieraudit/fetchSupplierDetails',
+		        method: 'GET',
+		        data: { supplieruid: supplieruid },
+		        success: function(response) {
+		            if (response) {
+		                $('#suppliername').val(response.suppliername);
+		            }
+		        },
+		        error: function() {
+		            alert('Error fetching supplier details. Please try again.');
+		        }
+		    });
+		}
+
+	
+		
+    </script>
+
+
+</body>
+</html>

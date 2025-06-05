@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Maintenance Request Form</title>
+<link rel="stylesheet" href="sty.css">
+  <link rel="stylesheet" href="hrms.css"> <!-- // for side bar code  --> 
+  <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+
+  <div th:replace="~{SUPPLIER.html :: sidebarFragment}"></div> <!-- // for side bar code  -->                                                                        
+    
+   <form id="maintenancerequestform"
+	      th:action="@{${request.id != null} ? '/maintenancerequest/update' : '/maintenancerequest/save'}"
+	      method="post"
+	      th:object="${request}"  class="form-container">
+    <!-- Personal Information Section -->
+    <h2>Maintenance Request Details</h2>   
+    <br>
+    <br>
+        <input type="hidden" th:field="*{id}" />
+			  <input type="hidden" th:field="*{maintenancerequestuid}" />
+
+    <div class="form-section active" id="section1">
+     
+
+      <!-- First Row -->
+    
+      <div class="form-row" >
+        <div class="form-group">
+           <label>Equipment UID <span class="text-danger">*</span></label>
+                <select class="form-control" id="equipmentuid" name="equipmentuid" onchange="fetchEquipmentDetails(this.value)" required>
+                    <option value="">Select Equipment UID</option>
+                    <option th:each="id : ${equipmentuid}"
+                            th:value="${id}"
+                            th:text="${id}"
+                            th:selected="${request?.equipmentuid == id}">
+                    </option>
+                </select>
+        </div>
+      
+      <div class="form-group">
+           <label for="equipmentname">Equipment Name <span class="text-danger">*</span></label>
+                <input type="text" class="form-control" id="equipmentname" name="equipmentname"
+                       th:value="${request?.equipmentname}" readonly
+                       pattern="[A-Za-z\s]+" title="Only Alphabets allowed" />
+    </div>
+    <div class="form-group">
+       <label>Maintenance Type <span class="text-danger">*</span></label>
+                <select class="form-control" id="maintenancetype" name="maintenancetype" required>
+                    <option value="">Select Type</option>
+                    <option value="Preventive" th:selected="${request?.maintenancetype == 'Preventive'}">Preventive</option>
+                    <option value="Corrective" th:selected="${request?.maintenancetype == 'Corrective'}">Corrective</option>
+                    <option value="Breakdown" th:selected="${request?.maintenancetype == 'Breakdown'}">Breakdown</option>
+                </select>
+    </div>
+      </div>
+
+      <!-- Second Row -->
+      <div class="form-row">
+        <div class="form-group">
+      <label>Issue Description <span class="text-danger">*</span></label>
+                <textarea class="form-control" id="issuedescription" name="issuedescription" required
+                          th:text="${request?.issuedescription}"></textarea>
+    </div>
+        <div class="form-group">           
+          <label>Spare Parts Used <span class="text-danger">*</span></label>
+                <input type="text" class="form-control" id="spareparts" name="spareparts"
+                       th:value="${request?.spareparts}" required />
+       </div>
+    <div class="form-group">
+       <label>Estimated Repair Cost <span class="text-danger">*</span></label>
+                <input type="number" class="form-control" id="estimatedrepaircost" name="estimatedrepaircost"
+                       th:value="${request?.estimatedrepaircost}" required min="0" />
+       </div>        
+    </div>
+
+		<div class="form-row">
+			<div class="form-group">
+        <label>Repair Completion Date <span class="text-danger">*</span></label>
+                <input type="date" class="form-control" id="repaircompletiondate" name="repaircompletiondate"
+                       th:value="${request?.repaircompletiondate}" required />
+			</div>
+		</div>
+
+    <div class="form-row">
+      <div class="form-group">
+         <label>Approval Status <span class="text-danger">*</span></label>
+                <select class="form-control" id="approvalstatus" name="approvalstatus" required>
+                    <option value="">Select</option>
+                    <option value="Approved" th:selected="${request?.approvalstatus == 'Approved'}">Approved</option>
+                    <option value="Pending" th:selected="${request?.approvalstatus == 'Pending'}">Pending</option>
+                    <option value="Rejected" th:selected="${request?.approvalstatus == 'Rejected'}">Rejected</option>
+                </select>
+      </div>
+      <div class="form-group">
+                <label>Approved By <span class="text-danger">*</span></label>
+                <input type="text" class="form-control" id="approvedby" name="approvedby"
+                       th:value="${request?.approvedby}" required
+                       pattern="[A-Za-z\s]+" title="Only alphabets are allowed" />
+      </div>
+       <div id="status-message" class="text-success text-center mb-3"></div>
+     
+    </div>
+
+
+   
+
+ 
+
+
+    <div class="form-actions">
+  <button type="submit" class="btn btn-primary">Submit</button>
+   <!-- <a href="/maintenancerequest/list" class="btn btn-outline-secondary">Cancel</a> -->
+   <button type="button" class="back-button" onclick="goBack();">Back</button>
+    	<div th:if="${successMessage}" class="success-message" th:text="${successMessage}"></div>			
+
+	
+    </div>
+  
+   </form>
+
+
+
+   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+   	<script>
+		function goBack() {
+		window.location.href = '/logistics/goodsreceiptnotegrid';
+	  }
+	
+	</script>
+
+  <script>
+
+
+    function fetchEquipmentDetails(equipmentuid) {
+        if (!equipmentuid) return;
+
+        $.ajax({
+            url: '/maintenancerequest/fetchDetails',
+            method: 'GET',
+            data: { equipmentuid: equipmentuid },
+            success: function (response) {
+                if (response) {
+                    $('#equipmentname').val(response.equipmentname || '');
+                }
+            },
+            error: function () {
+                alert('Error fetching equipment details.');
+            }
+        });
+    }
+	$(document).ready(function () {
+	      const today = new Date().toISOString().split('T')[0];
+	      $('#repaircompletiondate').attr('min', today);
+
+	      $('#equipmentname, #approvedby').on('input', function () {
+	          this.value = this.value.replace(/[^A-Za-z\s]/g, '');
+	      });
+
+	      // Attach submit event handler to form
+	      $('#maintenancerequestform').submit(function (event) {
+	          event.preventDefault();  // Prevent the default form submission
+
+	          submitForm();  // Call the AJAX function
+	      });
+
+	      function submitForm() {
+	          const formData = new FormData(document.getElementById('maintenancerequestform'));
+	          const id = $('#id').val();  // Get the ID of the maintenance request
+
+	          let url, successMessage;
+
+	          if (!id || id === '0') {
+	              url = '/maintenancerequest/save';  // Save URL if ID is not provided
+	              successMessage = 'Maintenance Request saved successfully!';
+	          } else {
+	              url = '/maintenancerequest/update';  // Update URL if ID exists
+	              successMessage = 'Maintenance Request updated successfully!';
+	          }
+
+	          // AJAX request
+	          $.ajax({
+	              type: 'POST',
+	              url: url,
+	              data: formData,
+	              processData: false,
+	              contentType: false,
+	              success: function () {
+	                  $('#status-message').text(successMessage).css('color', 'green');
+
+	                  // Optionally, redirect after a short delay
+	                  setTimeout(() => {
+	                      window.location.href = '/maintenancerequest/list';
+	                  }, 1500);
+	              },
+	              error: function () {
+	                  $('#status-message').css('color', 'red').text('Something went wrong. Please try again.');
+	              }
+	          });
+	      }
+	  });
+</script>
+
+
+				
+
+
+
+ 
+   
+</body>
+</html>

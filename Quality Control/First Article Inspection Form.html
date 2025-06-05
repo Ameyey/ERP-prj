@@ -3,182 +3,239 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Backorder Management</title>
+  <title>First Article Inspection</title>
   <link rel="stylesheet" href="hrms.css">
   <link rel="stylesheet" href="sty.css">
   <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400;700&display=swap" rel="stylesheet">
 </head>
-<style>
-h5{
-  margin: 10px;
-}
-label{
-  font-size: 12px;
-}
-</style>
 <body onload="fetchBatchDetails()">
-
-   <form id="faiForm"  class="form-container"  >
+   <form   id="faiForm"  class="form-container"  >
     <!-- Personal Information Section -->
-    <input type="hidden" id="id" name="id" required th:value="${backorder?.id}">
-    <div class="form-section active" id="section1">
-      <h2>Backorder Management</h2>
+      <input type="hidden" id="id" name="id" th:value="${fai?.id}">
 
-      <!-- First Row -->
+    <div class="form-section active" id="section1">
+      <br>
+      <h2>First Article Inspection Form</h2>
+      <br>
+      
+      <!-- First Row -->    
+     
     
       <div class="form-row">
-        
         <div class="form-group">        
-          <label for="salesorderuid">Sales Order UID:</label>
-		       <select id="salesorderuid" name="salesorderuid" onchange="fetchSalesOrderDetails(this.value)">
-		           <option value="">Select Sales Order UID</option>
-		           <option th:each="uid : ${salesorderuid}" th:value="${uid}" th:text="${uid}"></option>
-		       </select>
-        </div>
-
-        <div class="form-group">
-          <label for="orderdate">Order Date:</label>
-          <input type="text" id="orderdate" name="orderdate" readonly>
-        </div>
-
-        <div class="form-group">
-          <label for="customername">Customer Name:</label>
-          <input type="text" id="customername" name="customername" readonly >   
-        </div>
-
-        <div class="form-group">
-         <label for="lotuid">Lot UID:</label>
-            <select id="lotuid" name="lotuid" onchange="fetchLotDetails(this.value)">
-                <option value="">Select Lot UID</option>
-                <option th:each="uid : ${lotuid}" th:value="${uid}" th:text="${uid}"></option>
-            </select>
-            </div>
-        </div>
-
-      <!-- Second Row -->
-      <div class="form-row">
-        <div class="form-group">
-          <label for="itemname">Item Name:</label>
-		        <input type="text" id="itemname" name="itemname" readonly>
-	      </div>
-   
-        <div class="form-group">
-          <label for="originalorderedquantity" >Original Ordered Quantity:</label>
-          <input type="text" id="originalorderedquantity" name="originalorderedquantity" readonly>
-        </div>
-
-        <div class="form-group">
-          <label for="pendingquantity">Pending Quantity:</label>
-		        <input type="text" id="pendingquantity" name="pendingquantity" readonly>
-        </div>
-
-        <div class="form-group" >         
-          <label for="unitprice">Unit Price:</label>
-          <input type="text" id="unitprice" name="unitprice" readonly>
-
-        </div>
-      </div>
-      <!-- Third Row -->
-      <div class="form-row">
-      
-          <div class="form-group">            
-            <label for="totalpendingvalue">Total Pending Value:</label>
-		        <input type="text" id="totalpendingvalue" name="totalpendingvalue" readonly>
+           	<label>Batch UID:</label>
+										<select id="batchuid" name="batchuid" onchange="fetchBatchDetails(this.value)"  required th:if="${fai == null or fai.id == null}">
+										    <option value="">Select Batch UID</option>
+										    <option th:each="uid : ${batchuid}" th:value="${uid}" th:text="${uid}"></option>
+										</select>
+							       	   
+										<input type="text" id="batchuid" name="batchuid" th:value="${fai?.batchuid}" onchange="fetchBatchDetails(this.value)" readonly th:if="${fai?.id != null}">
+					 
           </div>
 
-          <div class="form-group">
-            <label for="warehouseuid">Warehouse UID:</label>
-            <select id="warehouseuid" name="warehouseuid" onchange="fetchWarehouseDetails(this.value)">
-                <option value="">Select Warehouse UID</option>
-                <option th:each="uid : ${warehouseuid}" th:value="${uid}" th:text="${uid}"></option>
-            </select>
-        </div>
         <div class="form-group">
-          <label for="currentstock">Current Stock:</label>
-          <input type="text" id="currentstock" name="currentstock" readonly>
-        </div>
+                         <label for="productuid">product uid :</label>
+								            <input type="text" id="productuid" name="productuid" readonly>
+				 				       	   
+								       
+           </div>
+
         <div class="form-group">
-         
-          <label for="warehouselocation">Warehouse Location:</label>
-          <input type="text" id="warehouselocation" name="warehouselocation" readonly>     
-        </div>
+          <label >product name :</label>  
+				       <input type="text" id="productname" name="productname" readonly /><br>
+
         
+         </div>
+       
+
       </div>
 
-      <!-- four Row -->
-
-      <div class="form-row">
-        <div class="form-group">
-          <label for="accepteddeliverydate">Accepted Delivery Date:</label>
-				<input type="date" id="accepteddeliverydate" name="accepteddeliverydate"th:value="${backorder?.accepteddeliverydate}" >
-
-        </div>
-        <div class="form-group">
-         	
-				<label for="fulfillmentstatus">Fulfillment Status:</label>
-				<select id="fulfillmentstatus" name="fulfillmentstatus" required th:value="${backorder?.fulfillmentstatus}">
-				            <option >Progress</option>
-				            <option >In Progress</option>
-				        </select>
-        </div> 
-        <div class="form-group">
-          <label for="stockavailability">Stock Availability:</label>
-          <input type="text" id="stockavailability" name="stockavailability"th:value="${backorder?.stockavailability}" >
-        </div>     
-        <div class="form-group">          
-          <label for="expectedfulfillmentdate">Expected Fulfillment Date</label>
-        <input type="date" id="expectedfulfillmentdate" name="expectedfulfillmentdate" required th:value="${backorder?.expectedfulfillmentdate}">
-
-        </div>
+      <!-- Second Row -->
       
-        
-    </div>
+      <div class="form-row"> 
+         <div class="form-group">
+          <label for="measurementverification">Measurement Verification:</label>
+        <input type="text" id="measurementverification" name="measurementverification" th:value="${fai?.measurementverification}" required placeholder="Enter measurement verification details">
 
-   <!-- Five Row  -->
-   <div class="form-row">
-
-    <div class="form-group">
-      <label for="trackbackorder">Track Backorder</label>
-      <select id="trackbackorder" name="trackbackorder" required th:value="${backorder?.trackbackorder}">
-          <option >Yes</option>
-          <option >No</option>
-      </select>
-    </div>
-
-    <div class="form-group">
-      <label for="customerdate">Customer Date</label>
-      <input type="date" id="customerdate" name="customerdate" required th:value="${backorder?.customerdate}">
-      </div>
-
-      <div class="form-group">
-        <label for="createddate">Created Date</label>
-        <input type="date" id="createddate" name="createddate" required th:value="${backorder?.createddate}">
-      </div>
-
-      <div class="form-group">
-        <label for="lastmodifiedby">Last Modified By</label>
-        <input type="text" id="lastmodifiedby" name="lastmodifiedby" placeholder="Enter Last Modifier's Name" required th:value="${backorder?.lastmodifiedby}">
-      </div>
-
-   </div>  
-
+	      </div>   
+        <div class="form-group">
+            <label for="materialverification">Material Verification:</label>
+        <input type="text" id="materialverification" name="materialverification" th:value="${fai?.materialverification}" required placeholder="Enter material verification details">
  
+             </div>  
+
+        <div class="form-group">
+          <label for="functionaltesting">Functional Testing:</label>
+        <input type="text" id="functionaltesting" name="functionaltesting" th:value="${fai?.functionaltesting}" placeholder="Enter functional testing details (if applicable)">
+
+           </div> 
+
+        
+      </div>
+
+       <!-- three row  -->
+      <div class="form-row">  
+        <div class="form-group">
+<label for="totalInspected">Total Inspected Units:</label>
+		<input type="number" id="totalInspected" name="totalInspected" min="1" required placeholder="Enter total inspected units">
+		         
+        </div>  
+
+        <div class="form-group">
+          	<label for="defectiveUnits">Defective Units:</label>
+		<input type="number" id="defectiveUnits" name="defectiveUnits" min="0" required placeholder="Enter defective units" oninput="calculateDefectCount()">
+  
+        </div>   
+        <div class="form-group" >         
+         <label for="defectcount">Defect Count (Auto-Calculated):</label>
+		<input type="number" id="defectcount" name="defectcount" th:value="${fai?.defectcount}" readonly placeholder="Defect count will be auto-calculated">
+
+        </div>
+       
+
+        
+      </div>
+      <div class="form-row">
+         <div class="form-group">
+          <label for="approvalstatus">Approval Status:</label>
+        <select id="approvalstatus" name="approvalstatus" th:value="${fai?.approvalstatus}" required>
+            <option value="" disabled selected>Select approval status</option>
+            <option value="Approved" th:selected="${fai?.approvalstatus == 'Approved'}">Approved</option>
+            <option value="Rework" th:selected="${fai?.approvalstatus == 'Rework'}">Rework</option>
+            <option value="Rejected" th:selected="${fai?.approvalstatus == 'Rejected'}">Rejected</option>
+        </select>
+        </div>
+        <div class="form-group">
+           <label for="inspectorname">Inspector Name:</label>
+                <input type="text" id="inspectorname" name="inspectorname" th:value="${fai?.inspectorname}" required placeholder="Enter inspector name">
+
+        </div>
+      </div>
+
+      <!-- Five Row  -->
+ 
+   
 
 
     <div class="form-actions">
-      <button type="button" onclick="submitBackorderForm()">Save Backorder</button>
-      <div th:if="${successMessage}" class="success-message" th:text="${successMessage}"></div>                   
+       <button type="button" id="submitBtn" onclick="submitForm()">Submit</button>
+        <div th:if="${successMessage}" class="success-message" th:text="${successMessage}"></div>
     </div>
-  
+
+ </form>
+    
 
 
-
-
-
-
-
-   </form>
 
    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+		function calculateDefectCount() {
+		    const totalInspected = parseInt(document.getElementById('totalInspected').value) || 0;
+		    const defectiveUnits = parseInt(document.getElementById('defectiveUnits').value) || 0;
+		    
+		    if (defectiveUnits > totalInspected) {
+		        alert("Defective units cannot be greater than total inspected units.");
+		        document.getElementById('defectiveUnits').value = "";
+		        document.getElementById('defectcount').value = "";
+		        return;
+		    }
+
+		    // Set defect count equal to defective units
+		    document.getElementById('defectcount').value = defectiveUnits;
+		}
+
+        function submitForm() {
+            const form = document.getElementById('faiForm');
+            const formData = new FormData(form);
+            const id = $('#id').val();
+
+            const url = id ? '/FirstArticleInspection/update' : '/FirstArticleInspection/save';
+            const successMessage = id ? 'First Article Inspection updated successfully!' : 'First Article Inspection saved successfully!';
+
+            $.ajax({
+                url: url,
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function () {
+                    alert(successMessage);
+                    form.reset();
+                    setTimeout(() => window.location.href = '/FirstArticleInspection/List', 1500);
+                },
+                error: function (xhr) {
+                    alert('Error saving First Article Inspection record. Please try again.');
+                    console.error(xhr.responseText);
+                }
+            });
+        }
+
+		function resetForm() {
+		          $('#faiForm')[0].reset();
+		          $('#id').val('');
+		          $('#form-title').text('First Article Inspection Form');
+		          $('#submitBtn').text('Submit');
+		      }
+			  
+		function prefillForm(data) {
+		    $('#id').val(data.id);
+			$('#batchuid').val(data.batchuid); // Batch Number
+		  
+		    $('#measurementverification').val(data.measurementVerification); // Measurement Verification
+		    $('#materialverification').val(data.materialVerification); // Material Verification
+		    $('#functionaltesting').val(data.functionalTesting); // Functional Testing
+		    $('#defectcount').val(data.defectCount); // Defect Count
+		    $('#approvalstatus').val(data.approvalStatus); // Approval Status
+		    $('#inspectorname').val(data.inspectorName); // Inspector Name
+
+			     if (data.id) {
+						                // If updating, replace dropdown with readonly input
+						                $('#batchuid').replaceWith('<input type="text" id="batchuid" name="batchuid" value="' + data.batchuid + '" readonly>'); 
+			}
+			
+		    $('#form-title').text('Update First Article Inspection');
+		    $('#submitBtn').text('Update');
+		}
+				
+
+
+		$(document).ready(function() {
+		    // Auto-fill Item details when updating
+		    var existingItemid = $('#batchuid').val();
+		    if (existingItemid) {
+		    	fetchBatchDetails(existingItemid);
+		    }
+		});
+
+		function fetchBatchDetails(batchuid) {
+		       if (!batchuid) return;
+
+		       $.ajax({
+		           url: '/batch/faibatchdetails',
+		           method: 'GET',
+		           data: { batchuid: batchuid },
+		           success: function(response) {
+					if(response && response.length > 0) {
+						let data = response[0];
+						$('#productuid').val(data.productuid || '');
+						$('#productname').val(data.productname || '');
+						
+
+						
+				} else {
+					alert('No data found for the seleected product.')
+				}
+				
+		               },
+		           error: function() {
+		               alert('Error fetching Batch details. Please try again.');
+		           }
+		       });
+		   }
+
+    </script>
+
+
+
 </body>
 </html>
