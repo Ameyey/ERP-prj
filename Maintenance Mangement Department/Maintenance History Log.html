@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Maintenance History Log</title>
+  <link rel="stylesheet" href="hrms.css">
+  <link rel="stylesheet" href="sty.css">
+  <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+   <form    id="maintenancehistorylogform"  class="form-container"  >
+    <!-- Personal Information Section -->
+     <input type="hidden" id="id" name="id" th:value="${maintenancehistorylog?.id}">
+    <div class="form-section active" id="section1">
+      <br>
+      <h2>Maintenance History Log</h2>
+      <br>
+      
+      <!-- First Row -->    
+     
+    
+      <div class="form-row">
+        <div class="form-group">        
+         <label>Equipment UID </label>
+	<select id="equipmentuid" name="equipmentuid" onchange="fetchEquipmentDetails(this.value)"  th:if="${maintenancehistorylog == null or maintenancehistorylog.id == null}"required>
+		<option value="">Select Equipment UID</option>
+		<option th:each="uid : ${equipmentuid}" th:value="${uid}" th:text="${uid}"></option>
+	</select>
+	 	<input type="text" id="equipmentuid" name="equipmentuid" th:value="${maintenancehistorylog?.equipmentuid}" onchange="fetchEquipmentDetails(this.value)" readonly th:if="${maintenancehistorylog?.id != null}">
+	
+        </div>
+
+        <div class="form-group">
+          <label>Equipment Name</label>
+      <input type="text" id="equipmentname" name="equipmentname" readonly>
+		</div>
+
+        <div class="form-group">
+            <label for="maintenancetype">Maintenance Type </label>
+      <select id="maintenancetype" name="maintenancetype" th:value="${maintenancehistorylog?.maintenancetype}" required>
+        <option value="">Select Type</option>
+        <option value="Preventive" th:selected="${maintenancehistorylog?.maintenancetype == 'Preventive'}">Preventive</option>
+        <option value="Breakdown" th:selected="${maintenancehistorylog?.maintenancetype == 'Breakdown'}">Breakdown</option>
+      </select>
+          </div>
+       
+
+      </div>
+
+      <!-- Second Row -->
+      
+      <div class="form-row"> 
+         <div class="form-group">
+          <label for="servicedate">Service Date </label>
+      <input type="date" id="servicedate" name="servicedate" th:value="${maintenancehistorylog?.servicedate}" required>
+  
+	      </div>   
+        <div class="form-group">
+           <label for="servicedetails">Service Details </label>
+      <input type="text" id="servicedetails" name="servicedetails"  th:value="${maintenancehistorylog?.servicedetails}" required>
+   
+             </div>  
+
+        <div class="form-group">
+           <label for="technicianname">Technician Name </label>
+      <input type="text" id="technicianname" name="technicianname" th:value="${maintenancehistorylog?.technicianname}" required>
+   
+        </div> 
+
+        
+      </div>
+
+       <!-- three row  -->
+      <div class="form-row">  
+        <div class="form-group">
+      <label for="partsused">Parts Used </label>
+      <input type="text" id="partsused" name="partsused" th:value="${maintenancehistorylog?.partsused}" required>
+   
+        </div>  
+
+        <div class="form-group">
+        <label for="nextduedate">Next Due Maintenance </label>
+      <input type="date" id="nextduedate" name="nextduedate" th:value="${maintenancehistorylog?.nextduedate}">
+   
+        </div>   
+
+      
+        
+      </div>
+      
+      <!-- Five Row  -->
+ 
+   
+
+
+    <div class="form-actions">
+      <button type="button" id="submitBtn" onclick="submitForm()">Submit</button>
+          <button type="button" class="back-button" onclick="goBack();">Back</button>
+    	<div th:if="${successMessage}" class="success-message" th:text="${successMessage}"></div>
+
+    </div>
+
+ </form>
+    
+
+
+
+   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+  function goBack() {
+		window.location.href = '/logistics/goodsreceiptnotegrid';
+	  }
+</script>
+
+<script>
+
+
+$(document).ready(function() {
+    // Auto-fill Item details when updating
+    var existingequipmentuid = $('#equipmentuid').val();
+    if (existingequipmentuid) {
+    	fetchEquipmentDetails(existingequipmentuid);
+    }
+});
+function fetchEquipmentDetails(equipmentuid) {
+  if (!equipmentuid) return; 
+
+     $.ajax({
+ 		url: '/fetchEquipmentDetails',
+ 		method: 'GET',
+ 		data: { equipmentuid: equipmentuid },
+ 		success: function(response) {
+ 			$('#equipmentname').val(response.equipmentname);	
+ 	},
+ 	error:function() {
+    alert('Error fetching Equipment Details. Please try again.');
+ 			                }
+ 							});
+ } 
+
+function submitForm() {
+let form = document.getElementById('maintenancehistorylogform');
+		    
+		    if (!form.checkValidity()) {
+		        alert('Please fill in all required fields.');
+		        return;
+		    }
+
+		   
+				    const formData = new FormData(document.getElementById('maintenancehistorylogform'));
+				    const id = $('#id').val();
+
+				    let url, successMessage;
+
+				    if (!id) {
+				        url = '/maintenancehistorylog/save';
+				        successMessage = 'Maintenance History Log Form data saved successfully!';
+				    } else {
+				        url = '/maintenancehistorylog/update';
+				        successMessage = 'Maintenance History Log Form data updated successfully!';
+				    }
+
+				    $.ajax({
+				        url: url,
+				        type: 'POST',
+				        data: formData,
+				        processData: false,
+				        contentType: false,
+				        success: function(response) {
+				            $('#message').text(successMessage); // Display success message
+				            resetForm();
+				            window.location.href = '/maintenancehistorylog/list';
+				        },
+				        error: function() {
+				            alert('Error saving Maintenance History Log Form . Please fill out the data.');
+				        }
+				    });
+				}
+				// Reset the form
+						function resetForm() {
+						    $('#maintenancehistorylogform')[0].reset();
+							$('#id').val('');
+						    $('#message').text(''); // Clear the message
+						    $('#submitBtn').text('Submit');
+						}
+						$(document).ready(function () {
+						    function validateTextInput(input) {
+						        const regex = /^[A-Za-z\s]+$/;
+						        if (!regex.test(input.value)) {
+						            input.setCustomValidity("Please enter only letters.");
+						            input.reportValidity(); // Show native browser validation popup
+						            input.value = input.value.replace(/[^A-Za-z\s]/g, ""); 
+						        } else {
+						            input.setCustomValidity(""); // Clear the custom error
+						        }
+						    }
+						
+						    $('#technicianname').on('input', function () {
+						        validateTextInput(this);
+						    });
+						 });  
+</script>
+
+</body>
+</html>
