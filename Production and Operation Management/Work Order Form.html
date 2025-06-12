@@ -1,212 +1,263 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Work Order Form</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Work Order Form</title>
 <link rel="stylesheet" href="sty.css">
-  <link rel="stylesheet" href="hrms.css"> <!-- // for side bar code  --> 
-  <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="hrms.css"> <!-- // for side bar code  -->
+  
+<!-- // for side bar code  -->
+<link
+	href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400;700&display=swap"
+	rel="stylesheet">
 </head>
 
 <body>
 
-  <div th:replace="~{SUPPLIER.html :: sidebarFragment}"></div> <!-- // for side bar code  -->                                                                        
-    
-   <form  id="pqcForm"  class="form-container">
-    <!-- Personal Information Section -->
-    <h2>Work Order Form</h2>   
-    <br>
-    <br>
-  <input type="hidden" id="id" name="id" th:value="${updatewo?.id}">
+	<div th:replace="~{SUPPLIER.html :: sidebarFragment}"></div>
+	<!-- // for side bar code  -->
 
-    <div class="form-section active" id="section1">
-     
+	<form id="pqcForm" class="form-container">
+		<!-- Personal Information Section -->
+		<h2>Work Order Form</h2>
+		<br> <br> <input type="hidden" id="id" name="id"
+			th:value="${updatewo?.id}">
 
-      <!-- First Row -->
-    
-      <div class="form-row" >
-        <div class="form-group">
-         <label for="productcodeuid">Production Plan UID</label>
-	  <select id="productcodeuid" name="productcodeuid" required th:if="${updatewo == null or updatewo.id == null}">
-	  		<option value="">Select Product UID</option>
-	  		<option th:each="uid : ${productcodeuid}" th:value="${uid}" th:text="${uid}"></option>
-	  </select>
-	  <input type="text" id="productcodeuid" name="productcodeuid" th:value="${updatewo?.productcodeuid}" onchange="fetchclientDetails(this.value)" readonly th:if="${updatewo != null and updatewo.id != null}">
-
-        </div>
-      
-      <div class="form-group">
-         <label for="workordertype">Work Order Type</label>
-      <select id="workordertype" name="workordertype" required>
-        <option value="">Select Work Order Type</option>
-        <option value="assembly" th:selected="${updatewo?.workordertype == 'assembly'}">Assembly</option>
-        <option value="processing" th:selected="${updatewo?.workordertype == 'processing'}">Processing</option>
-        <option value="packaging" th:selected="${updatewo?.workordertype == 'packaging'}">Packaging</option>
-      </select>
-
-    </div>
-    <div class="form-group">
-       <label for="workorderdate">Work Order Date</label>
-      <input type="date" id="workorderdate" name="workorderdate" readonly required>
+		<div class="form-section active" id="section1">
 
 
-    </div>
-      </div>
+			<!-- First Row -->
 
-      <!-- Second Row -->
+			<div class="form-row">
+				<div class="form-group">
+					<label for="productionplanninguid">Production Plannning ID</label> <select
+						id="productionplanninguid" name="productionplanninguid" required
+						th:if="${updatewo == null or updatewo.id == null}">
+						<option value="">Select Production Planning ID</option>
+						<option th:each="uid : ${productionplanninguid}" th:value="${uid}"
+							th:text="${uid}"></option>
+					</select> <input type="text" id="productionplanninguid" name="productionplanninguid"
+						th:value="${updatewo?.productionplanninguid}"
+						onchange="fetchclientDetails(this.value)" readonly
+						th:if="${updatewo != null and updatewo.id != null}">
+		
+				</div>
+				<div class="form-group">
+					<label>Product UID</label> <input type="text" id="productuid" name="productuid" readonly>
+
+				</div>
+			<div class="form-group">
+					<label for="productname">Product Name *</label> <input type="text" id="productname" name="productname" readonly>
+			</div>
+				
+			</div>
       <div class="form-row">
         <div class="form-group">
-         <label for="prioritylevel">Priority Level</label>
-      <select id="prioritylevel" name="prioritylevel" required>
-        <option value="">Select Priority Level</option>
-        <option value="high" th:selected="${updatewo?.prioritylevel == 'high'}">High</option>
-        <option value="medium" th:selected="${updatewo?.prioritylevel == 'medium'}">Medium</option>
-        <option value="low" th:selected="${updatewo?.prioritylevel == 'low'}">Low</option>
-      </select>
-    </div>
-        <div class="form-group">           
-         
-      <label for="workcenter">Work Center</label>
-      <input type="text" id="workcenter" name="workcenter" th:value="${updatewo?.workcenter}" required>
+					<label for="workordertype">Work Order Type</label> <select
+						id="workordertype" name="workordertype" required>
+						<option value="">Select Work Order Type</option>
+						<option value="assembly"
+							th:selected="${updatewo?.workordertype == 'assembly'}">Assembly</option>
+						<option value="processing"
+							th:selected="${updatewo?.workordertype == 'processing'}">Processing</option>
+						<option value="packaging"
+							th:selected="${updatewo?.workordertype == 'packaging'}">Packaging</option>
+					</select>
 
+				</div>
+				<div class="form-group">
+					<label for="workorderdate">Work Order Date</label> <input
+						type="date" id="workorderdate" name="workorderdate" readonly
+						required>
+
+
+				</div>
       </div>
-    <div class="form-group">
-      <label for="machinerequired">Machine Required</label>
-      <input type="number" id="machinerequired" name="machinerequired" th:value="${updatewo?.machinerequired}" required min="1">
 
-    </div>        
-    </div>
+			<!-- Second Row -->
+			<div class="form-row">
+				<div class="form-group">
+					<label for="prioritylevel">Priority Level</label> <select
+						id="prioritylevel" name="prioritylevel" required>
+						<option value="">Select Priority Level</option>
+						<option value="high"
+							th:selected="${updatewo?.prioritylevel == 'high'}">High</option>
+						<option value="medium"
+							th:selected="${updatewo?.prioritylevel == 'medium'}">Medium</option>
+						<option value="low"
+							th:selected="${updatewo?.prioritylevel == 'low'}">Low</option>
+					</select>
+				</div>
+				<div class="form-group">
 
-		<div class="form-row">
-			<div class="form-group">
-         <label for="rawmaterialconsumption">Raw Material Consumption</label>
-      <input type="text" id="rawmaterialconsumption" name="rawmaterialconsumption" th:value="${updatewo?.rawmaterialconsumption}">
+					<label for="workcenter">Work Center</label> <input type="text"
+						id="workcenter" name="workcenter"
+						th:value="${updatewo?.workcenter}" required>
+
+				</div>
+				<div class="form-group">
+					<label for="machinerequired">Machine Required</label> <input
+						type="number" id="machinerequired" name="machinerequired"
+						th:value="${updatewo?.machinerequired}" required min="1">
+
+				</div>
+			</div>
+
+			<div class="form-row">
+				<div class="form-group">
+					<label for="rawmaterialconsumption">Raw Material
+						Consumption</label> <input type="text" id="rawmaterialconsumption"
+						name="rawmaterialconsumption"
+						th:value="${updatewo?.rawmaterialconsumption}">
+
+				</div>
+			</div>
+
+			<div class="form-row">
+				<div class="form-group">
+					<label for="labourassigned">Labour Assigned</label> <input
+						type="text" id="labourassigned" name="labourassigned"
+						th:value="${updatewo?.labourassigned}" required>
+				</div>
+				<div class="form-group">
+					<label for="completionstatus">Completion Status</label> <select
+						id="completionstatus" name="completionstatus" required>
+						<option value="">Select Completion Status</option>
+						<option value="completed"
+							th:selected="${updatewo?.completionstatus == 'completed'}">Completed</option>
+						<option value="in-progress"
+							th:selected="${updatewo?.completionstatus == 'in-progress'}">In
+							Progress</option>
+						<option value="pending"
+							th:selected="${updatewo?.completionstatus == 'pending'}">On
+							Hold</option>
+					</select>
+				</div>
+				<div class="form-group">
+					<label for="completedate">Completion Date</label> <input
+						type="date" id="completedate" name="completedate"
+						th:value="${updatewo?.completedate}">
+
+				</div>
+				<div class="form-group">
+					<label for="reviewedby">Reviewed By</label> <input type="text"
+						id="reviewedby" name="reviewedby"
+						th:value="${updatewo?.reviewedby}" required>
+				</div>
+			</div>
+
+
+
+
+
+
+
+			<div class="form-actions">
+				<button type="button" id="submitBtn" onclick="submitWorkOrderForm()">Submit</button>
+				<button type="button" class="back-button" onclick="goBack();">Back</button>
+				<div id="message"></div>
+
+
 
 			</div>
-		</div>
-
-    <div class="form-row">
-      <div class="form-group">
-         <label for="labourassigned">Labour Assigned</label>
-      <input type="text" id="labourassigned" name="labourassigned" th:value="${updatewo?.labourassigned}" required>
-      </div>
-      <div class="form-group">
-         <label for="completionstatus">Completion Status</label>
-      <select id="completionstatus" name="completionstatus" required>
-        <option value="">Select Completion Status</option>
-        <option value="completed" th:selected="${updatewo?.completionstatus == 'completed'}">Completed</option>
-        <option value="in-progress" th:selected="${updatewo?.completionstatus == 'in-progress'}">In Progress</option>
-        <option value="pending" th:selected="${updatewo?.completionstatus == 'pending'}">On Hold</option>
-      </select>
-      </div>
-      <div class="form-group">
-    <label for="completedate">Completion Date</label>
-      <input type="date" id="completedate" name="completedate" th:value="${updatewo?.completedate}">
-
-      </div>
-      <div class="form-group">
-          <label for="reviewedby">Reviewed By</label>
-      <input type="text" id="reviewedby" name="reviewedby" th:value="${updatewo?.reviewedby}" required>
-      </div>
-    </div>
-
-
-   
-
- 
-
-
-    <div class="form-actions">
-        <button type="button" id="submitBtn" onclick="SubmitForm()">Submit</button>
-    <button type="button" class="back-button" onclick="goBack();">Back</button>
-    <div id="message"></div>
-
-
-	
-    </div>
-  
-   </form>
+	</form>
 
 
 
-   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-   	<script>
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+	<script>
 		function goBack() {
-		window.location.href = '/logistics/goodsreceiptnotegrid';
-	  }
-	
+			window.location.href = '/productionandoperationmanagement/workordergrid';
+		}
 	</script>
-<script>
-    window.onload = function () {
-    setTodaysDate();
-    const today = new Date().toISOString().split("T")[0];
-    const workorderDateInput = document.getElementById("workorderdate");
-    workorderDateInput.setAttribute("min", today);
-    workorderDateInput.setAttribute("max", today);
-  };
+	<script>
+		window.onload = function() {
+			setTodaysDate();
+			const today = new Date().toISOString().split("T")[0];
+			const workorderDateInput = document.getElementById("workorderdate");
+			workorderDateInput.setAttribute("min", today);
+			workorderDateInput.setAttribute("max", today);
+		};
 
-  function setTodaysDate() {
-    const today = new Date().toISOString().split("T")[0];
-    document.getElementById("workorderdate").value = today;
-  }
+		function setTodaysDate() {
+			const today = new Date().toISOString().split("T")[0];
+			document.getElementById("workorderdate").value = today;
+		}
 
-  function validateForm() {
-    const today = new Date().toISOString().split("T")[0];
-    const workorderdate = document.getElementById("workorderdate").value;
-    const machinerequired = document.getElementById("machinerequired").value;
-    const workcenter = document.getElementById("workcenter").value;
+		function validateForm() {
+			const today = new Date().toISOString().split("T")[0];
+			const workorderdate = document.getElementById("workorderdate").value;
+			const machinerequired = document.getElementById("machinerequired").value;
+			const workcenter = document.getElementById("workcenter").value;
 
-    if (workorderdate !== today) {
-      alert("Work Order Date must be today.");
-      return false;
-    }
+			if (workorderdate !== today) {
+				alert("Work Order Date must be today.");
+				return false;
+			}
 
-    if (machinerequired <= 0) {
-      alert("Machine Required must be a positive number.");
-      return false;
-    }
+			if (machinerequired <= 0) {
+				alert("Machine Required must be a positive number.");
+				return false;
+			}
 
-    const regex = /^[a-zA-Z0-9\s]*$/;
-    if (!regex.test(workcenter)) {
-      alert("Work Center can only contain letters, numbers, and spaces.");
-      return false;
-    }
-    return true;
-  }
+			const regex = /^[a-zA-Z0-9\s]*$/;
+			if (!regex.test(workcenter)) {
+				alert("Work Center can only contain letters, numbers, and spaces.");
+				return false;
+			}
 
-  function SubmitForm() {
-    if (!validateForm()){
-		return;
-}
-    const formData = new FormData(document.getElementById('woForm'));
-    const id = $('#id').val();
+			return true;
+		}
 
-    let url = id ? '/updateExistingWo' : '/save';
+		function submitWorkOrderForm() {
+	        const formData = new FormData(document.getElementById('pqcForm'));
+	        const id = $('#id').val();
+	        let url, successMessage;
 
-    $.ajax({
-      url: url,
-      type: 'POST',
-      data: formData,
-      processData: false,
-      contentType: false,
-      success: function () {
-        $('#message').text('Saved successfully!');
-        window.location.href = '/wolist';
-      },
-      error: function () {
-        alert('Error saving work . Please check the form.');
-      }
-    });
-  }
-</script>
+	        if (!id) {
+	            url = '/saveworkorderform';
+	            successMessage = 'Work Order submitted successfully!';
+	        } else {
+	            url = '/updateworkorderform';
+	            successMessage = 'Work Order updated successfully!';
+	        }
+
+	        $.ajax({
+	            url: url,
+	            type: 'POST',
+	            data: formData,
+	            processData: false,
+	            contentType: false,
+	            success: function(response) {
+	               $('message').text(successMessage);
+	               resetWorkOrderForm();
+	                window.location.href = '/productionandoperationmanagement/workordergrid';
+	                },
+	            error: function() {
+	                alert('Error submitting Work Order form data. Please try again.');
+	            }
+	        });
+	    }
+	    
+	    function resetWorkOrderForm() {
+	        $('#pqcForm')[0].reset();
+	        $('#id').val('');
+			$('#form-title').text('pqcForm');
+	        $('#submitBtn').text('Submit');
+	    }
+
+	   
+
+	</script>
 
 
-				
 
 
 
- 
-   
+
+
+
 </body>
 </html>

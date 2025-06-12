@@ -1,0 +1,225 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Maintenance Entry</title>
+<link rel="stylesheet" href="sty.css">
+  <link rel="stylesheet" href="hrms.css"> 
+  <!-- // for side bar code  -->
+<!-- // for side bar code  -->
+<link
+	href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400;700&display=swap"
+	rel="stylesheet">
+</head>
+
+<body>
+
+	<div
+		th:replace="~{ProductionAndOperationManagement.html :: sidebarFragment}"></div>
+	<!-- // for side bar code  -->
+
+	<form id="maintenanceForm" class="form-container">
+		<!-- Personal Information Section -->
+		<h2>Safety Inspection Checklist</h2>
+     <input type="hidden" id="id" th:value="${cost.id}" />
+
+		<div class="form-row">
+			<div class="form-group">
+			  <label>Equipment ID:</label>
+    <select id="equipmentuid" class="form-control" onchange="updateEquipmentName()" required>
+        <option value="" disabled selected>Select Equipment ID</option>
+        <th:block th:each="equipment : ${equipmentList}">
+            <option th:value="${equipment.equipmentuid}"
+                    th:attr="data-name=${equipment.equipmentname}"
+                    th:text="${equipment.equipmentuid}"
+                    th:selected="${equipment.equipmentuid == cost?.equipmentuid}"></option>
+        </th:block>
+    </select><br>
+			</div>
+			<div class="form-group">
+				 <label for="equipmentname">Equipment Name</label>
+    <input type="text" id="equipmentname" class="form-control" readonly /><br>
+
+			</div>
+	    <div class="form-group">
+        	<label>Date:</label>
+    <input type="date" id="date" class="form-control" required
+           th:value="${cost.date}" 
+           th:attr="min=${#temporals.format(#temporals.createNow(), 'yyyy-MM-dd')},
+                    max=${#temporals.format(#temporals.createNow(), 'yyyy-MM-dd')}"/><br>
+
+			</div>			
+    
+			
+		</div>
+
+    <div class="form-row">
+      <div class="form-group">
+			  <label>Type of Maintenance:</label>
+    <select id="typeofmaintenance" required>
+        <option value="">Select Type</option>
+        <option value="Preventive" th:selected="${cost?.typeofmaintenance == 'Preventive'}">Preventive</option>
+        <option value="Breakdown" th:selected="${cost?.typeofmaintenance == 'Breakdown'}">Breakdown</option>
+    </select><br>
+			</div>
+      			<div class="form-group">
+               <label>Labour Cost:</label>
+               <input type="number" id="labourcost" min="0" max="999999" required th:value="${cost.labourcost}"/><br>
+				</div>
+    </div>
+
+
+		<!-- First Row -->
+		<div class="form-row">
+			<div class="form-group">
+			<label>Parts Cost:</label>
+    <input type="number" id="partscost" min="0" max="999999" required th:value="${cost.partscost}"/><br>
+
+			</div>		
+
+
+
+			<div class="form-group">
+      <label>Other Costs:</label>
+      <input type="number" id="othercosts" min="0" max="999999" th:value="${cost.othercosts}"/><br>
+			</div>
+      <div class="form-group">
+            <label>Total Cost:</label>
+    <input type="number" id="totalcost" readonly th:value="${cost.totalcost}"/><br>
+
+      </div>
+		
+		</div>
+
+
+
+		<!-- Second Row -->
+	
+
+	
+		<!-- Third Row -->
+		
+
+
+		</div>
+
+		<!-- four Row -->
+		<!-- Five Row  -->
+		<div class="form-actions">
+      <button type="button" onclick="submitForm()" th:text="${cost.id == null} ? 'Add Entry' : 'Update Entry'"></button>
+			<button type="button" class="back-button" onclick="goBack();">Back</button>
+
+		</div>
+	</form>
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+	<script>
+		function goBack() {
+			window.location.href = '/logistics/goodsreceiptnotegrid';
+		}
+	</script>
+ <script>
+    function updateEquipmentName() {
+        const select = document.getElementById("equipmentuid");
+        const selectedOption = select.options[select.selectedIndex];
+        const equipmentName = selectedOption.getAttribute("data-name");
+        document.getElementById("equipmentname").value = equipmentName || '';
+    }
+
+    function calcTotal() {
+        const l = parseFloat(document.getElementById("labourcost").value) || 0;
+        const p = parseFloat(document.getElementById("partscost").value) || 0;
+        const o = parseFloat(document.getElementById("othercosts").value) || 0;
+        document.getElementById("totalcost").value = l + p + o;
+    }
+
+    document.querySelectorAll("#labourcost, #partscost, #othercosts").forEach(input => {
+        input.addEventListener("input", calcTotal);
+    });
+
+    function isValidNumber(value) {
+        return !isNaN(value) && value.trim() !== "" && /^\d+(\.\d+)?$/.test(value);
+    }
+
+    function submitForm() {
+        const equipmentuid = $("#equipmentuid").val();
+        const typeofmaintenance = $("#typeofmaintenance").val();
+        const date = $("#date").val();
+
+        const labour = $("#labourcost").val().trim();
+        const parts = $("#partscost").val().trim();
+        const other = $("#othercosts").val().trim();
+
+        if (!equipmentuid || !typeofmaintenance || !date) {
+            alert("Please fill out all required fields.");
+            return;
+        }
+
+        if (!isValidNumber(labour)) {
+            alert("Enter a valid number for Labour Cost.");
+            return;
+        }
+
+        if (!isValidNumber(parts)) {
+            alert("Enter a valid number for Parts Cost.");
+            return;
+        }
+
+        if (other !== "" && !isValidNumber(other)) {
+            alert("Enter a valid number for Other Costs.");
+            return;
+        }
+
+        const labourNum = parseFloat(labour);
+        const partsNum = parseFloat(parts);
+        const otherNum = parseFloat(other || 0);
+
+        if (labourNum < 0 || labourNum > 999999) {
+            alert("Labour Cost must be between 0 and 999999.");
+            return;
+        }
+
+        if (partsNum < 0 || partsNum > 999999) {
+            alert("Parts Cost must be between 0 and 999999.");
+            return;
+        }
+
+        if (otherNum < 0 || otherNum > 999999) {
+            alert("Other Costs must be between 0 and 999999.");
+            return;
+        }
+
+        const data = {
+            id: $("#id").val() || null,
+            equipmentuid,
+            typeofmaintenance,
+            date,
+            labourcost: labourNum,
+            partscost: partsNum,
+            othercosts: otherNum,
+            totalcost: labourNum + partsNum + otherNum
+        };
+
+        $.ajax({
+            url: '/submit',
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify(data),
+            success: function () {
+                alert(data.id ? "Updated successfully!" : "Submitted successfully!");
+                window.location.href = "/";
+            },
+            error: function (err) {
+                console.error(err);
+                alert("Submission failed.");
+            }
+        });
+    }
+</script>
+
+
+</body>
+
+</html>

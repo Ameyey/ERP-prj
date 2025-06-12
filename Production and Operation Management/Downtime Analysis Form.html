@@ -1,0 +1,197 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Downtime Analysis Form</title>
+<link rel="stylesheet" href="sty.css">
+  <link rel="stylesheet" href="hrms.css"> 
+  <!-- // for side bar code  -->
+<!-- // for side bar code  -->
+<link
+	href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400;700&display=swap"
+	rel="stylesheet">
+</head>
+
+<body>
+
+	<div
+		th:replace="~{ProductionAndOperationManagement.html :: sidebarFragment}"></div>
+	<!-- // for side bar code  -->
+
+	<form method="post" 
+		      th:action="@{${downtime.id != null} ? '/downtimeanalysis/update' : '/downtimeanalysis/save'}"
+		      id="downtimeform" class="form-container">
+		<!-- Personal Information Section -->
+		<h2>Downtime Analysis Form</h2>
+     <input type="hidden" name="id" id="id" th:value="${downtime?.id}" />
+
+		<div class="form-row">
+			<div class="form-group">
+			  <label for="equipmentuid">Equipment UID<span style="color:red;">*</span></label>
+		 	<select id="equipmentuid" name="equipmentuid" onchange="fetchEquipmentDetails(this.value)">
+		 	    <option value="">--select equipment uid--</option>
+		 	    <option th:each="uid : ${equipmentuid}"
+		 	            th:value="${uid}"
+		 	            th:text="${uid}"></option>
+		 	</select>
+			</div>
+			<div class="form-group">
+				    <label for="equipmentname">Equipment Name<span style="color:red;">*</span></label>
+	<!--<input type="text" id="equipmentname" name="equipmentname" th:value="${pmsf.equipmentname}" readonly>-->
+    <input type="text" id="equipmentname" name="equipmentname" readonly>
+
+			</div>
+	    <div class="form-group">
+      <label for="totaldowntime">Total Downtime (Hrs)<span style="color:red;">*</span></label>
+    <input type="number" id="totaldowntime" name="totaldowntime" th:value="${downtime?.totaldowntime}" min="0" required>
+
+			</div>			
+    
+			
+		</div>
+
+    <div class="form-row">
+      <div class="form-group">
+		<label for="noofdowntime">No. of Breakdowns<span style="color:red;">*</span></label>
+	<input type="number" id="noofdowntime" name="noofdowntime" th:value="${downtime?.noofdowntime}" min="0" required>
+
+			</div>
+      			
+    </div>
+
+
+		<!-- First Row -->
+		<div class="form-row">
+      <div class="form-group">
+                 <label for="frequentissues">Frequent Issues<span style="color:red;">*</span></label>
+                 <br>
+    <textarea id="frequentissues" name="frequentissues" rows="3" required
+              th:text="${downtime?.frequentissues}"></textarea>
+
+            	</div>
+			<div class="form-group">
+		 <label for="preventiveactionssuggested">Preventive Actions Suggested<span style="color:red;">*</span></label>
+    <textarea id="preventiveactionssuggested" name="preventiveactionssuggested" rows="3" required
+              th:text="${downtime?.preventiveactionssuggested}"></textarea>
+
+			</div>		
+
+
+
+			<div class="form-group">
+         <label for="remarks">Remarks<span style="color:red;">*</span></label>
+         <br>
+    <textarea id="remarks" name="remarks" rows="3"
+              th:text="${downtime?.remarks}"></textarea>
+
+    	</div>
+      
+		
+		</div>
+
+
+
+		<!-- Second Row -->
+	
+
+	
+		<!-- Third Row -->
+		
+
+
+		</div>
+
+		<!-- four Row -->
+		<!-- Five Row  -->
+		<div class="form-actions">
+       <button type="submit">Submit</button>
+			<button type="button" class="back-button" onclick="goBack();">Back</button>
+
+		</div>
+	</form>
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+	<script>
+		function goBack() {
+			window.location.href = '/logistics/goodsreceiptnotegrid';
+		}
+	</script>
+  <script>
+	function fetchEquipmentDetails(equipmentuid){
+			if(!equipmentuid) return;
+			$.ajax({
+				url:'/downtimeanalysis/getequipdatabyuid',
+				method:'GET',
+				data: { equipmentuid: equipmentuid },
+							                success: function(response) {
+							                    $('#equipmentname').val(response.equipmentname);
+							                    
+							                   
+							                },
+							                error: function() {
+							                    alert('ERROR WHILE FETCHING EQUIPMENT DETAILS. TRY AGAIN.');
+							                }
+							            });
+							        }
+	function submitForm() 
+		{
+			
+				            const formData = new FormData(document.getElementById('Downtime'));
+				            const id = $('#id').val();
+
+				            let url, successMessage;
+
+				            if (!id) {
+				                url = '/downtimeanalysis/save';
+				                successMessage = 'saved successfully!';
+				            } else {
+				                url = '/downtimeanalysis/edit/{id}';
+				                successMessage = ' updated successfully!';
+				            }
+
+				            $.ajax({
+				                url: url,
+				                type: 'POST',
+				                data: formData,
+				                processData: false,
+				                contentType: false,
+				                success: function () {
+				                    $('#message').text(successMessage).fadeIn();
+				                    setTimeout(function () {
+				                        window.location.href = '/downtimeanalysis/list';
+				                    }, 1500);
+				                },
+				                error: function () {
+				                    alert('Error saving  Please fill out all required fields.');
+				                }
+				            });
+				        }
+						$(document).ready(function () {
+
+		 // ✅ Validation for text fields (Only alphabets and spaces)
+		           function validateTextField(selector) {
+				   $(selector).on('input', function () {
+		           let value = $(this).val();
+                  if (!/^[a-zA-Z\s]*$/.test(value)) {
+					 alert('Only alphabets and spaces are allowed.');
+				 $(this).val(value.replace(/[^a-zA-Z\s]/g, ''));
+				 }
+				  });
+				}
+																	   
+           // Apply validation on specified fields (text)
+				 validateTextField('#frequentissues');
+				 validateTextField('#preventiveactionssuggested');
+				  validateTextField('#remarks');
+		});
+														
+	
+</script>
+
+
+
+</body>
+
+</html>

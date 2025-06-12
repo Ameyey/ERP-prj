@@ -1,0 +1,277 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Safety Inspection Checklist Form</title>
+<link rel="stylesheet" href="sty.css">
+  <link rel="stylesheet" href="hrms.css"> 
+  <!-- // for side bar code  -->
+<!-- // for side bar code  -->
+<link
+	href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400;700&display=swap"
+	rel="stylesheet">
+</head>
+
+<body>
+
+	<div
+		th:replace="~{ProductionAndOperationManagement.html :: sidebarFragment}"></div>
+	<!-- // for side bar code  -->
+
+	<form id="SafetyInspectionForm" class="form-container">
+		<!-- Personal Information Section -->
+		<h2>Safety Inspection Checklist</h2>
+    <input type="hidden" id="id" name="id" th:value="${checklist?.id}" />
+		<div class="form-row">
+			<div class="form-group">
+				<label for="equipmentuid">Equipment UID *</label>
+    <select id="equipmentuid" name="equipmentuid" onchange="fetchEquipmentDetails()" th:if="${checklist == null or checklist.id == null}" required>
+        <option value="">Select Equipment UID</option>
+        <option th:each="uid : ${equipmentuid}" th:value="${uid}" th:text="${uid}"></option>
+    </select>
+    <input type="text" id="equipmentuid" name="equipmentuid" onchange="fetchEquipmentDetails()" th:value="${checklist?.equipmentuid}" readonly th:if="${checklist?.id != null}">
+    <span id="equipmentuid-error" class="error-message"></span>
+
+			</div>
+			<div class="form-group">
+				 <label for="equipmentname">Equipment Name *</label>
+    <input type="text" id="equipmentname" name="equipmentname" readonly />
+    <span id="equipmentname-error" class="error-message"></span>
+
+			</div>
+			<div class="form-group">
+				 <label for="inspectionDate">Inspection Date *</label>
+	<input type="date" id="inspectiondate" name="inspectiondate" required th:value="${checklist?.inspectiondate}"/>
+    <span id="inspectiondate-error" class="error-message"></span>
+			</div>			
+			
+		</div>
+
+    <div class="form-row">
+      <div class="form-group">
+				<label for="checklistItems">Checklist Items *</label>
+    <textarea id="checklistitems" name="checklistitems" rows="4" cols="40" required th:text="${checklist?.checklistitems}"></textarea>
+    <span id="checklistitems-error" class="error-message"></span>
+
+			</div>
+      			<div class="form-group">
+        <label for="remarks">Findings / Remarks *</label>
+    <textarea id="remarks" name="remarks" rows="4"cols="40"  required th:text="${checklist?.remarks}"></textarea>
+    <span id="remarks-error" class="error-message"></span>
+
+				</div>
+    </div>
+
+
+		<!-- First Row -->
+		<div class="form-row">
+			<div class="form-group">
+				 <label for="inspectedBy">Inspected By *</label>
+    <input type="text" id="inspectedby" name="inspectedby" th:value="${checklist?.inspectedby}" required />
+    <span id="inspectedby-error" class="error-message"></span>
+
+			</div>		
+
+
+
+			<div class="form-group">
+				<label for="status">Status *</label>
+    <select id="status" name="status" required>
+        <option value="" disabled selected>Select Status</option>
+        <option value="Safe" th:selected="${checklist?.status == 'Safe'}">Safe</option>
+        <option value="Unsafe" th:selected="${checklist?.status == 'Unsafe'}">Unsafe</option>
+        <option value="Needs Action" th:selected="${checklist?.status == 'Needs Action'}">Needs Action</option>
+    </select>
+    <span id="status-error" class="error-message"></span>
+
+			</div>
+		
+		</div>
+
+
+
+		<!-- Second Row -->
+	
+
+	
+		<!-- Third Row -->
+		
+
+
+		</div>
+
+		<!-- four Row -->
+		<!-- Five Row  -->
+		<div class="form-actions">
+       <button type="button" onclick="validateAndSubmitSafetyForm()">Submit</button>
+
+			<button type="button" class="back-button" onclick="goBack();">Back</button>
+			    <div id="message" th:if="${successMessage}" class="success-message" th:text="${successMessage}"></div>
+
+		</div>
+	</form>
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+	<script>
+		function goBack() {
+			window.location.href = '/logistics/goodsreceiptnotegrid';
+		}
+	</script>
+  <script>
+    $(document).ready(function () {
+        // Set today's date in yyyy-mm-dd format
+        const today = new Date().toISOString().split('T')[0];
+        
+        // Set default value, min, and max to today for inspectiondate
+        $('#inspectiondate').val(today).attr('min', today).attr('max', today);
+
+        // Prevent manual change to other date
+        $('#inspectiondate').on('change', function () {
+            if ($(this).val() !== today) {
+                alert("Only today's date is allowed.");
+                $(this).val(today);
+            }
+        });
+    });
+</script>
+
+<script>	
+	function validateTextField(selector) {
+	    $(selector).on('input', function () {
+	        let value = $(this).val();
+	        if (!/^[a-zA-Z\s,]*$/.test(value)) {
+	            alert('Only alphabets, spaces, and commas are allowed.');
+	            $(this).val(value.replace(/[^a-zA-Z\s,]/g, '')); // Remove invalid characters
+	        }
+	    });
+	}
+
+	// Apply validation to the desired field
+	validateTextField('#checklistitems');
+	validateTextField('#inspectedby');
+	validateTextField('#remarks');
+
+    function validateAndSubmitSafetyForm() {
+        $('.error-message').text('');
+        
+        const equipmentuid = $('#equipmentuid').val();
+        const equipmentname = $('#equipmentname').val();
+        const inspectiondate = $('#inspectiondate').val();
+        const checklistitems = $('#checklistitems').val().trim();
+        const inspectedby = $('#inspectedby').val().trim();
+        const remarks = $('#remarks').val().trim();
+        const status = $('#status').val();
+
+        const textOnlyRegex = /^[a-zA-Z\s]+$/;
+
+        let isValid = true;
+
+        if (!equipmentuid) {
+            $('#equipmentuid-error').text('Please select an equipment UID');
+            isValid = false;
+        }
+
+        if (!equipmentname) {
+            $('#equipmentname-error').text('Equipment name is required');
+            isValid = false;
+        }
+
+        if (!inspectiondate) {
+            $('#inspectiondate-error').text('Inspection date is required');
+            isValid = false;
+        } else {
+            const today = new Date();
+            const inspectionDate = new Date(inspectiondate);
+            if (inspectionDate > today) {
+                $('#inspectiondate-error').text('Inspection date cannot be in the future');
+                isValid = false;
+            }
+        }
+
+       
+
+        
+        if (!status) {
+            $('#status-error').text('Status is required');
+            isValid = false;
+        }
+
+        if (!isValid) {
+            alert('Please correct the errors highlighted in red.');
+            return;
+        }
+
+        submitSafetyForm();
+    }
+
+    function submitSafetyForm() {
+        const formData = new FormData(document.getElementById('SafetyInspectionForm'));
+        const id = $('#id').val();
+        let url = id ? '/safetyinspection/update' : '/safetyinspectionchecklistform/save';
+        let successMessage = id ? 'Inspection updated successfully!' : 'Inspection saved successfully!';
+
+        $.ajax({
+            url: url,
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function () {
+                alert(successMessage);
+                resetForm();
+                window.location.href = '/safetyinspection/List';
+            },
+            error: function () {
+                alert('Error saving inspection. Please check the form and try again.');
+            }
+        });
+    }
+
+    function resetForm() {
+        $('#SafetyInspectionForm')[0].reset();
+        $('#id').val('');
+        $('#message').text('');
+    }
+
+    $(document).ready(function () {
+        var existingequipmentuid = $('#equipmentuid').val();
+        if (existingequipmentuid) {
+            fetchEquipmentDetails();
+        }
+    });
+
+    function fetchEquipmentDetails() {
+        const equipmentuid = $('#equipmentuid').val();
+
+        if (!equipmentuid) {
+            $('#equipmentuid-error').text('Please select an equipment UID');
+            return;
+        }
+
+        $.ajax({
+            url: '/getequipmentdetails',
+            method: 'GET',
+            data: { equipmentuid: equipmentuid },
+            success: function (response) {
+                if (response && response.length > 0) {
+                    const equipment = response[0];
+                    $('#equipmentname').val(equipment.equipmentname || '');
+                    $('#equipmentname-error').text('');
+                } else {
+                    $('#equipmentname-error').text('No equipment details found');
+                }
+            },
+            error: function (xhr, status, error) {
+                console.error("Error fetching equipment details:", error);
+                alert("An error occurred while fetching equipment details.");
+            }
+        });
+    }
+</script>
+
+
+</body>
+
+</html>
